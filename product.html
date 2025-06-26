@@ -5,15 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Product Overview</title>
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 min-h-screen">
+<body class="bg-white min-h-screen">
   <div id="header-placeholder"></div>
+
   <main id="product-overview" class="container mx-auto px-4 py-8">
     <!-- Product details will be injected here -->
+    <img src="/img/${product.thumbnail}" alt="${product.name}" class="w-full h-auto object-cover rounded" />
   </main>
   <script src="./js/header.js"></script>
   <script src="./js/productOverview.js"></script>
-  <script src="./js/featureBox.js"></script>
 </body>
 </html>

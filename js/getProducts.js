@@ -25,28 +25,30 @@ async function getProducts() {
     // Clear previous content
     container.innerHTML = '';
 
-    // Render each product as a Tailwind card with image
+    // Render each product as a Nordiska Galleriet-style card
     data.forEach(product => {
         const productDiv = document.createElement('div');
-        productDiv.href = `product.html?id=${product.id}`;
-        productDiv.className = 'bg-white border border-gray-200 rounded-lg shadow-sm flex flex-col';
-
         productDiv.innerHTML = `
         <a href="product.html?id=${product.id}">
-            <div class="h-48 w-full flex items-center justify-center bg-white rounded-t-lg overflow-hidden pt-10">
-                <img src="img/${product.image || 'https://via.placeholder.com/300x200?text=No+Image'}" alt="${product.name}" class="object-contain h-full w-full" />
-            </div>
-            <div class="p-6 flex-1 flex flex-col">
-                <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">${product.name}</h5>
-                <p class="mb-2 font-normal text-gray-700 flex-1">${product.description || ''}</p>
-                <div class="flex justify-between items-center mt-4">
-                    <span class="text-lg font-semibold text-gray-900">${product.price} kr</span>
-                    <span class="text-sm text-gray-500">Stock: ${product.stock}</span>
+            <div class="bg-[#f5f5f5] w-full aspect-[3/5] flex items-center justify-center overflow-hidden relative p-6">
+                <!-- IN STOCK badge, absolute bottom left, smaller and further down -->
+                <div class="absolute bottom-2 left-2 flex items-center z-10">
+                    <span class="inline-flex items-center justify-center w-3 h-3 rounded-full bg-green-500 mr-1">
+                        <svg class="w-2 h-2 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 16 16">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 8l3 3 5-5"/>
+                        </svg>
+                    </span>
+                    <span class="text-[10px] text-black font-medium leading-none">IN STOCK</span>
                 </div>
+                <img src="/img/${product.thumbnail || 'https://via.placeholder.com/300x400?text=No+Image'}" alt="${product.name}" class="object-contain h-full w-full" />
             </div>
-            </a>
+            <div class="w-full text-left py-3 bg-white pl-4">
+                <div class="text-base font-medium text-gray-900 truncate">${product.name}</div>
+                <div class="text-base text-gray-700 mt-1">${product.price} kr</div>
+            </div>
+        </a>
         `;
-
+        productDiv.className = "flex flex-col items-center justify-between bg-[#f5f5f5] rounded-none border-0 shadow-none overflow-hidden";
         container.appendChild(productDiv);
     });
 }
