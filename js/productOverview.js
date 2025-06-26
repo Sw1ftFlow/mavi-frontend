@@ -60,13 +60,13 @@ async function loadProduct() {
 
     // Render the Tailwind UI Product Overview component with pure CSS accordions
     document.getElementById('product-overview').innerHTML = `
-      <div class="bg-white max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
+      <div class="bg-white w-full grid grid-cols-1 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] gap-6">
         <div class="flex flex-col h-full">
-          <div class="relative bg-[#f5f5f5] flex-1 flex items-start justify-start overflow-hidden min-h-0 min-w-0">
+          <div class="relative flex-1 flex items-start justify-start overflow-hidden min-h-0 min-w-0 bg-[#f5f5f5]">
             <button type="button" class="main-carousel-prev absolute left-2 top-1/2 -translate-y-1/2 z-20 text-black w-10 h-10 flex items-center justify-center text-4xl font-light opacity-80 hover:opacity-100 hover:bg-white transition" style="outline:none; border:none; background:transparent;">
               &#8249;
             </button>
-            <img id="main-product-image" src="${imageUrl}" alt="${data.name}" class="w-full h-full object-contain transition-all duration-300" style="display:block;" />
+            <img id="main-product-image" src="${imageUrl}" alt="${data.name}" class="w-full aspect-[4/3] object-contain transition-all duration-300" style="display:block;" />
             <button type="button" class="main-carousel-next absolute right-2 top-1/2 -translate-y-1/2 z-20 text-black w-10 h-10 flex items-center justify-center text-4xl font-light opacity-80 hover:opacity-100 hover:bg-white transition" style="outline:none; border:none; background:transparent;">
               &#8250;
             </button>
@@ -91,25 +91,34 @@ async function loadProduct() {
             </button>
           </div>
         </div>
-        <div>
-          <h1 class="text-2xl font-semibold text-black mb-2">${data.name}</h1>
-          <p class="text-lg text-black mb-2">${data.price} kr</p>
-          <p class="mb-6 text-gray-500">${data.description || ''}</p>
-          <div class="flex items-center gap-4 mb-8">
-            <div class="flex items-center border border-gray-300 rounded-[8px]">
-              <button type="button" class="quantity-decrease px-3 py-2 text-xl font-bold text-black hover:bg-gray-100">−</button>
-              <span class="quantity-value px-4 py-2 select-none text-lg font-semibold text-black">1</span>
-              <button type="button" class="quantity-increase px-3 py-2 text-xl font-bold text-black hover:bg-gray-100">+</button>
+        <div class="pl-8 pr-12"> <!-- Increased right padding from pr-6 to pr-12 -->
+          <h1 class="text-2xl font-semibold text-black mb-1">${data.name}</h1>
+          <p class="mb-4 text-sm text-gray-500">${data.description || ''}</p>
+          <div class="flex items-center gap-3 mb-6">
+            <div class="flex items-center border border-gray-300 rounded-none h-10">
+              <button type="button" class="quantity-decrease px-2 py-1 text-sm font-bold text-black hover:bg-gray-100 h-10">−</button>
+              <span class="quantity-value px-3 py-1 select-none text-sm font-semibold text-black h-10 flex items-center">1</span>
+              <button type="button" class="quantity-increase px-2 py-1 text-sm font-bold text-black hover:bg-gray-100 h-10">+</button>
             </div>
-            <button class="border border-black text-black px-8 py-3 rounded-[8px] font-semibold hover:bg-black hover:text-white transition">Add to Cart</button>
+            <div class="flex w-full max-w-xs lg:max-w-md">
+              <button class="flex-1 border-none bg-black text-white px-4 py-2 rounded-none font-semibold flex items-center justify-between transition hover:bg-gray-900 text-sm h-10">
+                <span class="flex items-center gap-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.35 2.7A1 1 0 007.5 17h9a1 1 0 00.85-1.53L17 13M7 13V6a1 1 0 011-1h8a1 1 0 011 1v7" />
+                  </svg>
+                  <span class="text-sm">Lägg i varukorgen</span>
+                </span>
+                <span class="text-sm text-white font-semibold ml-2">${data.price} kr</span>
+              </button>
+            </div>
           </div>
-          <div class="mt-8 space-y-2">
+          <div class="mt-6 space-y-1 text-sm">
 
-            <!-- Accordion for Features -->
+            <!-- Accordion for Features (now Beskrivning) -->
             <div class="mb-4 bg-white rounded-[8px]">
               <label class="accordion-toggle flex items-center justify-between w-full px-4 py-3 text-left font-semibold cursor-pointer select-none" data-target="features-content-${id}">
-                <span class="title text-black">Features</span>
-                <span class="toggle-icon text-3xl font-light leading-none text-gray-400">+</span>
+                <span class="title text-black">Beskrivning</span>
+                <span class="toggle-icon text-2xl font-thin leading-none text-gray-400" style="font-family: 'Inter', sans-serif;">+</span>
               </label>
               <div id="features-content-${id}" class="accordion-content max-h-0 overflow-hidden transition-all duration-300 px-4 bg-white border-t border-gray-100">
                 <div class="text-gray-500 py-2">
@@ -118,27 +127,27 @@ async function loadProduct() {
               </div>
             </div>
 
-            <!-- Accordion for Shipping -->
-            <div class="mb-4 bg-white rounded-lg">
+            <!-- Accordion for Shipping (now Frakt & retur) -->
+            <div class="mb-4 bg-white rounded-[8px]">
               <label class="accordion-toggle flex items-center justify-between w-full px-4 py-3 text-left font-semibold cursor-pointer select-none" data-target="shipping-content-${id}">
-                <span class="title text-gray-900">Shipping</span>
-                <span class="toggle-icon text-3xl font-light leading-none text-gray-400">+</span>
+                <span class="title text-gray-900">Frakt och retur</span>
+                <span class="toggle-icon text-2xl font-thin leading-none text-gray-400" style="font-family: 'Inter', sans-serif;">+</span>
               </label>
-              <div id="shipping-content-${id}" class="accordion-content max-h-0 overflow-hidden transition-all duration-300 px-4 bg-white rounded-b-lg border border-t-0 border-gray-200">
-                <div class="text-gray-600 py-2">
+              <div id="shipping-content-${id}" class="accordion-content max-h-0 overflow-hidden transition-all duration-300 px-4 bg-white border-t border-gray-100">
+                <div class="text-gray-500 py-2">
                   ${shippingList}
                 </div>
               </div>
             </div>
 
-            <!-- Accordion for Return -->
-            <div class="mb-4 bg-white rounded-lg">
+            <!-- Accordion for Return (now Hjälp) -->
+            <div class="mb-4 bg-white rounded-[8px]">
               <label class="accordion-toggle flex items-center justify-between w-full px-4 py-3 text-left font-semibold cursor-pointer select-none" data-target="return-content-${id}">
-                <span class="title text-gray-900">Return</span>
-                <span class="toggle-icon text-3xl font-light leading-none text-gray-400">+</span>
+                <span class="title text-gray-900">Hjälp</span>
+                <span class="toggle-icon text-2xl font-thin leading-none text-gray-400" style="font-family: 'Inter', sans-serif;">+</span>
               </label>
-              <div id="return-content-${id}" class="accordion-content max-h-0 overflow-hidden transition-all duration-300 px-4 bg-white rounded-b-lg border border-t-0 border-gray-200">
-                <div class="text-gray-600 py-2">
+              <div id="return-content-${id}" class="accordion-content max-h-0 overflow-hidden transition-all duration-300 px-4 bg-white border-t border-gray-100">
+                <div class="text-gray-500 py-2">
                   ${returnList}
                 </div>
               </div>
