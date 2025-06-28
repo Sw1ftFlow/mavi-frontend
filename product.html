@@ -20,7 +20,25 @@
     <!-- Product details will be injected here -->
     <img src="/img/${product.thumbnail}" alt="${product.name}" class="w-full h-auto object-cover rounded" />
   </main>
+  <!-- Cart Drawer -->
+<div id="cart-backdrop" class="fixed inset-0 z-40 hidden" style="background: rgba(255,255,255,0.4);"></div>
+<div id="cart-drawer" class="fixed top-0 right-0 h-full w-full max-w-xl bg-white shadow-xl z-50 transform translate-x-full transition-transform duration-300 flex flex-col" style="width:40vw; min-width:320px;">
+  <div class="flex items-center justify-between px-6 py-4 border-b">
+    <span class="text-xl font-semibold" style="font-family: 'Inter', sans-serif;">Varukorg</span>
+    <button id="cart-close" class="text-2xl text-gray-400 hover:text-black">&times;</button>
+  </div>
+  <!-- Cart items go here -->
+  <div id="cart-items" class="flex-1 overflow-y-auto px-6 py-4"></div>
+  <div class="border-t px-6 py-4">
+    <div class="flex justify-between items-center mb-4">
+      <span class="font-semibold">Totalt:</span>
+      <span id="cart-total" class="font-semibold">0 kr</span>
+    </div>
+    <button class="w-full bg-black text-white py-3 rounded-none font-semibold text-base hover:bg-gray-900 transition">Till kassan</button>
+  </div>
+</div>
   <script src="./js/header.js"></script>
   <script src="./js/productOverview.js"></script>
+  <script src="./js/cart.js"></script>
 </body>
 </html>
