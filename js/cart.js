@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
       total += item.price * item.quantity;
       return `
         <div class="flex items-center gap-4 py-6 border-b last:border-b-0">
-          <img src="${item.thumbnail ? item.thumbnail : '/img/' + (item.image || '')}" alt="${item.name}" class="w-20 h-20 object-cover bg-gray-100 border" />
+          <img src="${item.thumbnail ? item.thumbnail : '/img/' + (item.image || '')}" alt="${item.name}" class="w-20 h-20 object-cover bg-gray-100 border border-gray-300" />
           <div class="flex-1 flex flex-col justify-between min-w-0">
             <div class="flex justify-between items-start">
               <div>
@@ -126,6 +126,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if (window.updateCartCount) window.updateCartCount();
       };
     });
+
+    // After rendering cart items, make sure the checkout button has cursor-pointer:
+    const checkoutBtn = document.querySelector('#cart-drawer button.w-full.bg-black');
+    if (checkoutBtn) {
+      checkoutBtn.classList.add('cursor-pointer');
+      checkoutBtn.style.display = '';
+      checkoutBtn.onclick = () => {
+        window.location.href = 'checkout.html';
+      };
+    }
   }
 
   function updateCartCount() {
