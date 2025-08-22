@@ -34,11 +34,11 @@ async function loadProduct() {
     let imageUrl = images[0] ? `${getBaseUrl()}img/${images[0]}` : 'https://via.placeholder.com/600x600?text=No+Image';
 
     // If your feature column is a comma-separated string:
-    const features = data.feature ? data.feature.split(',').map(f => f.trim()) : [];
+    const features = data.beskrivning ? data.beskrivning.split(/\r?\n/).map(f => f.trim()).filter(Boolean) : [];
 
     // Generate feature list HTML
     const featureList = features.length
-      ? `<ul class="list-disc pl-6 space-y-1">${features.map(f => `<li>${f}</li>`).join('')}</ul>`
+      ? `<div class="text-gray-500 space-y-2">${features.map(f => `<p>${f}</p>`).join('')}</div>`
       : `<p class="text-gray-500">No features listed.</p>`;
 
     // Unique IDs for the accordions
@@ -46,19 +46,19 @@ async function loadProduct() {
     const shippingAccordionId = `shipping-accordion-${id}`;
     const returnAccordionId = `return-accordion-${id}`;
 
-    const shippingItems = data.shipping
-      ? data.shipping.split(/,|\n/).map(s => s.trim()).filter(Boolean)
+    const shippingItems = data.specifikationer
+      ? data.specifikationer.split(/\r?\n/).map(s => s.trim()).filter(Boolean)
       : [];
     const shippingList = shippingItems.length
-      ? `<ul class="list-disc pl-6 space-y-1">${shippingItems.map(s => `<li>${s}</li>`).join('')}</ul>`
-      : `<ul class="list-disc pl-6 space-y-1"><li class="text-gray-500">No shipping info.</li></ul>`;
+      ? `<div class="text-gray-500 space-y-1">${shippingItems.map(s => `<p>${s}</p>`).join('')}</div>`
+      : `<div class="text-gray-500"><p>No specifications available.</p></div>`;
 
-    const returnItems = data.return
-      ? data.return.split(/,|\n/).map(r => r.trim()).filter(Boolean)
+    const returnItems = data.frakt
+      ? data.frakt.split(/\r?\n/).map(r => r.trim()).filter(Boolean)
       : [];
     const returnList = returnItems.length
-      ? `<ul class="list-disc pl-6 space-y-1">${returnItems.map(r => `<li>${r}</li>`).join('')}</ul>`
-      : `<ul class="list-disc pl-6 space-y-1"><li class="text-gray-500">No return policy.</li></ul>`;
+      ? `<div class="text-gray-500 space-y-1">${returnItems.map(r => `<p>${r}</p>`).join('')}</div>`
+      : `<div class="text-gray-500"><p>No shipping info.</p></div>`;
 
     // Render the Tailwind UI Product Overview component with pure CSS accordions
     document.getElementById('product-overview').innerHTML = `
@@ -129,27 +129,27 @@ async function loadProduct() {
               </div>
             </div>
 
-            <!-- Accordion for Shipping (now Frakt & retur) -->
+            <!-- Accordion for Shipping (now Specifikationer) -->
             <div class="mb-4 bg-white rounded-[8px]">
               <label class="accordion-toggle flex items-center justify-between w-full px-4 py-3 text-left font-semibold cursor-pointer select-none" data-target="shipping-content-${id}">
-                <span class="title text-gray-900">Frakt och retur</span>
+                <span class="title text-gray-900">Specifikationer</span>
                 <span class="toggle-icon text-2xl font-thin leading-none text-gray-400" style="font-family: 'Inter', sans-serif;">+</span>
               </label>
               <div id="shipping-content-${id}" class="accordion-content max-h-0 overflow-hidden transition-all duration-300 px-4 bg-white border-t border-gray-100">
-                <div class="text-gray-500 py-2">
+                <div class="py-2">
                   ${shippingList}
                 </div>
               </div>
             </div>
 
-            <!-- Accordion for Return (now Hjälp) -->
+            <!-- Accordion for Return (now Frakt & Retur) -->
             <div class="mb-4 bg-white rounded-[8px]">
               <label class="accordion-toggle flex items-center justify-between w-full px-4 py-3 text-left font-semibold cursor-pointer select-none" data-target="return-content-${id}">
-                <span class="title text-gray-900">Hjälp</span>
+                <span class="title text-gray-900">Frakt & Retur</span>
                 <span class="toggle-icon text-2xl font-thin leading-none text-gray-400" style="font-family: 'Inter', sans-serif;">+</span>
               </label>
               <div id="return-content-${id}" class="accordion-content max-h-0 overflow-hidden transition-all duration-300 px-4 bg-white border-t border-gray-100">
-                <div class="text-gray-500 py-2">
+                <div class="py-2">
                   ${returnList}
                 </div>
               </div>
