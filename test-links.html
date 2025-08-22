@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Links</title>
+</head>
+<body>
+    <h1>Test Page Navigation</h1>
+    <ul>
+        <li><a href="./index.html">Index</a></li>
+        <li><a href="./cart.html">Cart</a></li>
+        <li><a href="./checkout.html">Checkout</a></li>
+        <li><a href="./product.html">Product</a></li>
+        <li><a href="./success.html">Success</a></li>
+    </ul>
+    
+    <h2>Absolute path tests:</h2>
+    <ul>
+        <li><a href="cart.html">Cart (without ./)</a></li>
+        <li><a href="/cart.html">Cart (with /)</a></li>
+    </ul>
+    
+    <script>
+        console.log('Current location:', window.location.href);
+        console.log('Base URL:', window.location.origin);
+        console.log('Pathname:', window.location.pathname);
+    </script>
+</body>
+</html>
