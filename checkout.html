@@ -121,13 +121,11 @@
         const cart = JSON.parse(localStorage.getItem('cart')) || [];
         const amount = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
         
-        // For demo purposes, we'll create a mock elements instance
-        // In production, you need a real client_secret from your server
+        // Use client-only mode which works with live keys for basic testing
         elements = stripe.elements({
           mode: 'payment',
-          amount: amount * 100, // Convert SEK to öre
+          amount: Math.round(amount * 100), // Convert SEK to öre
           currency: 'sek',
-          payment_method_types: ['card', 'klarna', 'google_pay', 'apple_pay'],
           appearance: {
             theme: 'stripe',
             variables: {
@@ -139,46 +137,21 @@
               spacingUnit: '4px',
               borderRadius: '0px'
             }
-          },
+          }
+        });
+
+        paymentElement = elements.create('payment', {
           business: {
             name: 'MAVI'
           }
         });
-
-        paymentElement = elements.create('payment');
         paymentElement.mount('#payment-element');
+        
+        console.log('Stripe initialized successfully with amount:', amount, 'SEK');
       } catch (error) {
         console.error('Stripe initialization error:', error);
         showMessage('Fel vid initiering av betalning. Kontrollera din Stripe-konfiguration.');
       }
-    }
-
-    // Demo function to simulate creating a Payment Intent
-    // In production, this would be done on your server
-    async function createPaymentIntent(amount) {
-      // IMPORTANT: This is a simplified demo approach
-      // For testing purposes, we'll use a demo client secret
-      // In production, you MUST create Payment Intents on your server
-      
-      // Demo client secret (replace with actual server implementation)
-      return 'pi_demo_client_secret_' + Math.random().toString(36).substring(7);
-      
-      /* 
-      // Production implementation would look like this:
-      const response = await fetch('/api/create-payment-intent', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          amount: amount * 100, // Convert to öre (cents)
-          currency: 'sek'
-        })
-      });
-      
-      const { client_secret } = await response.json();
-      return client_secret;
-      */
     }
 
     // Handle form submission
@@ -221,7 +194,7 @@
           if (error.type === "card_error" || error.type === "validation_error") {
             showMessage(error.message);
           } else {
-            showMessage("Ett oväntat fel uppstod.");
+            showMessage("Ett oväntat fel uppstod: " + error.message);
           }
         }
       } catch (error) {
