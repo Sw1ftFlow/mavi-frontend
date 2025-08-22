@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   console.log('Logo data:', data);
 
   if (data && data.image) {
-    logoUrl = `/img/${data.image}`;
+    logoUrl = `${getBaseUrl()}img/${data.image}`;
     console.log('Logo URL:', logoUrl);
   }
 
