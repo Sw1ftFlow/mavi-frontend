@@ -104,7 +104,6 @@
 
     function saveCart(cart) {
       localStorage.setItem('cart', JSON.stringify(cart));
-      updateCartDisplay();
       updateCartCount();
     }
 
@@ -119,6 +118,7 @@
           cart[itemIndex].quantity = newQuantity;
         }
         saveCart(cart);
+        updateCartDisplay(); // Manually trigger display update
       }
     }
 
@@ -126,6 +126,7 @@
       const cart = getCart();
       const updatedCart = cart.filter(item => item.id !== productId);
       saveCart(updatedCart);
+      updateCartDisplay(); // Manually trigger display update
     }
 
     function migrateCartImages() {
