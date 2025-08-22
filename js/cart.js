@@ -67,9 +67,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     cartItems.innerHTML = cart.map((item, idx) => {
       total += item.price * item.quantity;
+      
+      // Handle image URL consistently
+      let imageUrl = '';
+      if (item.thumbnail) {
+        // If thumbnail already includes the full path (starts with http or includes /img/), use it directly
+        if (item.thumbnail.startsWith('http') || item.thumbnail.includes('/img/')) {
+          imageUrl = item.thumbnail;
+        } else {
+          // If it's just a filename, build the full path
+          imageUrl = getBaseUrl() + 'img/' + item.thumbnail;
+        }
+      } else if (item.image) {
+        imageUrl = getBaseUrl() + 'img/' + item.image;
+      } else {
+        imageUrl = 'https://via.placeholder.com/80x80?text=No+Image';
+      }
+      
       return `
         <div class="flex items-center gap-4 py-6 border-b last:border-b-0">
-          <img src="${item.thumbnail ? item.thumbnail : getBaseUrl() + 'img/' + (item.image || '')}" alt="${item.name}" class="w-20 h-20 object-cover bg-gray-100 border border-gray-300" />
+          <img src="${imageUrl}" alt="${item.name}" class="w-20 h-20 object-cover bg-gray-100 border border-gray-300" />
           <div class="flex-1 flex flex-col justify-between min-w-0">
             <div class="flex justify-between items-start">
               <div>
