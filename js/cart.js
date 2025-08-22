@@ -36,11 +36,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function renderCart() {
     const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    
+    // Migrate old cart items to use consistent URL structure
+    const migratedCart = cart.map(item => {
+      if (item.thumbnail && !item.thumbnail.startsWith('http') && !item.thumbnail.includes(getBaseUrl())) {
+        // Fix old thumbnail paths
+        if (item.thumbnail.startsWith('/img/')) {
+          item.thumbnail = getBaseUrl() + item.thumbnail.substring(1);
+        } else if (!item.thumbnail.includes('img/')) {
+          item.thumbnail = getBaseUrl() + 'img/' + item.thumbnail;
+        }
+      }
+      return item;
+    });
+    
+    // Save the migrated cart back to localStorage
+    if (JSON.stringify(cart) !== JSON.stringify(migratedCart)) {
+      localStorage.setItem('cart', JSON.stringify(migratedCart));
+    }
+    
     const cartItems = document.getElementById('cart-items');
     const cartTotal = document.getElementById('cart-total');
     let total = 0;
 
-    if (cart.length === 0) {
+    if (migratedCart.length === 0) {
       cartItems.innerHTML = `
         <div class="flex flex-col items-center justify-center h-full py-16">
           <div class="text-gray-900 text-lg font-semibold mb-2">Din varukorg är tom</div>
@@ -65,32 +84,11 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    cartItems.innerHTML = cart.map((item, idx) => {
+    cartItems.innerHTML = migratedCart.map((item, idx) => {
       total += item.price * item.quantity;
       
-      // Handle image URL consistently
-      let imageUrl = '';
-      if (item.thumbnail) {
-        // If thumbnail already includes the full path (starts with http or includes full base URL), use it directly
-        if (item.thumbnail.startsWith('http') || item.thumbnail.includes(getBaseUrl())) {
-          imageUrl = item.thumbnail;
-        } else if (item.thumbnail.startsWith('/img/')) {
-          // Handle old cart items that have hardcoded /img/ paths
-          imageUrl = getBaseUrl() + item.thumbnail.substring(1); // Remove leading slash
-        } else {
-          // If it's just a filename, build the full path
-          imageUrl = getBaseUrl() + 'img/' + item.thumbnail;
-        }
-      } else if (item.image) {
-        if (item.image.startsWith('/img/')) {
-          // Handle old cart items that have hardcoded /img/ paths
-          imageUrl = getBaseUrl() + item.image.substring(1); // Remove leading slash
-        } else {
-          imageUrl = getBaseUrl() + 'img/' + item.image;
-        }
-      } else {
-        imageUrl = 'https://via.placeholder.com/80x80?text=No+Image';
-      }
+      // Now all items should have consistent URL structure
+      let imageUrl = item.thumbnail || 'https://via.placeholder.com/80x80?text=No+Image';
       
       return `
         <div class="flex items-center gap-4 py-6 border-b last:border-b-0">
