@@ -73,24 +73,12 @@ async function loadProduct() {
               &#8250;
             </button>
           </div>
-          <div class="relative mt-4 flex items-center">
-            <button type="button" 
-              class="carousel-prev -ml-8 text-black w-8 h-8 flex items-center justify-center text-3xl font-light opacity-80 hover:opacity-100 hover:bg-white transition"
-              style="outline:none; border:none; background:transparent;" disabled>
-              &#8249;
-            </button>
-            <div class="overflow-hidden w-full px-10">
-              <div class="carousel-track flex gap-4 transition-transform duration-300">
-                ${images.map((img, i) => `
+          <div class="mt-4 flex justify-center">
+            <div class="flex gap-4">
+              ${images.map((img, i) => `
 <img src="${getBaseUrl()}img/${img}" alt="Thumbnail ${i+1}" class="carousel-thumb h-24 w-24 object-contain cursor-pointer bg-white" data-index="${i}">
 `).join('')}
-              </div>
             </div>
-            <button type="button" 
-              class="carousel-next -mr-8 text-black w-8 h-8 flex items-center justify-center text-3xl font-light opacity-80 hover:opacity-100 hover:bg-white transition"
-              style="outline:none; border:none; background:transparent;">
-              &#8250;
-            </button>
           </div>
         </div>
         <div class="pl-8 pr-12"> <!-- Increased right padding from pr-6 to pr-12 -->
@@ -189,44 +177,16 @@ async function loadProduct() {
       });
     });
 
-    // Carousel logic
-    let carouselIndex = 0;
-    const visibleCount = 4;
-    const track = document.querySelector('.carousel-track');
-    const prevBtn = document.querySelector('.carousel-prev');
-    const nextBtn = document.querySelector('.carousel-next');
+    // Thumbnail logic for changing main image
     const mainImage = document.getElementById('main-product-image');
     const thumbs = document.querySelectorAll('.carousel-thumb');
 
-    function updateCarousel() {
-      const thumbWidth = thumbs[0]?.offsetWidth || 64;
-      const gap = 16; // gap-4 = 1rem = 16px
-      const offset = carouselIndex * (thumbWidth + gap);
-      track.style.transform = `translateX(-${offset}px)`;
-      prevBtn.disabled = carouselIndex === 0;
-      nextBtn.disabled = carouselIndex >= images.length - visibleCount;
-    }
-    if (track && prevBtn && nextBtn) {
-      prevBtn.addEventListener('click', () => {
-        if (carouselIndex > 0) {
-          carouselIndex--;
-          updateCarousel();
-        }
+    // Click thumbnail to change main image
+    thumbs.forEach(img => {
+      img.addEventListener('click', () => {
+        mainImage.src = img.src;
       });
-      nextBtn.addEventListener('click', () => {
-        if (carouselIndex < images.length - visibleCount) {
-          carouselIndex++;
-          updateCarousel();
-        }
-      });
-      updateCarousel();
-      // Click thumbnail to change main image
-      thumbs.forEach(img => {
-        img.addEventListener('click', () => {
-          mainImage.src = img.src;
-        });
-      });
-    }
+    });
 
     // Main image carousel logic
     let mainImageIndex = 0;
