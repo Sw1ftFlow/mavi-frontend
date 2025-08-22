@@ -31,7 +31,7 @@ async function loadProduct() {
     if (!images.length && data.image) images = [data.image];
 
     // Set main image to first in array, or fallback
-    let imageUrl = images[0] ? `/img/${images[0]}` : 'https://via.placeholder.com/600x600?text=No+Image';
+    let imageUrl = images[0] ? `./img/${images[0]}` : 'https://via.placeholder.com/600x600?text=No+Image';
 
     // If your feature column is a comma-separated string:
     const features = data.feature ? data.feature.split(',').map(f => f.trim()) : [];
