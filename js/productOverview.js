@@ -82,7 +82,7 @@ async function loadProduct() {
             <div class="overflow-hidden w-full px-10">
               <div class="carousel-track flex gap-4 transition-transform duration-300">
                 ${images.map((img, i) => `
-<img src="${getBaseUrl()}img/${img}" alt="Thumbnail ${i+1}" class="carousel-thumb h-24 w-24 object-cover cursor-pointer bg-white" data-index="${i}">
+<img src="${getBaseUrl()}img/${img}" alt="Thumbnail ${i+1}" class="carousel-thumb h-24 w-24 object-contain cursor-pointer bg-white" data-index="${i}">
 `).join('')}
               </div>
             </div>

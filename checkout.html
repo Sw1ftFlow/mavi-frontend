@@ -108,25 +108,48 @@
     // Simple JS to render cart items from localStorage
     function renderCheckoutCart() {
       const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      
+      // Migrate old cart items to use consistent URL structure (same as cart.js)
+      const migratedCart = cart.map(item => {
+        if (item.thumbnail && !item.thumbnail.startsWith('http') && !item.thumbnail.includes(getBaseUrl())) {
+          // Fix old thumbnail paths
+          if (item.thumbnail.startsWith('/img/')) {
+            item.thumbnail = getBaseUrl() + item.thumbnail.substring(1);
+          } else if (!item.thumbnail.includes('img/')) {
+            item.thumbnail = getBaseUrl() + 'img/' + item.thumbnail;
+          }
+        }
+        return item;
+      });
+      
+      // Save the migrated cart back to localStorage
+      if (JSON.stringify(cart) !== JSON.stringify(migratedCart)) {
+        localStorage.setItem('cart', JSON.stringify(migratedCart));
+      }
+      
       const container = document.getElementById('checkout-cart-items');
       const subtotalSpan = document.getElementById('checkout-cart-subtotal');
       const totalSpan = document.getElementById('checkout-cart-total');
       const taxSpan = document.getElementById('checkout-cart-tax');
       let subtotal = 0;
       let tax = 0;
-      if (cart.length === 0) {
+      if (migratedCart.length === 0) {
         container.innerHTML = '<div class="text-gray-500 text-center">Din varukorg är tom.</div>';
         subtotalSpan.textContent = '0 kr';
         totalSpan.textContent = '0 kr';
         taxSpan.textContent = '0 kr';
         return;
       }
-      container.innerHTML = cart.map(item => `
+      container.innerHTML = migratedCart.map(item => {
+        // Now all items should have consistent URL structure
+        let imageUrl = item.thumbnail || 'https://via.placeholder.com/56x56?text=No+Image';
+        
+        return `
         <div class="flex flex-col gap-2 border-b border-gray-200 pb-4 last:border-b-0">
           <div class="flex justify-between items-center">
             <div class="flex items-center gap-3 min-w-0 relative">
               <div class="relative">
-                <img src="${item.thumbnail ? item.thumbnail : '/img/' + (item.image || '')}" alt="${item.name}" class="w-14 h-14 object-cover bg-gray-100 border flex-shrink-0 rounded" />
+                <img src="${imageUrl}" alt="${item.name}" class="w-14 h-14 object-contain bg-gray-100 border flex-shrink-0 rounded" />
                 <span class="absolute -top-2 -right-2 bg-gray-700 bg-opacity-95 text-white text-xs font-semibold rounded-full w-6 h-6 flex items-center justify-center border border-white shadow">
                   ${item.quantity}
                 </span>
@@ -140,8 +163,8 @@
             <div class="font-semibold text-base text-right whitespace-nowrap">${item.price * item.quantity} kr</div>
           </div>
         </div>
-      `).join('');
-      subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      `;}).join('');
+      subtotal = migratedCart.reduce((sum, item) => sum + item.price * item.quantity, 0);
       tax = Math.round(subtotal * 0.2); // 20% moms
       subtotalSpan.textContent = `${subtotal} kr`;
       totalSpan.textContent = `${subtotal} kr`;
