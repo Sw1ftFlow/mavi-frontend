@@ -127,6 +127,7 @@
           mode: 'payment',
           amount: amount * 100, // Convert SEK to öre
           currency: 'sek',
+          payment_method_types: ['card', 'klarna', 'google_pay', 'apple_pay'],
           appearance: {
             theme: 'stripe',
             variables: {
@@ -138,6 +139,9 @@
               spacingUnit: '4px',
               borderRadius: '0px'
             }
+          },
+          business: {
+            name: 'MAVI'
           }
         });
 
