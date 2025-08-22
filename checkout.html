@@ -187,17 +187,30 @@
       setLoading(true);
 
       try {
+        // Store customer data for order confirmation
+        const customerData = {
+          email: document.querySelector('input[type="email"]').value,
+          firstName: document.querySelector('input[placeholder="Förnamn"]').value,
+          lastName: document.querySelector('input[placeholder="Efternamn"]').value,
+          address: document.querySelector('input[placeholder="Adress"]').value,
+          postalCode: document.querySelector('input[placeholder="Postnummer"]').value,
+          city: document.querySelector('input[placeholder="Stad"]').value
+        };
+        
+        // Save customer data to localStorage for success page
+        localStorage.setItem('lastOrderCustomer', JSON.stringify(customerData));
+        
         const { error } = await stripe.confirmPayment({
           elements,
           confirmParams: {
             return_url: window.location.origin + '/success.html',
-            receipt_email: document.querySelector('input[type="email"]').value,
+            receipt_email: customerData.email,
             shipping: {
-              name: `${document.querySelector('input[placeholder="Förnamn"]').value} ${document.querySelector('input[placeholder="Efternamn"]').value}`,
+              name: `${customerData.firstName} ${customerData.lastName}`,
               address: {
-                line1: document.querySelector('input[placeholder="Adress"]').value,
-                postal_code: document.querySelector('input[placeholder="Postnummer"]').value,
-                city: document.querySelector('input[placeholder="Stad"]').value,
+                line1: customerData.address,
+                postal_code: customerData.postalCode,
+                city: customerData.city,
                 country: 'SE',
               },
             },

@@ -22,23 +22,40 @@
     <hr class="border-gray-200" />
   </header>
 
-  <div class="min-h-screen flex items-center justify-center px-4">
-    <div class="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center">
+  <div class="min-h-screen flex items-center justify-center px-4 py-8">
+    <div class="max-w-2xl w-full bg-white rounded-lg shadow-lg p-8">
       <!-- Success Icon -->
-      <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-6">
-        <svg class="h-8 w-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-        </svg>
+      <div class="text-center mb-8">
+        <div class="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-green-100 mb-6">
+          <svg class="h-10 w-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+        </div>
+
+        <h1 class="text-3xl font-bold text-gray-900 mb-4">Tack för din beställning!</h1>
+        <p class="text-lg text-gray-600 mb-2">Vi har tagit emot din order och betalningen har behandlats framgångsrikt.</p>
+        <p class="text-gray-600 mb-6">En orderbekräftelse har skickats till din e-post inom kort.</p>
       </div>
 
-      <h1 class="text-2xl font-bold text-gray-900 mb-4">Tack för din beställning!</h1>
-      <p class="text-gray-600 mb-6">Din betalning har behandlats framgångsrikt. Du kommer att få en bekräftelse via e-post inom kort.</p>
+      <!-- Order Details -->
+      <div id="order-summary" class="border-t border-gray-200 pt-6 mb-8">
+        <h2 class="text-xl font-semibold mb-4">Ordersammanfattning</h2>
+        <div id="order-items" class="space-y-4 mb-6">
+          <!-- Order items will be populated here -->
+        </div>
+        <div class="border-t pt-4">
+          <div class="flex justify-between text-lg font-semibold">
+            <span>Totalt belopp:</span>
+            <span id="total-amount">0 kr</span>
+          </div>
+        </div>
+      </div>
       
       <div class="space-y-4">
-        <a href="index.html" class="block w-full bg-black text-white py-3 px-4 rounded-none font-semibold hover:bg-gray-900 transition">
+        <a href="index.html" class="block w-full bg-black text-white py-3 px-4 text-center rounded-none font-semibold hover:bg-gray-900 transition">
           Fortsätt handla
         </a>
-        <a href="mailto:support@mavi.se" class="block w-full border border-gray-300 text-gray-700 py-3 px-4 rounded-none font-semibold hover:bg-gray-50 transition">
+        <a href="mailto:support@mavi.se" class="block w-full border border-gray-300 text-gray-700 py-3 px-4 text-center rounded-none font-semibold hover:bg-gray-50 transition">
           Kontakta kundtjänst
         </a>
       </div>
@@ -46,6 +63,220 @@
   </div>
 
   <script>
+    // Get order data from localStorage before clearing
+    const orderData = JSON.parse(localStorage.getItem('cart')) || [];
+    const customerData = JSON.parse(localStorage.getItem('lastOrderCustomer')) || {};
+    
+    // Display order summary
+    function displayOrderSummary() {
+      const orderItemsContainer = document.getElementById('order-items');
+      const totalAmountSpan = document.getElementById('total-amount');
+      
+      let total = 0;
+      
+      if (orderData.length > 0) {
+        orderItemsContainer.innerHTML = orderData.map(item => {
+          const itemTotal = item.price * item.quantity;
+          total += itemTotal;
+          
+          return `
+            <div class="flex justify-between items-center py-2">
+              <div class="flex items-center gap-3">
+                <img src="${item.thumbnail || 'https://via.placeholder.com/48x48?text=No+Image'}" 
+                     alt="${item.name}" class="w-12 h-12 object-contain bg-gray-100 rounded">
+                <div>
+                  <div class="font-medium">${item.name}</div>
+                  <div class="text-sm text-gray-500">Antal: ${item.quantity}</div>
+                </div>
+              </div>
+              <div class="font-semibold">${itemTotal} kr</div>
+            </div>
+          `;
+        }).join('');
+        
+        totalAmountSpan.textContent = `${total} kr`;
+      } else {
+        orderItemsContainer.innerHTML = '<p class="text-gray-500">Ingen orderinformation tillgänglig.</p>';
+      }
+    }
+    
+    // Send order confirmation email
+    async function sendOrderConfirmationEmail() {
+      if (!customerData.email || orderData.length === 0) return;
+      
+      try {
+        // Create order confirmation email
+        const orderNumber = 'MAVI-' + Date.now().toString().slice(-6);
+        const orderDate = new Date().toLocaleDateString('sv-SE');
+        const total = orderData.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        
+        // This would typically be sent to your backend API
+        // For demo purposes, we'll log the email content
+        const emailContent = createOrderConfirmationEmail({
+          orderNumber,
+          orderDate,
+          customerData,
+          orderData,
+          total
+        });
+        
+        console.log('Order confirmation email would be sent:', emailContent);
+        
+        // In production, you would call your backend API:
+        /*
+        await fetch('/api/send-order-confirmation', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            to: customerData.email,
+            orderNumber,
+            orderDate,
+            items: orderData,
+            total,
+            customer: customerData
+          })
+        });
+        */
+        
+      } catch (error) {
+        console.error('Error sending confirmation email:', error);
+      }
+    }
+    
+    // Create professional order confirmation email HTML
+    function createOrderConfirmationEmail({ orderNumber, orderDate, customerData, orderData, total }) {
+      const itemsHtml = orderData.map(item => `
+        <tr>
+          <td style="padding: 15px; border-bottom: 1px solid #eee;">
+            <div style="display: flex; align-items: center;">
+              <img src="${item.thumbnail || 'https://via.placeholder.com/60x60?text=No+Image'}" 
+                   alt="${item.name}" style="width: 60px; height: 60px; object-fit: contain; margin-right: 15px; border-radius: 4px;">
+              <div>
+                <div style="font-weight: 600; margin-bottom: 4px;">${item.name}</div>
+                <div style="color: #666; font-size: 14px;">${item.description || ''}</div>
+              </div>
+            </div>
+          </td>
+          <td style="padding: 15px; border-bottom: 1px solid #eee; text-align: center;">${item.quantity}</td>
+          <td style="padding: 15px; border-bottom: 1px solid #eee; text-align: right; font-weight: 600;">${item.price} kr</td>
+          <td style="padding: 15px; border-bottom: 1px solid #eee; text-align: right; font-weight: 600;">${item.price * item.quantity} kr</td>
+        </tr>
+      `).join('');
+      
+      return `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Orderbekräftelse - ${orderNumber}</title>
+        </head>
+        <body style="margin: 0; padding: 0; font-family: 'Inter', Arial, sans-serif; background-color: #f8f9fa;">
+          <div style="max-width: 600px; margin: 0 auto; background-color: white;">
+            <!-- Header -->
+            <div style="background-color: #000; padding: 30px; text-align: center;">
+              <div style="color: white; font-size: 28px; font-weight: bold;">MAVI</div>
+            </div>
+            
+            <!-- Main Content -->
+            <div style="padding: 40px 30px;">
+              <h1 style="color: #333; margin-bottom: 10px; font-size: 24px;">Tack för din beställning!</h1>
+              <p style="color: #666; margin-bottom: 30px; line-height: 1.6;">
+                Hej ${customerData.firstName || 'Kund'},<br>
+                Vi har tagit emot din beställning och betalningen har behandlats framgångsrikt. 
+                Nedan hittar du all information om din order.
+              </p>
+              
+              <!-- Order Info -->
+              <div style="background-color: #f8f9fa; padding: 20px; margin-bottom: 30px; border-radius: 6px;">
+                <h3 style="margin: 0 0 15px 0; color: #333;">Orderinformation</h3>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                  <span style="color: #666;">Ordernummer:</span>
+                  <span style="font-weight: 600;">${orderNumber}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                  <span style="color: #666;">Orderdatum:</span>
+                  <span style="font-weight: 600;">${orderDate}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                  <span style="color: #666;">E-post:</span>
+                  <span style="font-weight: 600;">${customerData.email}</span>
+                </div>
+              </div>
+              
+              <!-- Order Items -->
+              <h3 style="color: #333; margin-bottom: 20px;">Beställda produkter</h3>
+              <table style="width: 100%; border-collapse: collapse; margin-bottom: 30px;">
+                <thead>
+                  <tr style="background-color: #f8f9fa;">
+                    <th style="padding: 15px; text-align: left; border-bottom: 2px solid #dee2e6;">Produkt</th>
+                    <th style="padding: 15px; text-align: center; border-bottom: 2px solid #dee2e6;">Antal</th>
+                    <th style="padding: 15px; text-align: right; border-bottom: 2px solid #dee2e6;">Pris</th>
+                    <th style="padding: 15px; text-align: right; border-bottom: 2px solid #dee2e6;">Totalt</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${itemsHtml}
+                </tbody>
+              </table>
+              
+              <!-- Order Total -->
+              <div style="text-align: right; margin-bottom: 30px;">
+                <div style="font-size: 18px; font-weight: 600; color: #333;">
+                  Totalt: ${total} kr (inkl. 20% moms)
+                </div>
+              </div>
+              
+              <!-- Shipping Info -->
+              ${customerData.address ? `
+              <div style="background-color: #f8f9fa; padding: 20px; margin-bottom: 30px; border-radius: 6px;">
+                <h3 style="margin: 0 0 15px 0; color: #333;">Leveransadress</h3>
+                <div style="color: #666; line-height: 1.6;">
+                  ${customerData.firstName} ${customerData.lastName}<br>
+                  ${customerData.address}<br>
+                  ${customerData.postalCode} ${customerData.city}
+                </div>
+              </div>
+              ` : ''}
+              
+              <!-- Next Steps -->
+              <div style="border-left: 4px solid #000; padding-left: 20px; margin-bottom: 30px;">
+                <h3 style="margin: 0 0 10px 0; color: #333;">Vad händer nu?</h3>
+                <ul style="color: #666; margin: 0; padding-left: 20px;">
+                  <li style="margin-bottom: 8px;">Vi förbereder din beställning för leverans</li>
+                  <li style="margin-bottom: 8px;">Du får en leveransbekräftelse med spårningsinformation</li>
+                  <li style="margin-bottom: 8px;">Leveranstid: 2-5 arbetsdagar</li>
+                </ul>
+              </div>
+              
+              <!-- Contact -->
+              <div style="text-align: center; padding: 20px; background-color: #f8f9fa; border-radius: 6px;">
+                <p style="color: #666; margin: 0;">
+                  Har du frågor om din beställning?<br>
+                  Kontakta oss på <a href="mailto:support@mavi.se" style="color: #000; text-decoration: none;">support@mavi.se</a>
+                </p>
+              </div>
+            </div>
+            
+            <!-- Footer -->
+            <div style="background-color: #f8f9fa; padding: 30px; text-align: center; border-top: 1px solid #dee2e6;">
+              <div style="color: #666; font-size: 14px;">
+                <strong>MAVI</strong><br>
+                Tack för att du handlar hos oss!
+              </div>
+            </div>
+          </div>
+        </body>
+        </html>
+      `;
+    }
+    
+    // Initialize page
+    displayOrderSummary();
+    sendOrderConfirmationEmail();
+    
     // Clear cart after successful payment
     localStorage.removeItem('cart');
     
