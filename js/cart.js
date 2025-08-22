@@ -71,15 +71,23 @@ document.addEventListener('DOMContentLoaded', () => {
       // Handle image URL consistently
       let imageUrl = '';
       if (item.thumbnail) {
-        // If thumbnail already includes the full path (starts with http or includes /img/), use it directly
-        if (item.thumbnail.startsWith('http') || item.thumbnail.includes('/img/')) {
+        // If thumbnail already includes the full path (starts with http or includes full base URL), use it directly
+        if (item.thumbnail.startsWith('http') || item.thumbnail.includes(getBaseUrl())) {
           imageUrl = item.thumbnail;
+        } else if (item.thumbnail.startsWith('/img/')) {
+          // Handle old cart items that have hardcoded /img/ paths
+          imageUrl = getBaseUrl() + item.thumbnail.substring(1); // Remove leading slash
         } else {
           // If it's just a filename, build the full path
           imageUrl = getBaseUrl() + 'img/' + item.thumbnail;
         }
       } else if (item.image) {
-        imageUrl = getBaseUrl() + 'img/' + item.image;
+        if (item.image.startsWith('/img/')) {
+          // Handle old cart items that have hardcoded /img/ paths
+          imageUrl = getBaseUrl() + item.image.substring(1); // Remove leading slash
+        } else {
+          imageUrl = getBaseUrl() + 'img/' + item.image;
+        }
       } else {
         imageUrl = 'https://via.placeholder.com/80x80?text=No+Image';
       }
