@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       return `
         <div class="flex items-center gap-4 py-6 border-b last:border-b-0">
-          <img src="${imageUrl}" alt="${item.name}" class="w-20 h-20 object-cover bg-gray-100 border border-gray-300" />
+          <img src="${imageUrl}" alt="${item.name}" class="w-20 h-20 object-contain bg-gray-100 border border-gray-300" />
           <div class="flex-1 flex flex-col justify-between min-w-0">
             <div class="flex justify-between items-start">
               <div>
