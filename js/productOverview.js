@@ -31,7 +31,7 @@ async function loadProduct() {
     if (!images.length && data.image) images = [data.image];
 
     // Set main image to first in array, or fallback
-    let imageUrl = images[0] ? `./img/${images[0]}` : 'https://via.placeholder.com/600x600?text=No+Image';
+    let imageUrl = images[0] ? `${getBaseUrl()}img/${images[0]}` : 'https://via.placeholder.com/600x600?text=No+Image';
 
     // If your feature column is a comma-separated string:
     const features = data.feature ? data.feature.split(',').map(f => f.trim()) : [];
@@ -82,7 +82,7 @@ async function loadProduct() {
             <div class="overflow-hidden w-full px-10">
               <div class="carousel-track flex gap-4 transition-transform duration-300">
                 ${images.map((img, i) => `
-<img src="/img/${img}" alt="Thumbnail ${i+1}" class="carousel-thumb h-24 w-24 object-cover cursor-pointer bg-white" data-index="${i}">
+<img src="${getBaseUrl()}img/${img}" alt="Thumbnail ${i+1}" class="carousel-thumb h-24 w-24 object-cover cursor-pointer bg-white" data-index="${i}">
 `).join('')}
               </div>
             </div>
@@ -235,7 +235,7 @@ async function loadProduct() {
     const mainNextBtn = document.querySelector('.main-carousel-next');
 
     function updateMainImage() {
-      mainImageEl.src = `/img/${images[mainImageIndex]}`;
+      mainImageEl.src = `${getBaseUrl()}img/${images[mainImageIndex]}`;
       mainPrevBtn.disabled = mainImageIndex === 0;
       mainNextBtn.disabled = mainImageIndex === images.length - 1;
     }
@@ -292,7 +292,7 @@ async function loadProduct() {
             id: data.id,
             name: data.name,
             price: data.price,
-            thumbnail: data.thumbnail ? `/img/${data.thumbnail}` : '',
+            thumbnail: data.thumbnail ? `${getBaseUrl()}img/${data.thumbnail}` : '',
             description: data.description, // <-- Add this line
             quantity: quantity
           });

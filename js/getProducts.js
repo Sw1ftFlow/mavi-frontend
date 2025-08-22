@@ -47,7 +47,7 @@ async function getProducts() {
                         ${stockText}
                     </span>
                 </div>
-                <img src="/img/${product.thumbnail || 'https://via.placeholder.com/300x400?text=No+Image'}" alt="${product.name}" class="object-contain h-full w-full" />
+                <img src="${getBaseUrl()}img/${product.thumbnail || 'https://via.placeholder.com/300x400?text=No+Image'}" alt="${product.name}" class="object-contain h-full w-full" />
             </div>
             <div class="w-full text-left py-3 bg-white pl-4">
                 <div class="text-base font-medium text-gray-900 truncate">${product.name}</div>

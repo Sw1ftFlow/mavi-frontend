@@ -18,7 +18,7 @@
 
   <main id="product-overview" class="w-full max-w-none px-0 py-8 mx-auto">
     <!-- Product details will be injected here -->
-    <img src="/img/${product.thumbnail}" alt="${product.name}" class="w-full h-auto object-cover rounded" />
+    <img src="./img/${product.thumbnail}" alt="${product.name}" class="w-full h-auto object-cover rounded" />
   </main>
   <!-- Cart Drawer -->
 <div id="cart-backdrop" class="fixed inset-0 z-40 hidden" style="background: rgba(255,255,255,0.4);"></div>
@@ -37,6 +37,7 @@
     <button class="w-full bg-black text-white py-3 rounded-none font-semibold text-base hover:bg-gray-900 transition">Till kassan</button>
   </div>
 </div>
+  <script src="./js/utils.js"></script>
   <script src="./js/header.js"></script>
   <script src="./js/productOverview.js"></script>
   <script src="./js/cart.js"></script>

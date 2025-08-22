@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
       total += item.price * item.quantity;
       return `
         <div class="flex items-center gap-4 py-6 border-b last:border-b-0">
-          <img src="${item.thumbnail ? item.thumbnail : '/img/' + (item.image || '')}" alt="${item.name}" class="w-20 h-20 object-cover bg-gray-100 border border-gray-300" />
+          <img src="${item.thumbnail ? item.thumbnail : getBaseUrl() + 'img/' + (item.image || '')}" alt="${item.name}" class="w-20 h-20 object-cover bg-gray-100 border border-gray-300" />
           <div class="flex-1 flex flex-col justify-between min-w-0">
             <div class="flex justify-between items-start">
               <div>
