@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Kassa | Mavi Webshop</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://js.stripe.com/v3/"></script>
   <script src="./js/utils.js"></script>
   <link href="https://fonts.googleapis.com/css?family=Inter:400,500,600,700&display=swap" rel="stylesheet">
   <style>
@@ -59,13 +60,15 @@
           <!-- Betalning -->
           <div>
             <h2 class="text-lg font-semibold mb-4">Betalning</h2>
-            <input type="text" placeholder="Kortnummer" required class="w-full border border-gray-300 rounded-none px-4 py-3 mb-4 focus:outline-none focus:ring-2 focus:ring-black"/>
-            <div class="grid grid-cols-2 gap-4">
-              <input type="text" placeholder="MM/ÅÅ" required class="border border-gray-300 rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black"/>
-              <input type="text" placeholder="CVC" required class="border border-gray-300 rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black"/>
+            <div id="payment-element" class="mb-4">
+              <!-- Stripe Payment Element will be mounted here -->
             </div>
+            <div id="payment-message" class="text-red-500 text-sm mb-4" style="display: none;"></div>
           </div>
-          <button type="submit" class="w-full bg-black text-white py-3 font-semibold text-base hover:bg-gray-900 transition mt-8">Slutför köp</button>
+          <button type="submit" id="submit-payment" class="w-full bg-black text-white py-3 font-semibold text-base hover:bg-gray-900 transition mt-8 disabled:opacity-50 disabled:cursor-not-allowed">
+            <span id="button-text">Slutför köp</span>
+            <div id="spinner" class="hidden">Bearbetar...</div>
+          </button>
         </form>
       </div>
     </div>
@@ -105,6 +108,139 @@
     </div>
   </div>
   <script>
+    // Stripe configuration - Replace with your actual publishable key
+    // Get this from: https://dashboard.stripe.com/apikeys
+    const STRIPE_PUBLISHABLE_KEY = 'pk_live_51RyvauD6syVba6lcZmEWTvwn8IUnT4bwlFH3IHmIpNpDMVLj7jizTsuu6KTKqoZ5BNIFYaWQGMRgB8h2KWBw0h5K00W4RM08w8';
+    const stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
+    let elements;
+    let paymentElement;
+
+    // Initialize Stripe Payment Element
+    async function initializeStripe() {
+      try {
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const amount = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+        
+        // For demo purposes, we'll create a mock elements instance
+        // In production, you need a real client_secret from your server
+        elements = stripe.elements({
+          mode: 'payment',
+          amount: amount * 100, // Convert SEK to öre
+          currency: 'sek',
+          appearance: {
+            theme: 'stripe',
+            variables: {
+              colorPrimary: '#000000',
+              colorBackground: '#ffffff',
+              colorText: '#30313d',
+              colorDanger: '#df1b41',
+              fontFamily: 'Inter, ui-sans-serif, system-ui, sans-serif',
+              spacingUnit: '4px',
+              borderRadius: '0px'
+            }
+          }
+        });
+
+        paymentElement = elements.create('payment');
+        paymentElement.mount('#payment-element');
+      } catch (error) {
+        console.error('Stripe initialization error:', error);
+        showMessage('Fel vid initiering av betalning. Kontrollera din Stripe-konfiguration.');
+      }
+    }
+
+    // Demo function to simulate creating a Payment Intent
+    // In production, this would be done on your server
+    async function createPaymentIntent(amount) {
+      // IMPORTANT: This is a simplified demo approach
+      // For testing purposes, we'll use a demo client secret
+      // In production, you MUST create Payment Intents on your server
+      
+      // Demo client secret (replace with actual server implementation)
+      return 'pi_demo_client_secret_' + Math.random().toString(36).substring(7);
+      
+      /* 
+      // Production implementation would look like this:
+      const response = await fetch('/api/create-payment-intent', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          amount: amount * 100, // Convert to öre (cents)
+          currency: 'sek'
+        })
+      });
+      
+      const { client_secret } = await response.json();
+      return client_secret;
+      */
+    }
+
+    // Handle form submission
+    async function handleSubmit(e) {
+      e.preventDefault();
+      setLoading(true);
+
+      try {
+        const { error } = await stripe.confirmPayment({
+          elements,
+          confirmParams: {
+            return_url: window.location.origin + '/success.html',
+            receipt_email: document.querySelector('input[type="email"]').value,
+            shipping: {
+              name: `${document.querySelector('input[placeholder="Förnamn"]').value} ${document.querySelector('input[placeholder="Efternamn"]').value}`,
+              address: {
+                line1: document.querySelector('input[placeholder="Adress"]').value,
+                postal_code: document.querySelector('input[placeholder="Postnummer"]').value,
+                city: document.querySelector('input[placeholder="Stad"]').value,
+                country: 'SE',
+              },
+            },
+          },
+        });
+
+        if (error) {
+          if (error.type === "card_error" || error.type === "validation_error") {
+            showMessage(error.message);
+          } else {
+            showMessage("Ett oväntat fel uppstod.");
+          }
+        }
+      } catch (error) {
+        console.error('Payment error:', error);
+        showMessage("Ett fel uppstod vid betalningen. Försök igen.");
+      }
+
+      setLoading(false);
+    }
+
+    // Show a spinner on payment submission
+    function setLoading(isLoading) {
+      const submitButton = document.querySelector("#submit-payment");
+      const buttonText = document.querySelector("#button-text");
+      const spinner = document.querySelector("#spinner");
+
+      if (isLoading) {
+        submitButton.disabled = true;
+        buttonText.classList.add("hidden");
+        spinner.classList.remove("hidden");
+      } else {
+        submitButton.disabled = false;
+        buttonText.classList.remove("hidden");
+        spinner.classList.add("hidden");
+      }
+    }
+
+    function showMessage(messageText) {
+      const messageContainer = document.querySelector("#payment-message");
+      messageContainer.textContent = messageText;
+      messageContainer.style.display = "block";
+      setTimeout(() => {
+        messageContainer.style.display = "none";
+      }, 4000);
+    }
+
     // Simple JS to render cart items from localStorage
     function renderCheckoutCart() {
       const cart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -171,6 +307,12 @@
       taxSpan.textContent = `${tax} kr`;
     }
     renderCheckoutCart();
+    
+    // Initialize Stripe when page loads
+    initializeStripe();
+
+    // Add event listener to form
+    document.querySelector('form').addEventListener('submit', handleSubmit);
 
     // Optional: Update cart count in header if you want live updates
     function updateCartCount() {
