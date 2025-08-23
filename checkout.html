@@ -11,6 +11,28 @@
   <link href="https://fonts.googleapis.com/css?family=Inter:400,500,600,700&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Inter', sans-serif; }
+    
+    /* Address validation styles */
+    .border-red-500 {
+      border-color: #ef4444 !important;
+      box-shadow: 0 0 0 1px #ef4444 !important;
+    }
+    
+    .border-red-500:focus {
+      outline: none !important;
+      border-color: #ef4444 !important;
+      box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2) !important;
+    }
+    
+    /* Animation for validation messages */
+    .validation-message {
+      transition: all 0.3s ease-in-out;
+    }
+    
+    /* Success checkmark styling */
+    .text-green-600 {
+      color: #059669;
+    }
   </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
@@ -51,12 +73,13 @@
           <div>
             <h2 class="text-lg font-semibold mb-4">Leveransadress</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <input type="text" placeholder="Förnamn" required class="border border-gray-300 rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black" onchange="updateShipping()"/>
-              <input type="text" placeholder="Efternamn" required class="border border-gray-300 rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black" onchange="updateShipping()"/>
-              <input type="text" placeholder="Adress" required class="md:col-span-2 border border-gray-300 rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black" onchange="updateShipping()"/>
-              <input type="text" placeholder="Postnummer" required class="border border-gray-300 rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black" onchange="updateShipping()"/>
-              <input type="text" placeholder="Stad" required class="border border-gray-300 rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black" onchange="updateShipping()"/>
+              <input type="text" id="firstName" placeholder="Förnamn" required class="border border-gray-300 rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black" onchange="validateAddress()"/>
+              <input type="text" id="lastName" placeholder="Efternamn" required class="border border-gray-300 rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black" onchange="validateAddress()"/>
+              <input type="text" id="address" placeholder="Adress" required class="md:col-span-2 border border-gray-300 rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black" onchange="validateAddress()" onblur="validateAddress()"/>
+              <input type="text" id="postalCode" placeholder="Postnummer" required class="border border-gray-300 rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black" onchange="validateAddress()" onblur="validateAddress()"/>
+              <input type="text" id="city" placeholder="Stad" required class="border border-gray-300 rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black" onchange="validateAddress()" onblur="validateAddress()"/>
             </div>
+            <div id="address-validation-message" class="validation-message text-red-500 text-sm mt-2" style="display: none;"></div>
           </div>
           <!-- Betalning -->
           <div>
@@ -215,6 +238,13 @@
     // Handle form submission
     async function handleSubmit(e) {
       e.preventDefault();
+      
+      // Validate address before processing payment
+      if (!validateAddress()) {
+        showMessage("Vänligen korrigera adressuppgifterna innan du fortsätter.");
+        return;
+      }
+      
       setLoading(true);
 
       try {
@@ -347,6 +377,102 @@
       
       // Update the total calculation
       updateCheckoutTotals();
+    }
+
+    // Function to validate Swedish address format
+    function validateAddress() {
+      const address = document.getElementById('address').value.trim();
+      const postalCode = document.getElementById('postalCode').value.trim();
+      const city = document.getElementById('city').value.trim();
+      const messageElement = document.getElementById('address-validation-message');
+      
+      let errors = [];
+      let hasValidFields = true;
+      
+      // Validate postal code format (Swedish format: XXXXX or XXX XX)
+      if (postalCode) {
+        // Remove spaces and normalize
+        const normalizedPostalCode = postalCode.replace(/\s/g, '');
+        const postalCodeRegex = /^\d{5}$/;
+        if (!postalCodeRegex.test(normalizedPostalCode)) {
+          errors.push('Postnummer måste vara 5 siffror (t.ex. 11122 eller 111 22)');
+          hasValidFields = false;
+        }
+      }
+      
+      // Validate address format (should contain at least street name and number)
+      if (address) {
+        // More flexible address regex that accepts Swedish address formats
+        const addressRegex = /^[A-Za-zÅÄÖåäö\s]+\s+\d+[A-Za-z]?(\s*-\s*\d+[A-Za-z]?)?(\s+[A-Za-zÅÄÖåäö\s\d]*)?$/;
+        if (address.length < 5 || !addressRegex.test(address)) {
+          errors.push('Adress måste innehålla gatunamn och nummer (t.ex. "Storgatan 12" eller "Kungsgatan 15A")');
+          hasValidFields = false;
+        }
+      }
+      
+      // Validate city format (only letters, spaces, and Swedish characters)
+      if (city) {
+        const cityRegex = /^[A-Za-zÅÄÖåäö\s\-]+$/;
+        if (city.length < 2 || !cityRegex.test(city)) {
+          errors.push('Stad får endast innehålla bokstäver, mellanslag och bindestreck');
+          hasValidFields = false;
+        }
+      }
+      
+      // Update field styling
+      const addressField = document.getElementById('address');
+      const postalCodeField = document.getElementById('postalCode');
+      const cityField = document.getElementById('city');
+      
+      // Reset all field styling first
+      [addressField, postalCodeField, cityField].forEach(field => {
+        field.classList.remove('border-red-500');
+      });
+      
+      // Add red border to invalid fields
+      if (postalCode && postalCode.replace(/\s/g, '').length > 0) {
+        const normalizedPostalCode = postalCode.replace(/\s/g, '');
+        if (!/^\d{5}$/.test(normalizedPostalCode)) {
+          postalCodeField.classList.add('border-red-500');
+        }
+      }
+      
+      if (address && address.length > 0) {
+        const addressRegex = /^[A-Za-zÅÄÖåäö\s]+\s+\d+[A-Za-z]?(\s*-\s*\d+[A-Za-z]?)?(\s+[A-Za-zÅÄÖåäö\s\d]*)?$/;
+        if (address.length < 5 || !addressRegex.test(address)) {
+          addressField.classList.add('border-red-500');
+        }
+      }
+      
+      if (city && city.length > 0) {
+        const cityRegex = /^[A-Za-zÅÄÖåäö\s\-]+$/;
+        if (city.length < 2 || !cityRegex.test(city)) {
+          cityField.classList.add('border-red-500');
+        }
+      }
+      
+      // Show validation message
+      if (errors.length > 0 && (address || postalCode || city)) {
+        messageElement.innerHTML = errors.join('<br>');
+        messageElement.style.display = 'block';
+        messageElement.className = 'validation-message text-red-500 text-sm mt-2';
+        return false;
+      } else {
+        // Clear any previous error messages
+        messageElement.style.display = 'none';
+        
+        // Show success message if all required fields are filled and valid
+        if (address && postalCode && city && hasValidFields) {
+          messageElement.innerHTML = '✓ Adress verifierad';
+          messageElement.style.display = 'block';
+          messageElement.className = 'validation-message text-green-600 text-sm mt-2';
+          
+          // Update shipping after successful validation
+          updateShipping();
+        }
+        
+        return hasValidFields && address && postalCode && city;
+      }
     }
 
     // Function to update checkout totals including shipping
