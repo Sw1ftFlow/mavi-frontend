@@ -68,7 +68,9 @@
         onerror="console.log('Video error:', event); this.style.display='none'; document.getElementById('video-fallback').style.display='flex';"
         onloadeddata="console.log('Video loaded successfully'); this.style.display='block';"
       >
-        <!-- New high-resolution video first -->
+        <!-- EzGif processed video first (best quality) -->
+        <source src="./img/copy_D9CCB61A-54B7-446F-9E36-21706A460607-ezgif.com-mute-video.mp4" type="video/mp4">
+        <!-- Other high-resolution backup -->
         <source src="./img/copy_D9CCB61A-54B7-446F-9E36-21706A460607.mp4" type="video/mp4">
         <!-- Previous versions as fallbacks -->
         <source src="./img/front2.mp4" type="video/mp4">
