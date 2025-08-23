@@ -66,7 +66,9 @@
         onerror="console.log('Video error:', event); this.style.display='none'; document.getElementById('video-fallback').style.display='flex';"
         onloadeddata="console.log('Video loaded successfully'); this.style.display='block';"
       >
-        <!-- MP4 first for best quality, MOV as fallback -->
+        <!-- New high-resolution video first -->
+        <source src="./img/copy_D9CCB61A-54B7-446F-9E36-21706A460607.mp4" type="video/mp4">
+        <!-- Previous versions as fallbacks -->
         <source src="./img/front2.mp4" type="video/mp4">
         <source src="./img/front2.mov" type="video/mp4">
         <source src="./img/front2.mov" type="video/quicktime">
@@ -128,8 +130,22 @@
         video.addEventListener('loadedmetadata', function() {
           console.log('Video dimensions:', video.videoWidth, 'x', video.videoHeight);
           
-          // Auto-adjust for low resolution videos
-          if (video.videoWidth <= 480 || video.videoHeight <= 480) {
+          // Check if this is a high-resolution video
+          if (video.videoWidth >= 720 && video.videoHeight >= 720) {
+            console.log('High resolution detected - using full size');
+            
+            // Reset to full-size hero video
+            video.style.width = '100%';
+            video.style.height = '100%';
+            video.style.objectFit = 'cover';
+            
+            // Reset container
+            video.parentElement.style.display = 'block';
+            video.parentElement.style.alignItems = 'unset';
+            video.parentElement.style.justifyContent = 'unset';
+            video.parentElement.style.background = '';
+            
+          } else if (video.videoWidth <= 480 || video.videoHeight <= 480) {
             console.log('Low resolution detected - adjusting display');
             
             // Option 1: Show at native size to avoid blurriness
@@ -159,10 +175,10 @@
           infoDiv.innerHTML = `
             Video Info:<br>
             Resolution: ${video.videoWidth} x ${video.videoHeight}<br>
-            File: ${video.currentSrc.split('/').pop()}<br>
+            File: ${video.currentSrc.split('/').pop().substring(0, 20)}...<br>
             Duration: ${video.duration.toFixed(1)}s<br>
             <span style="color: ${video.videoWidth < 720 ? '#ff6b6b' : '#51cf66'}">
-              Quality: ${video.videoWidth < 720 ? 'LOW' : 'GOOD'}
+              Quality: ${video.videoWidth >= 1280 ? 'HIGH' : video.videoWidth >= 720 ? 'GOOD' : 'LOW'}
             </span>
           `;
           document.body.appendChild(infoDiv);
