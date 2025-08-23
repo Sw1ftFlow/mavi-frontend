@@ -18,6 +18,19 @@
   <style>
     .hero-video {
       object-position: center 70%;
+      /* Optimize video quality */
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
+      /* Ensure high quality scaling */
+      transform: translateZ(0);
+      backface-visibility: hidden;
+      perspective: 1000px;
+    }
+    
+    /* Better video container for quality */
+    .video-container {
+      transform: translateZ(0);
+      will-change: transform;
     }
   </style>
 </head>
@@ -28,23 +41,30 @@
 
   <!-- Hero Video Section -->
   <section class="relative w-full h-[500px] overflow-hidden bg-gray-100">
-    <video 
-      class="hero-video w-full h-full object-cover" 
-      autoplay 
-      muted 
-      loop 
-      playsinline
-      onloadstart="console.log('Video loading started')"
-      oncanplay="console.log('Video can play')"
-      onerror="console.log('Video error:', event)"
-    >
-      <source src="./img/front2.mov" type="video/quicktime">
-      <source src="./img/front2.mov" type="video/mp4">
-      <!-- Fallback message -->
-      <div class="w-full h-full flex items-center justify-center bg-gray-200">
-        <p class="text-gray-500">Video not supported</p>
-      </div>
-    </video>
+    <div class="video-container w-full h-full">
+      <video 
+        class="hero-video w-full h-full object-cover" 
+        autoplay 
+        muted 
+        loop 
+        playsinline
+        preload="metadata"
+        onloadstart="console.log('Video loading started')"
+        oncanplay="console.log('Video can play')"
+        onerror="console.log('Video error:', event); this.style.display='none'; document.getElementById('video-fallback').style.display='flex';"
+      >
+        <!-- MP4 versions first for best quality -->
+        <source src="./img/front2.mp4" type="video/mp4">
+        <source src="./img/front1.mp4" type="video/mp4">
+        <!-- MOV fallbacks -->
+        <source src="./img/front2.mov" type="video/quicktime">
+        <source src="./img/front1.mov" type="video/quicktime">
+        <!-- Fallback message -->
+        <div id="video-fallback" class="w-full h-full flex items-center justify-center bg-gray-200" style="display: none;">
+          <p class="text-gray-500">Video not supported</p>
+        </div>
+      </video>
+    </div>
   </section>
 
   <!-- Products Grid -->
@@ -79,6 +99,66 @@
       <button class="w-full bg-black text-white py-3 rounded-none font-semibold text-base hover:bg-gray-900 transition">Till kassan</button>
     </div>
   </div>
+
+  <script>
+    // Video quality optimization
+    document.addEventListener('DOMContentLoaded', function() {
+      const video = document.querySelector('.hero-video');
+      
+      if (video) {
+        // Force high quality rendering
+        video.style.imageRendering = 'high-quality';
+        video.style.imageRendering = '-webkit-optimize-contrast';
+        
+        // Ensure video plays at full quality
+        video.addEventListener('loadedmetadata', function() {
+          console.log('Video dimensions:', video.videoWidth, 'x', video.videoHeight);
+          
+          // Show video info temporarily for debugging
+          const infoDiv = document.createElement('div');
+          infoDiv.style.cssText = 'position: fixed; top: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; padding: 10px; border-radius: 5px; z-index: 1000; font-family: monospace;';
+          infoDiv.innerHTML = `
+            Video Info:<br>
+            Resolution: ${video.videoWidth} x ${video.videoHeight}<br>
+            File: ${video.currentSrc.split('/').pop()}<br>
+            Duration: ${video.duration.toFixed(1)}s
+          `;
+          document.body.appendChild(infoDiv);
+          
+          // Remove info after 5 seconds
+          setTimeout(() => infoDiv.remove(), 5000);
+          
+          // If video quality seems low, try to reload
+          if (video.videoWidth < 720) {
+            console.log('Low quality video detected, checking alternatives...');
+          }
+        });
+        
+        // Handle video loading errors and try alternative
+        video.addEventListener('error', function(e) {
+          console.log('Primary video failed, trying alternative...');
+          
+          // Try different video files in order of preference
+          const currentSrc = video.currentSrc;
+          if (currentSrc.includes('front2.mp4')) {
+            video.src = './img/front1.mp4';
+          } else if (currentSrc.includes('front1.mp4')) {
+            video.src = './img/front2.mov';
+          } else if (currentSrc.includes('front2.mov')) {
+            video.src = './img/front1.mov';
+          }
+          
+          video.load();
+        });
+        
+        // Optimize video playback
+        video.addEventListener('canplaythrough', function() {
+          video.style.opacity = '1';
+          console.log('Video ready for high quality playback');
+        });
+      }
+    });
+  </script>
 </body>
 
 </html>

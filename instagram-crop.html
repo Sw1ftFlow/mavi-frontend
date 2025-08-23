@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Image Cropper - Grey Lamp Section</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .image-container {
+            position: relative;
+            display: inline-block;
+            margin: 20px 0;
+            border: 2px solid #ddd;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .original-image {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            cursor: crosshair;
+        }
+        
+        .crop-overlay {
+            position: absolute;
+            border: 2px dashed #007bff;
+            background-color: rgba(0, 123, 255, 0.1);
+            pointer-events: none;
+            display: none;
+        }
+        
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        
+        .button:hover {
+            background-color: #0056b3;
+        }
+        
+        .button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .preset-buttons {
+            margin: 10px 0;
+        }
+        
+        .preset-button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 3px;
+            font-size: 12px;
+        }
+        
+        .preset-button:hover {
+            background-color: #1e7e34;
+        }
+        
+        .cropped-result {
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .cropped-image {
+            max-width: 100%;
+            height: auto;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            background: white;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .coordinates {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        
+        .info {
+            color: #666;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+        
+        .section-title {
+            color: #333;
+            font-size: 18px;
+            font-weight: bold;
+            margin: 20px 0 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Instagram Image Cropper</h1>
+            <p>BằNG • Unboring objects - Grey Lamp Section Extractor</p>
+        </div>
+        
+        <div class="controls">
+            <div class="section-title">Instructions:</div>
+            <p class="info">1. Click and drag on the image below to select the grey area with the lamps</p>
+            <p class="info">2. Use preset buttons for quick selections, or manually drag to select custom area</p>
+            <p class="info">3. Click "Crop Selected Area" to extract the selected region</p>
+            
+            <div class="preset-buttons">
+                <div class="section-title">Quick Presets for Common Lamp Areas:</div>
+                <button class="preset-button" onclick="setPresetCrop('top-grey', 0, 0, 100, 40)">Top Grey Section</button>
+                <button class="preset-button" onclick="setPresetCrop('center-lamps', 20, 25, 80, 75)">Center Lamp Display</button>
+                <button class="preset-button" onclick="setPresetCrop('grey-background', 0, 10, 100, 60)">Grey Background Area</button>
+                <button class="preset-button" onclick="setPresetCrop('full-lamps', 10, 20, 90, 80)">Full Lamp Collection</button>
+            </div>
+            
+            <div>
+                <button class="button" onclick="cropImage()" id="cropButton" disabled>Crop Selected Area</button>
+                <button class="button" onclick="resetSelection()">Reset Selection</button>
+                <button class="button" onclick="downloadCropped()" id="downloadButton" disabled>Download Cropped Image</button>
+            </div>
+            
+            <div class="coordinates" id="coordinates">
+                Selection: No area selected
+            </div>
+        </div>
+        
+        <div class="image-container">
+            <img src="https://scontent-cph2-1.cdninstagram.com/v/t51.29350-15/381076949_207440379019649_2335108271716148834_n.jpg?stp=dst-jpg_e35_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0uaW1hZ2VfdXJsZ2VuLjEwODB4MTA4MC5zZHIuZjI5MzUwLmRlZmF1bHRfaW1hZ2UuYzIifQ&_nc_ht=scontent-cph2-1.cdninstagram.com&_nc_cat=105&_nc_oc=Q6cZ2QErW-5wbSERuRwOOoeZljj7SSqMUrcj8CXxauTDPGoi6u7MvQv_2-Bwv_4vcC81zYc&_nc_ohc=5xIXyx-Mn3UQ7kNvwFOt6ur&_nc_gid=PC2fSZ3sHnuWmFEitFmcCA&edm=APs17CUBAAAA&ccb=7-5&ig_cache_key=MzE5Nzk3Mjk2MTEyNjQ1ODE3OQ%3D%3D.3-ccb7-5&oh=00_AfWsEgJBSczdB-JWf3WYiMezc0_uDWVnjDNNiuBdwe9GmA&oe=68AFDF39&_nc_sid=10d13b" 
+                 alt="Instagram Post - BằNG Lamps" 
+                 class="original-image" 
+                 id="originalImage"
+                 crossorigin="anonymous">
+            <div class="crop-overlay" id="cropOverlay"></div>
+        </div>
+        
+        <div class="cropped-result" id="croppedResult" style="display: none;">
+            <div class="section-title">Cropped Grey Lamp Section:</div>
+            <canvas id="croppedCanvas" class="cropped-image"></canvas>
+            <div class="info">Right-click and "Save image as..." to save the cropped section</div>
+        </div>
+    </div>
+
+    <script>
+        let isSelecting = false;
+        let startX, startY, endX, endY;
+        let imageContainer, originalImage, cropOverlay;
+        let currentCrop = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            imageContainer = document.querySelector('.image-container');
+            originalImage = document.getElementById('originalImage');
+            cropOverlay = document.getElementById('cropOverlay');
+            
+            // Wait for image to load before setting up event listeners
+            originalImage.addEventListener('load', function() {
+                setupEventListeners();
+            });
+            
+            // If image is already loaded
+            if (originalImage.complete) {
+                setupEventListeners();
+            }
+        });
+
+        function setupEventListeners() {
+            originalImage.addEventListener('mousedown', startSelection);
+            originalImage.addEventListener('mousemove', updateSelection);
+            originalImage.addEventListener('mouseup', endSelection);
+            document.addEventListener('mouseup', endSelection);
+        }
+
+        function startSelection(e) {
+            isSelecting = true;
+            const rect = originalImage.getBoundingClientRect();
+            startX = e.clientX - rect.left;
+            startY = e.clientY - rect.top;
+            
+            cropOverlay.style.display = 'block';
+            cropOverlay.style.left = startX + 'px';
+            cropOverlay.style.top = startY + 'px';
+            cropOverlay.style.width = '0px';
+            cropOverlay.style.height = '0px';
+            
+            e.preventDefault();
+        }
+
+        function updateSelection(e) {
+            if (!isSelecting) return;
+            
+            const rect = originalImage.getBoundingClientRect();
+            endX = e.clientX - rect.left;
+            endY = e.clientY - rect.top;
+            
+            const left = Math.min(startX, endX);
+            const top = Math.min(startY, endY);
+            const width = Math.abs(endX - startX);
+            const height = Math.abs(endY - startY);
+            
+            cropOverlay.style.left = left + 'px';
+            cropOverlay.style.top = top + 'px';
+            cropOverlay.style.width = width + 'px';
+            cropOverlay.style.height = height + 'px';
+            
+            updateCoordinates(left, top, width, height);
+        }
+
+        function endSelection(e) {
+            if (!isSelecting) return;
+            isSelecting = false;
+            
+            const rect = originalImage.getBoundingClientRect();
+            endX = e.clientX - rect.left;
+            endY = e.clientY - rect.top;
+            
+            const left = Math.min(startX, endX);
+            const top = Math.min(startY, endY);
+            const width = Math.abs(endX - startX);
+            const height = Math.abs(endY - startY);
+            
+            if (width > 10 && height > 10) {
+                currentCrop = {
+                    x: left,
+                    y: top,
+                    width: width,
+                    height: height
+                };
+                document.getElementById('cropButton').disabled = false;
+                updateCoordinates(left, top, width, height);
+            } else {
+                resetSelection();
+            }
+        }
+
+        function setPresetCrop(name, leftPercent, topPercent, widthPercent, heightPercent) {
+            const rect = originalImage.getBoundingClientRect();
+            const imgWidth = originalImage.offsetWidth;
+            const imgHeight = originalImage.offsetHeight;
+            
+            const left = (leftPercent / 100) * imgWidth;
+            const top = (topPercent / 100) * imgHeight;
+            const width = (widthPercent / 100) * imgWidth - left;
+            const height = (heightPercent / 100) * imgHeight - top;
+            
+            cropOverlay.style.display = 'block';
+            cropOverlay.style.left = left + 'px';
+            cropOverlay.style.top = top + 'px';
+            cropOverlay.style.width = width + 'px';
+            cropOverlay.style.height = height + 'px';
+            
+            currentCrop = {
+                x: left,
+                y: top,
+                width: width,
+                height: height
+            };
+            
+            document.getElementById('cropButton').disabled = false;
+            updateCoordinates(left, top, width, height);
+        }
+
+        function updateCoordinates(x, y, width, height) {
+            const imgWidth = originalImage.offsetWidth;
+            const imgHeight = originalImage.offsetHeight;
+            
+            const xPercent = ((x / imgWidth) * 100).toFixed(1);
+            const yPercent = ((y / imgHeight) * 100).toFixed(1);
+            const widthPercent = ((width / imgWidth) * 100).toFixed(1);
+            const heightPercent = ((height / imgHeight) * 100).toFixed(1);
+            
+            document.getElementById('coordinates').textContent = 
+                `Selection: ${Math.round(x)}, ${Math.round(y)}, ${Math.round(width)}×${Math.round(height)} ` +
+                `(${xPercent}%, ${yPercent}%, ${widthPercent}%×${heightPercent}%)`;
+        }
+
+        function resetSelection() {
+            cropOverlay.style.display = 'none';
+            currentCrop = null;
+            document.getElementById('cropButton').disabled = true;
+            document.getElementById('coordinates').textContent = 'Selection: No area selected';
+            document.getElementById('croppedResult').style.display = 'none';
+            document.getElementById('downloadButton').disabled = true;
+        }
+
+        function cropImage() {
+            if (!currentCrop) return;
+            
+            const canvas = document.getElementById('croppedCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Calculate the actual image dimensions vs displayed dimensions
+            const displayWidth = originalImage.offsetWidth;
+            const displayHeight = originalImage.offsetHeight;
+            const actualWidth = originalImage.naturalWidth;
+            const actualHeight = originalImage.naturalHeight;
+            
+            const scaleX = actualWidth / displayWidth;
+            const scaleY = actualHeight / displayHeight;
+            
+            // Calculate crop area in actual image coordinates
+            const cropX = currentCrop.x * scaleX;
+            const cropY = currentCrop.y * scaleY;
+            const cropWidth = currentCrop.width * scaleX;
+            const cropHeight = currentCrop.height * scaleY;
+            
+            // Set canvas size to cropped area
+            canvas.width = cropWidth;
+            canvas.height = cropHeight;
+            
+            // Draw the cropped portion
+            ctx.drawImage(
+                originalImage,
+                cropX, cropY, cropWidth, cropHeight,
+                0, 0, cropWidth, cropHeight
+            );
+            
+            document.getElementById('croppedResult').style.display = 'block';
+            document.getElementById('downloadButton').disabled = false;
+            
+            // Scroll to result
+            document.getElementById('croppedResult').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function downloadCropped() {
+            const canvas = document.getElementById('croppedCanvas');
+            const link = document.createElement('a');
+            link.download = 'instagram-grey-lamp-section.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+    </script>
+</body>
+</html>
