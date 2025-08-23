@@ -265,7 +265,8 @@ function addToCartWithDetails(productData, selectedVariant) {
     price: productData.price,
     image: productData.image,
     thumbnail: productData.thumbnail,
-    description: productData.description, // <-- Add this line
+    description: productData.description,
+    stock: productData.stock, // Add stock information
     variant: selectedVariant,
     quantity: 1
   };
