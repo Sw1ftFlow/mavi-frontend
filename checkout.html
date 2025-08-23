@@ -51,11 +51,11 @@
           <div>
             <h2 class="text-lg font-semibold mb-4">Leveransadress</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <input type="text" placeholder="Förnamn" required class="border border-gray-300 rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black"/>
-              <input type="text" placeholder="Efternamn" required class="border border-gray-300 rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black"/>
-              <input type="text" placeholder="Adress" required class="md:col-span-2 border border-gray-300 rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black"/>
-              <input type="text" placeholder="Postnummer" required class="border border-gray-300 rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black"/>
-              <input type="text" placeholder="Stad" required class="border border-gray-300 rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black"/>
+              <input type="text" placeholder="Förnamn" required class="border border-gray-300 rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black" onchange="updateShipping()"/>
+              <input type="text" placeholder="Efternamn" required class="border border-gray-300 rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black" onchange="updateShipping()"/>
+              <input type="text" placeholder="Adress" required class="md:col-span-2 border border-gray-300 rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black" onchange="updateShipping()"/>
+              <input type="text" placeholder="Postnummer" required class="border border-gray-300 rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black" onchange="updateShipping()"/>
+              <input type="text" placeholder="Stad" required class="border border-gray-300 rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black" onchange="updateShipping()"/>
             </div>
           </div>
           <!-- Betalning -->
@@ -96,7 +96,7 @@
             </div>
             <div class="flex justify-between text-base">
               <span>Frakt</span>
-              <span class="text-gray-500">Ange leveransadress</span>
+              <span id="shipping-cost" class="text-gray-500">Ange leveransadress</span>
             </div>
             <div class="flex justify-between text-base font-semibold mt-4">
               <span>Totalt</span>
@@ -233,10 +233,12 @@
         
         // Get cart for order notification
         const cart = JSON.parse(localStorage.getItem('cart')) || [];
-        const orderTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+        const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+        const shipping = document.getElementById('shipping-cost').textContent === '99 kr' ? 99 : 0;
+        const orderTotal = subtotal + shipping;
         
-        // Send order notification email to store owner
-        await sendOrderNotificationEmail(customerData, cart, orderTotal);
+        // Send order notification email to store owner (include shipping in email)
+        await sendOrderNotificationEmail(customerData, cart, subtotal, shipping, orderTotal);
         
         // Check if we're using the Payment Element or Card Element
         if (paymentElement && paymentElement.type === 'payment') {
@@ -318,8 +320,53 @@
       }, 4000);
     }
 
+    // Function to update shipping cost when address is entered
+    function updateShipping() {
+      const addressFields = [
+        document.querySelector('input[placeholder="Förnamn"]').value.trim(),
+        document.querySelector('input[placeholder="Efternamn"]').value.trim(),
+        document.querySelector('input[placeholder="Adress"]').value.trim(),
+        document.querySelector('input[placeholder="Postnummer"]').value.trim(),
+        document.querySelector('input[placeholder="Stad"]').value.trim()
+      ];
+      
+      // Check if at least address, postal code and city are filled
+      const hasBasicAddress = addressFields[2] && addressFields[3] && addressFields[4];
+      
+      const shippingElement = document.getElementById('shipping-cost');
+      
+      if (hasBasicAddress) {
+        shippingElement.textContent = '99 kr';
+        shippingElement.classList.remove('text-gray-500');
+        shippingElement.classList.add('text-gray-900');
+      } else {
+        shippingElement.textContent = 'Ange leveransadress';
+        shippingElement.classList.remove('text-gray-900');
+        shippingElement.classList.add('text-gray-500');
+      }
+      
+      // Update the total calculation
+      updateCheckoutTotals();
+    }
+
+    // Function to update checkout totals including shipping
+    function updateCheckoutTotals() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      const tax = Math.round(subtotal * 0.2); // 20% moms
+      
+      // Check if shipping should be added
+      const shippingElement = document.getElementById('shipping-cost');
+      const shipping = shippingElement.textContent === '99 kr' ? 99 : 0;
+      const total = subtotal + shipping;
+      
+      document.getElementById('checkout-cart-subtotal').textContent = `${subtotal} kr`;
+      document.getElementById('checkout-cart-tax').textContent = `${tax} kr`;
+      document.getElementById('checkout-cart-total').textContent = `${total} kr`;
+    }
+
     // Function to send order notification email to store owner
-    async function sendOrderNotificationEmail(customerData, cart, orderTotal) {
+    async function sendOrderNotificationEmail(customerData, cart, subtotal, shipping, orderTotal) {
       try {
         const orderItems = cart.map(item => 
           `${item.name} (${item.variant || 'Standard'}) - Antal: ${item.quantity} - Pris: ${item.price * item.quantity} kr`
@@ -334,6 +381,8 @@
           customer_postal_code: customerData.postalCode,
           customer_city: customerData.city,
           order_items: orderItems,
+          order_subtotal: `${subtotal} kr`,
+          order_shipping: `${shipping} kr`,
           order_total: `${orderTotal} kr`,
           order_date: new Date().toLocaleDateString('sv-SE'),
           order_time: new Date().toLocaleTimeString('sv-SE')
@@ -417,8 +466,11 @@
       subtotal = migratedCart.reduce((sum, item) => sum + item.price * item.quantity, 0);
       tax = Math.round(subtotal * 0.2); // 20% moms
       subtotalSpan.textContent = `${subtotal} kr`;
-      totalSpan.textContent = `${subtotal} kr`;
+      totalSpan.textContent = `${subtotal} kr`; // Will be updated by updateCheckoutTotals if shipping is added
       taxSpan.textContent = `${tax} kr`;
+      
+      // Update totals to include shipping if address is entered
+      updateCheckoutTotals();
     }
     renderCheckoutCart();
     
