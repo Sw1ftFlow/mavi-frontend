@@ -67,7 +67,8 @@
           <!-- Kontaktuppgifter -->
           <div>
             <h2 class="text-lg font-semibold mb-4">Kontaktuppgifter</h2>
-            <input type="email" placeholder="E-post" required class="w-full border border-gray-300 rounded-none px-4 py-3 mb-4 focus:outline-none focus:ring-2 focus:ring-black"/>
+            <input type="email" id="email" placeholder="E-post" required class="w-full border border-gray-300 rounded-none px-4 py-3 mb-2 focus:outline-none focus:ring-2 focus:ring-black" onchange="validateEmail()" onblur="validateEmail()"/>
+            <div id="email-validation-message" class="validation-message text-red-500 text-sm mb-2" style="display: none;"></div>
           </div>
           <!-- Leveransadress -->
           <div>
@@ -239,9 +240,12 @@
     async function handleSubmit(e) {
       e.preventDefault();
       
-      // Validate address before processing payment
-      if (!validateAddress()) {
-        showMessage("Vänligen korrigera adressuppgifterna innan du fortsätter.");
+      // Validate email and address before processing payment
+      const emailValid = validateEmail();
+      const addressValid = validateAddress();
+      
+      if (!emailValid || !addressValid) {
+        showMessage("Vänligen korrigera e-post och adressuppgifterna innan du fortsätter.");
         return;
       }
       
@@ -472,6 +476,39 @@
         }
         
         return hasValidFields && address && postalCode && city;
+      }
+    }
+
+    // Function to validate email format
+    function validateEmail() {
+      const email = document.getElementById('email').value.trim();
+      const messageElement = document.getElementById('email-validation-message');
+      const emailField = document.getElementById('email');
+      
+      // Reset styling
+      emailField.classList.remove('border-red-500');
+      
+      if (email) {
+        // Comprehensive email validation regex
+        const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+        
+        if (!emailRegex.test(email)) {
+          messageElement.innerHTML = 'Ange en giltig e-postadress (t.ex. namn@exempel.se)';
+          messageElement.style.display = 'block';
+          messageElement.className = 'validation-message text-red-500 text-sm mb-2';
+          emailField.classList.add('border-red-500');
+          return false;
+        } else {
+          // Valid email
+          messageElement.innerHTML = '✓ E-post verifierad';
+          messageElement.style.display = 'block';
+          messageElement.className = 'validation-message text-green-600 text-sm mb-2';
+          return true;
+        }
+      } else {
+        // Empty email - hide message
+        messageElement.style.display = 'none';
+        return false;
       }
     }
 
