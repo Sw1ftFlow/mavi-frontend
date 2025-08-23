@@ -108,8 +108,11 @@
     }
 
     function updateQuantity(productId, newQuantity) {
+      console.log('updateQuantity called:', productId, newQuantity);
       const cart = getCart();
-      const itemIndex = cart.findIndex(item => item.id === productId);
+      console.log('Cart before update:', cart);
+      const itemIndex = cart.findIndex(item => String(item.id) === String(productId));
+      console.log('Item index found:', itemIndex);
       
       if (itemIndex !== -1) {
         if (newQuantity <= 0) {
@@ -119,12 +122,18 @@
         }
         saveCart(cart);
         updateCartDisplay();
+        console.log('Cart updated successfully');
+      } else {
+        console.log('Item not found in cart');
       }
     }
 
     function removeItem(productId) {
+      console.log('removeItem called:', productId);
       const cart = getCart();
-      const updatedCart = cart.filter(item => item.id !== productId);
+      console.log('Cart before removal:', cart);
+      const updatedCart = cart.filter(item => String(item.id) !== String(productId));
+      console.log('Cart after removal:', updatedCart);
       saveCart(updatedCart);
       updateCartDisplay();
     }
@@ -155,6 +164,7 @@
 
     function updateCartDisplay() {
       const cart = migrateCartImages();
+      console.log('updateCartDisplay called with cart:', cart);
       const cartItemsContainer = document.getElementById('cart-items');
       const emptyCartMessage = document.getElementById('empty-cart');
       const orderSummary = document.getElementById('order-summary');
@@ -169,11 +179,14 @@
       emptyCartMessage.classList.add('hidden');
       orderSummary.classList.remove('hidden');
       
-      cartItemsContainer.innerHTML = cart.map(item => {
+      cartItemsContainer.innerHTML = cart.map((item, index) => {
+        console.log(`Rendering item ${index}:`, item);
         const imageUrl = item.thumbnail || 'https://via.placeholder.com/120x120?text=No+Image';
+        const itemId = item.id || item.name || `item-${index}`;
+        console.log(`Item ID for ${item.name}:`, itemId);
         
         return `
-          <div class="bg-white p-6 rounded-lg border border-gray-200" data-product-id="${item.id}">
+          <div class="bg-white p-6 rounded-lg border border-gray-200" data-product-id="${itemId}">
             <div class="flex gap-4">
               <!-- Product Image -->
               <div class="flex-shrink-0">
@@ -193,8 +206,8 @@
                     <div class="flex items-center border border-gray-300 rounded">
                       <button 
                         class="quantity-decrease px-3 py-1 hover:bg-gray-100 text-gray-600 font-semibold"
-                        data-product-id="${item.id}"
-                        data-current-quantity="${item.quantity}"
+                        data-product-id="${itemId}"
+                        type="button"
                         ${item.quantity <= 1 ? 'disabled' : ''}
                       >
                         −
@@ -202,8 +215,8 @@
                       <span class="px-4 py-1 bg-gray-50 font-medium">${item.quantity}</span>
                       <button 
                         class="quantity-increase px-3 py-1 hover:bg-gray-100 text-gray-600 font-semibold"
-                        data-product-id="${item.id}"
-                        data-current-quantity="${item.quantity}"
+                        data-product-id="${itemId}"
+                        type="button"
                       >
                         +
                       </button>
@@ -222,7 +235,8 @@
               <div class="flex-shrink-0 ml-4">
                 <button 
                   class="remove-item text-gray-400 hover:text-red-500 transition p-2"
-                  data-product-id="${item.id}"
+                  data-product-id="${itemId}"
+                  type="button"
                   aria-label="Ta bort produkt"
                 >
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -242,12 +256,20 @@
     }
 
     function addCartEventListeners() {
+      console.log('Adding cart event listeners...');
+      
       // Quantity decrease buttons
-      document.querySelectorAll('.quantity-decrease').forEach(button => {
-        button.addEventListener('click', function() {
+      document.querySelectorAll('.quantity-decrease').forEach((button, index) => {
+        console.log(`Adding decrease listener ${index}:`, button);
+        button.addEventListener('click', function(e) {
+          e.preventDefault();
+          console.log('Decrease button clicked');
           const productId = this.getAttribute('data-product-id');
+          console.log('Product ID from decrease button:', productId);
           const cart = getCart();
-          const item = cart.find(item => item.id === productId);
+          console.log('Current cart:', cart);
+          const item = cart.find(item => String(item.id) === String(productId));
+          console.log('Found item:', item);
           if (item && item.quantity > 1) {
             updateQuantity(productId, item.quantity - 1);
           } else if (item && item.quantity === 1) {
@@ -257,11 +279,16 @@
       });
 
       // Quantity increase buttons
-      document.querySelectorAll('.quantity-increase').forEach(button => {
-        button.addEventListener('click', function() {
+      document.querySelectorAll('.quantity-increase').forEach((button, index) => {
+        console.log(`Adding increase listener ${index}:`, button);
+        button.addEventListener('click', function(e) {
+          e.preventDefault();
+          console.log('Increase button clicked');
           const productId = this.getAttribute('data-product-id');
+          console.log('Product ID from increase button:', productId);
           const cart = getCart();
-          const item = cart.find(item => item.id === productId);
+          const item = cart.find(item => String(item.id) === String(productId));
+          console.log('Found item:', item);
           if (item) {
             updateQuantity(productId, item.quantity + 1);
           }
@@ -269,12 +296,18 @@
       });
 
       // Remove item buttons
-      document.querySelectorAll('.remove-item').forEach(button => {
-        button.addEventListener('click', function() {
+      document.querySelectorAll('.remove-item').forEach((button, index) => {
+        console.log(`Adding remove listener ${index}:`, button);
+        button.addEventListener('click', function(e) {
+          e.preventDefault();
+          console.log('Remove button clicked');
           const productId = this.getAttribute('data-product-id');
+          console.log('Product ID from remove button:', productId);
           removeItem(productId);
         });
       });
+      
+      console.log('All event listeners added');
     }
 
     function updateOrderSummary() {
