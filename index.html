@@ -27,18 +27,24 @@
   <div id="header-placeholder"></div>
 
   <!-- Hero Video Section -->
-  <section class="relative w-full h-96 overflow-hidden">
+  <section class="relative w-full h-96 overflow-hidden bg-gray-100">
     <video 
       class="hero-video w-full h-full object-cover" 
       autoplay 
       muted 
       loop 
       playsinline
+      onloadstart="console.log('Video loading started')"
+      oncanplay="console.log('Video can play')"
+      onerror="console.log('Video error:', event)"
     >
+      <source src="./img/front2.mov" type="video/quicktime">
       <source src="./img/front2.mov" type="video/mp4">
-      Your browser does not support the video tag.
+      <!-- Fallback message -->
+      <div class="w-full h-full flex items-center justify-center bg-gray-200">
+        <p class="text-gray-500">Video not supported</p>
+      </div>
     </video>
-    <div class="absolute inset-0 bg-black bg-opacity-20"></div>
   </section>
 
   <!-- Products Grid -->
