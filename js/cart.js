@@ -165,13 +165,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div>
                   <div class="font-medium text-base text-gray-900 truncate">${item.name}</div>
                   <div class="text-sm text-gray-500 truncate">${item.description || ''}</div>
+                  ${getInventoryStatusHTML(item)}
                   <div class="text-sm text-gray-500 mt-1">${item.price} kr/st</div>
                 </div>
                 <button data-remove="${item.id}" class="text-gray-400 hover:text-red-600 text-lg font-bold px-2 cursor-pointer" title="Ta bort">
                   &times;
                 </button>            </div>
             <div class="flex items-center mt-3 gap-2">
-              ${getInventoryStatusHTML(item)}
               <button data-qty-down="${item.id}" class="w-7 h-7 flex items-center justify-center border border-gray-300 hover:bg-gray-100 text-lg font-semibold cursor-pointer">-</button>
                 <span class="w-8 text-center text-base">${item.quantity}</span>
                 <button data-qty-up="${item.id}" class="w-7 h-7 flex items-center justify-center border border-gray-300 hover:bg-gray-100 text-lg font-semibold cursor-pointer">+</button>
@@ -252,6 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="flex justify-between items-start">                <div>
                   <div class="font-medium text-base text-gray-900 truncate">${item.name}</div>
                   <div class="text-sm text-gray-500 truncate">${item.description || ''}</div>
+                  ${getInventoryStatusHTML(item)}
                   <div class="text-sm text-gray-500 mt-1">${item.price} kr/st</div>
                 </div>
               <button data-remove="${item.id}" class="text-gray-400 hover:text-red-600 text-lg font-bold px-2 cursor-pointer" title="Ta bort">
@@ -259,7 +260,6 @@ document.addEventListener('DOMContentLoaded', () => {
               </button>
             </div>
             <div class="flex items-center mt-3 gap-2">
-              ${getInventoryStatusHTML(item)}
               <button data-qty-down="${item.id}" class="w-7 h-7 flex items-center justify-center border border-gray-300 hover:bg-gray-100 text-lg font-semibold cursor-pointer">-</button>
               <span class="w-8 text-center text-base">${item.quantity}</span>
               <button data-qty-up="${item.id}" class="w-7 h-7 flex items-center justify-center border border-gray-300 hover:bg-gray-100 text-lg font-semibold cursor-pointer">+</button>
