@@ -284,7 +284,8 @@ async function loadProduct() {
           name: product.name,
           price: product.price,
           thumbnail: product.thumbnail,
-          description: product.description, // <-- Add this line
+          description: product.description,
+          stock: product.stock, // Add stock information
           quantity: product.quantity || 1 // or selected quantity
         });
       }

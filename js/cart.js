@@ -1,5 +1,40 @@
 // Simple cart drawer logic
 document.addEventListener('DOMContentLoaded', () => {
+  // Supabase configuration
+  const SUPABASE_URL = 'https://aqfsvvzuktirpdicwgil.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFxZnN2dnp1a3RpcnBkaWN3Z2lsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA4NDg2MzAsImV4cCI6MjA2NjQyNDYzMH0.LAJmKc1RiJT-JSNqucL8cWq8ogtrswysG1A5K1bmCh4';
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // Function to fetch fresh stock information for cart items
+  async function fetchStockInfo(cartItems) {
+    if (cartItems.length === 0) return cartItems;
+    
+    try {
+      const productIds = cartItems.map(item => item.id);
+      const { data, error } = await supabase
+        .from('products')
+        .select('id, stock')
+        .in('id', productIds);
+      
+      if (error) {
+        console.error('Error fetching stock info:', error);
+        return cartItems; // Return original items if fetch fails
+      }
+      
+      // Update cart items with fresh stock information
+      return cartItems.map(item => {
+        const stockInfo = data.find(product => product.id === item.id);
+        return {
+          ...item,
+          stock: stockInfo ? stockInfo.stock : item.stock // Use fresh stock or fallback to existing
+        };
+      });
+    } catch (error) {
+      console.error('Error in fetchStockInfo:', error);
+      return cartItems; // Return original items if there's an error
+    }
+  }
+
   // Helper function to get inventory status HTML
   function getInventoryStatusHTML(item) {
     // Handle cases where stock info might be missing (old cart items)
@@ -86,7 +121,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const cartItems = document.getElementById('cart-items');
     const cartTotal = document.getElementById('cart-total');
-    let total = 0;
 
     if (migratedCart.length === 0) {
       cartItems.innerHTML = `
@@ -113,10 +147,103 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
+    // Fetch fresh stock information and render cart
+    fetchStockInfo(migratedCart).then(cartWithFreshStock => {
+      let total = 0;
+      
+      cartItems.innerHTML = cartWithFreshStock.map((item, idx) => {
+        total += item.price * item.quantity;
+        
+        // Now all items should have consistent URL structure
+        let imageUrl = item.thumbnail || 'https://via.placeholder.com/80x80?text=No+Image';
+        
+        return `
+          <div class="flex items-center gap-4 py-6 border-b last:border-b-0">
+            <img src="${imageUrl}" alt="${item.name}" class="w-20 h-20 object-contain bg-gray-100 border border-gray-300" />
+            <div class="flex-1 flex flex-col justify-between min-w-0">
+              <div class="flex justify-between items-start">
+                <div>
+                  <div class="font-medium text-base text-gray-900 truncate">${item.name}</div>
+                  <div class="text-sm text-gray-500 truncate">${item.description || ''}</div>
+                  <div class="text-sm text-gray-500 mt-1">${item.price} kr/st</div>
+                  ${getInventoryStatusHTML(item)}
+                </div>
+                <button data-remove="${item.id}" class="text-gray-400 hover:text-red-600 text-lg font-bold px-2 cursor-pointer" title="Ta bort">
+                  &times;
+                </button>
+              </div>
+              <div class="flex items-center mt-3 gap-2">
+                <button data-qty-down="${item.id}" class="w-7 h-7 flex items-center justify-center border border-gray-300 hover:bg-gray-100 text-lg font-semibold cursor-pointer">-</button>
+                <span class="w-8 text-center text-base">${item.quantity}</span>
+                <button data-qty-up="${item.id}" class="w-7 h-7 flex items-center justify-center border border-gray-300 hover:bg-gray-100 text-lg font-semibold cursor-pointer">+</button>
+                <span class="ml-auto font-semibold text-base">${item.price * item.quantity} kr</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+      cartTotal.textContent = `${total} kr`;
+
+      // Update localStorage with fresh stock information
+      localStorage.setItem('cart', JSON.stringify(cartWithFreshStock));
+
+      // Quantity and remove handlers
+      cartItems.querySelectorAll('[data-qty-down]').forEach(btn => {
+        btn.onclick = () => {
+          const id = Number(btn.getAttribute('data-qty-down'));
+          let cart = JSON.parse(localStorage.getItem('cart')) || [];
+          const item = cart.find(i => i.id === id);
+          if (item && item.quantity > 1) item.quantity--;
+          localStorage.setItem('cart', JSON.stringify(cart));
+          renderCart();
+          if (window.updateCartCount) window.updateCartCount();
+        };
+      });
+      cartItems.querySelectorAll('[data-qty-up]').forEach(btn => {
+        btn.onclick = () => {
+          const id = Number(btn.getAttribute('data-qty-up'));
+          let cart = JSON.parse(localStorage.getItem('cart')) || [];
+          const item = cart.find(i => i.id === id);
+          if (item) item.quantity++;
+          localStorage.setItem('cart', JSON.stringify(cart));
+          renderCart();
+          if (window.updateCartCount) window.updateCartCount();
+        };
+      });
+      cartItems.querySelectorAll('[data-remove]').forEach(btn => {
+        btn.onclick = () => {
+          const id = Number(btn.getAttribute('data-remove'));
+          let cart = JSON.parse(localStorage.getItem('cart')) || [];
+          cart = cart.filter(i => i.id !== id);
+          localStorage.setItem('cart', JSON.stringify(cart));
+          renderCart();
+          if (window.updateCartCount) window.updateCartCount();
+        };
+      });
+
+      // After rendering cart items, make sure the checkout button has cursor-pointer:
+      const checkoutBtn = document.querySelector('#cart-drawer button.w-full.bg-black');
+      if (checkoutBtn) {
+        checkoutBtn.classList.add('cursor-pointer');
+        checkoutBtn.style.display = '';
+        checkoutBtn.onclick = () => {
+          window.location.href = 'checkout.html';
+        };
+      }
+    }).catch(error => {
+      console.error('Error rendering cart with fresh stock:', error);
+      // Fallback to render with existing stock information
+      renderCartFallback(migratedCart, cartItems, cartTotal);
+    });
+  }
+
+  // Fallback function to render cart with existing stock information
+  function renderCartFallback(migratedCart, cartItems, cartTotal) {
+    let total = 0;
+    
     cartItems.innerHTML = migratedCart.map((item, idx) => {
       total += item.price * item.quantity;
       
-      // Now all items should have consistent URL structure
       let imageUrl = item.thumbnail || 'https://via.placeholder.com/80x80?text=No+Image';
       
       return `
@@ -145,50 +272,6 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
     }).join('');
     cartTotal.textContent = `${total} kr`;
-
-    // Quantity and remove handlers
-    cartItems.querySelectorAll('[data-qty-down]').forEach(btn => {
-      btn.onclick = () => {
-        const id = Number(btn.getAttribute('data-qty-down'));
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
-        const item = cart.find(i => i.id === id);
-        if (item && item.quantity > 1) item.quantity--;
-        localStorage.setItem('cart', JSON.stringify(cart));
-        renderCart();
-        if (window.updateCartCount) window.updateCartCount();
-      };
-    });
-    cartItems.querySelectorAll('[data-qty-up]').forEach(btn => {
-      btn.onclick = () => {
-        const id = Number(btn.getAttribute('data-qty-up'));
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
-        const item = cart.find(i => i.id === id);
-        if (item) item.quantity++;
-        localStorage.setItem('cart', JSON.stringify(cart));
-        renderCart();
-        if (window.updateCartCount) window.updateCartCount();
-      };
-    });
-    cartItems.querySelectorAll('[data-remove]').forEach(btn => {
-      btn.onclick = () => {
-        const id = Number(btn.getAttribute('data-remove'));
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
-        cart = cart.filter(i => i.id !== id);
-        localStorage.setItem('cart', JSON.stringify(cart));
-        renderCart();
-        if (window.updateCartCount) window.updateCartCount();
-      };
-    });
-
-    // After rendering cart items, make sure the checkout button has cursor-pointer:
-    const checkoutBtn = document.querySelector('#cart-drawer button.w-full.bg-black');
-    if (checkoutBtn) {
-      checkoutBtn.classList.add('cursor-pointer');
-      checkoutBtn.style.display = '';
-      checkoutBtn.onclick = () => {
-        window.location.href = 'checkout.html';
-      };
-    }
   }
 
   function updateCartCount() {

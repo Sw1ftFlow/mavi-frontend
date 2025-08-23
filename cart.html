@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Varukorg | Mavi Webshop</title>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="./js/utils.js"></script>
   <link href="https://fonts.googleapis.com/css?family=Inter:400,500,600,700&display=swap" rel="stylesheet">
@@ -99,6 +100,41 @@
   </div>
 
   <script>
+    // Supabase configuration
+    const SUPABASE_URL = 'https://aqfsvvzuktirpdicwgil.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFxZnN2dnp1a3RpcnBkaWN3Z2lsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA4NDg2MzAsImV4cCI6MjA2NjQyNDYzMH0.LAJmKc1RiJT-JSNqucL8cWq8ogtrswysG1A5K1bmCh4';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // Function to fetch fresh stock information for cart items
+    async function fetchStockInfo(cartItems) {
+      if (cartItems.length === 0) return cartItems;
+      
+      try {
+        const productIds = cartItems.map(item => item.id);
+        const { data, error } = await supabase
+          .from('products')
+          .select('id, stock')
+          .in('id', productIds);
+        
+        if (error) {
+          console.error('Error fetching stock info:', error);
+          return cartItems; // Return original items if fetch fails
+        }
+        
+        // Update cart items with fresh stock information
+        return cartItems.map(item => {
+          const stockInfo = data.find(product => product.id === item.id);
+          return {
+            ...item,
+            stock: stockInfo ? stockInfo.stock : item.stock // Use fresh stock or fallback to existing
+          };
+        });
+      } catch (error) {
+        console.error('Error in fetchStockInfo:', error);
+        return cartItems; // Return original items if there's an error
+      }
+    }
+
     // Helper function to get inventory status HTML
     function getInventoryStatusHTML(item) {
       // Handle cases where stock info might be missing (old cart items)
@@ -204,9 +240,7 @@
       }
       
       return migratedCart;
-    }
-
-    function updateCartDisplay() {
+    }    function updateCartDisplay() {
       try {
         const cart = migrateCartImages();
         const cartItemsContainer = document.getElementById('cart-items');
@@ -228,10 +262,113 @@
         
         emptyCartMessage?.classList.add('hidden');
         orderSummary?.classList.remove('hidden');
-      
+        
+        // Fetch fresh stock information and render cart
+        fetchStockInfo(cart).then(cartWithFreshStock => {
+          
+          cartItemsContainer.innerHTML = cartWithFreshStock.map((item, index) => {
+            const imageUrl = item.thumbnail || 'https://via.placeholder.com/120x120?text=No+Image';
+            // Ensure we have a consistent ID
+            const itemId = item.id !== undefined ? item.id : `item-${index}`;
+            
+            return `
+              <div class="bg-white p-6 rounded-lg border border-gray-200" data-product-id="${itemId}">
+                <div class="flex gap-4">
+                  <!-- Product Image -->
+                  <div class="flex-shrink-0">
+                    <img src="${imageUrl}" alt="${item.name}" class="w-20 h-20 object-contain bg-gray-100 rounded" />
+                  </div>
+                  
+                  <!-- Product Details -->
+                  <div class="flex-1 min-w-0">
+                    <h3 class="font-semibold text-lg text-gray-900 mb-1">${item.name}</h3>
+                    <p class="text-gray-600 text-sm mb-2">${item.description || ''}</p>
+                    ${item.variant ? `<p class="text-gray-500 text-xs mb-3">${item.variant}</p>` : ''}
+                    ${getInventoryStatusHTML(item)}
+                    
+                    <div class="flex items-center justify-between">
+                      <!-- Quantity Controls -->
+                      <div class="flex items-center gap-3">
+                        <span class="text-sm text-gray-600">Antal:</span>
+                        <div class="flex items-center border border-gray-300 rounded">
+                          <button 
+                            class="quantity-decrease px-3 py-1 hover:bg-gray-100 text-gray-600 font-semibold"
+                            data-product-id="${itemId}"
+                            data-array-index="${index}"
+                            type="button"
+                            ${item.quantity <= 1 ? 'disabled' : ''}
+                          >
+                            −
+                          </button>
+                          <span class="px-4 py-1 bg-gray-50 font-medium">${item.quantity}</span>
+                          <button 
+                            class="quantity-increase px-3 py-1 hover:bg-gray-100 text-gray-600 font-semibold"
+                            data-product-id="${itemId}"
+                            data-array-index="${index}"
+                            type="button"
+                          >
+                            +
+                          </button>
+                        </div>
+                      </div>
+                      
+                      <!-- Price -->
+                      <div class="text-right">
+                        <div class="font-semibold text-lg">${item.price * item.quantity} kr</div>
+                        <div class="text-gray-500 text-sm">${item.price} kr/st</div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Remove Button -->
+                  <div class="flex-shrink-0 ml-4">
+                    <button 
+                      class="remove-item text-gray-400 hover:text-red-500 transition p-2"
+                      data-product-id="${itemId}"
+                      data-array-index="${index}"
+                      type="button"
+                      aria-label="Ta bort produkt"
+                    >
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('');
+          
+          // Update localStorage with fresh stock information
+          localStorage.setItem('cart', JSON.stringify(cartWithFreshStock));
+          
+          // Add event listeners for quantity buttons and remove buttons
+          addCartEventListeners();
+          
+          updateOrderSummary();
+        }).catch(error => {
+          console.error('Error fetching fresh stock info:', error);
+          // Fallback to render with existing stock information
+          renderCartFallback(cart, cartItemsContainer);
+        });
+      } catch (error) {
+        console.error('Error updating cart display:', error);
+        // Fallback: show empty cart message
+        const cartItemsContainer = document.getElementById('cart-items');
+        const emptyCartMessage = document.getElementById('empty-cart');
+        if (cartItemsContainer) {
+          cartItemsContainer.innerHTML = '<div class="text-center py-8 text-red-500">Error loading cart items. Please refresh the page.</div>';
+        }
+        if (emptyCartMessage) {
+          emptyCartMessage.classList.add('hidden');
+        }
+      }
+    }
+
+    // Fallback function to render cart with existing stock information
+    function renderCartFallback(cart, cartItemsContainer) {
       cartItemsContainer.innerHTML = cart.map((item, index) => {
         const imageUrl = item.thumbnail || 'https://via.placeholder.com/120x120?text=No+Image';
-        // Ensure we have a consistent ID
         const itemId = item.id !== undefined ? item.id : `item-${index}`;
         
         return `
@@ -306,19 +443,7 @@
       addCartEventListeners();
       
       updateOrderSummary();
-    } catch (error) {
-      console.error('Error updating cart display:', error);
-      // Fallback: show empty cart message
-      const cartItemsContainer = document.getElementById('cart-items');
-      const emptyCartMessage = document.getElementById('empty-cart');
-      if (cartItemsContainer) {
-        cartItemsContainer.innerHTML = '<div class="text-center py-8 text-red-500">Error loading cart items. Please refresh the page.</div>';
-      }
-      if (emptyCartMessage) {
-        emptyCartMessage.classList.add('hidden');
-      }
     }
-  }
 
     function addCartEventListeners() {
       // Quantity decrease buttons
