@@ -1,5 +1,34 @@
 // Simple cart drawer logic
 document.addEventListener('DOMContentLoaded', () => {
+  // Helper function to get inventory status HTML
+  function getInventoryStatusHTML(item) {
+    // Handle cases where stock info might be missing (old cart items)
+    const stock = item.stock !== undefined ? item.stock : null;
+    
+    if (stock === null) {
+      // If no stock info available, could fetch from server or show default
+      return '<div class="flex items-center mt-1"><span class="text-xs text-gray-400">Stock info not available</span></div>';
+    }
+    
+    const inStock = stock > 0;
+    const stockText = inStock
+      ? `I LAGER (${stock} st)`
+      : `SNART I LAGER`;
+    
+    return `
+      <div class="flex items-center mt-1">
+        <span class="inline-flex items-center justify-center w-2 h-2 rounded-full ${inStock ? 'bg-green-500' : 'bg-yellow-400'} mr-1">
+          <svg class="w-1 h-1 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 16 16">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 8l3 3 5-5"/>
+          </svg>
+        </span>
+        <span class="text-[9px] text-gray-600 font-medium leading-none">
+          ${stockText}
+        </span>
+      </div>
+    `;
+  }
+
   function setupCartDrawer() {
     const openBtn = document.getElementById('cart-open');
     const closeBtn = document.getElementById('cart-close');
@@ -99,6 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="font-medium text-base text-gray-900 truncate">${item.name}</div>
                 <div class="text-sm text-gray-500 truncate">${item.description || ''}</div>
                 <div class="text-sm text-gray-500 mt-1">${item.price} kr/st</div>
+                ${getInventoryStatusHTML(item)}
               </div>
               <button data-remove="${item.id}" class="text-gray-400 hover:text-red-600 text-lg font-bold px-2 cursor-pointer" title="Ta bort">
                 &times;

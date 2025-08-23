@@ -253,7 +253,8 @@ async function loadProduct() {
             name: data.name,
             price: data.price,
             thumbnail: data.thumbnail ? `${getBaseUrl()}img/${data.thumbnail}` : '',
-            description: data.description, // <-- Add this line
+            description: data.description,
+            stock: data.stock, // Add stock information
             quantity: quantity
           });
         }

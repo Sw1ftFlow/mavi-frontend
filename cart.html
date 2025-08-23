@@ -188,6 +188,7 @@
                 <h3 class="font-semibold text-lg text-gray-900 mb-1">${item.name}</h3>
                 <p class="text-gray-600 text-sm mb-2">${item.description || ''}</p>
                 ${item.variant ? `<p class="text-gray-500 text-xs mb-3">${item.variant}</p>` : ''}
+                ${getInventoryStatusHTML(item)}
                 
                 <div class="flex items-center justify-between">
                   <!-- Quantity Controls -->
