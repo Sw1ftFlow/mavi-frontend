@@ -17,13 +17,13 @@
     </style>
   <style>
     .hero-video {
-      object-position: center 70%;
+      object-position: center center; /* Changed from center 70% to center */
       /* Optimize video quality for low-res videos */
       image-rendering: -webkit-optimize-contrast;
       image-rendering: crisp-edges;
       image-rendering: pixelated; /* Better for low-res upscaling */
       /* Ensure high quality scaling */
-      transform: translateZ(0);
+      transform: translateZ(0) scale(0.85); /* Added scale to zoom out */
       backface-visibility: hidden;
       perspective: 1000px;
       /* Force better interpolation */
@@ -34,6 +34,8 @@
     .video-container {
       transform: translateZ(0);
       will-change: transform;
+      /* Add padding to accommodate the scaled video */
+      padding: 20px;
     }
     
     /* Alternative: Smaller video size to avoid blurriness */
@@ -52,10 +54,10 @@
   <div id="header-placeholder"></div>
 
   <!-- Hero Video Section -->
-  <section class="relative w-full h-[500px] overflow-hidden bg-gray-100">
+  <section class="relative w-full h-[600px] overflow-hidden bg-gray-100">
     <div class="video-container w-full h-full">
       <video 
-        class="hero-video w-full h-full object-cover" 
+        class="hero-video w-full h-full object-contain" 
         autoplay 
         muted 
         loop 
@@ -132,18 +134,20 @@
           
           // Check if this is a high-resolution video
           if (video.videoWidth >= 720 && video.videoHeight >= 720) {
-            console.log('High resolution detected - using full size');
+            console.log('High resolution detected - using optimized display');
             
-            // Reset to full-size hero video
+            // Use object-contain to show more of the video
             video.style.width = '100%';
             video.style.height = '100%';
-            video.style.objectFit = 'cover';
+            video.style.objectFit = 'contain';
+            video.style.transform = 'translateZ(0)'; // Remove scaling for high-res
             
             // Reset container
-            video.parentElement.style.display = 'block';
-            video.parentElement.style.alignItems = 'unset';
-            video.parentElement.style.justifyContent = 'unset';
-            video.parentElement.style.background = '';
+            video.parentElement.style.display = 'flex';
+            video.parentElement.style.alignItems = 'center';
+            video.parentElement.style.justifyContent = 'center';
+            video.parentElement.style.background = '#f8f9fa';
+            video.parentElement.style.padding = '10px';
             
           } else if (video.videoWidth <= 480 || video.videoHeight <= 480) {
             console.log('Low resolution detected - adjusting display');
