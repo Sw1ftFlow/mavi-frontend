@@ -1,10 +1,302 @@
 # Order Confirmation Email Templates
 
-## Professional HTML Email Template
+## EmailJS Customer Confirmation Template (Swedish)
 
-This template can be used with any email service provider (SendGrid, Mailgun, Nodemailer, etc.)
+**This is the template you need to copy into your EmailJS dashboard for customer order confirmations.**
 
-### Example usage with Node.js and Nodemailer:
+### Template Configuration in EmailJS:
+- **Template Name:** Customer Order Confirmation
+- **Subject:** `Orderbekräftelse - Beställning #{{order_number}} från MAVI`
+- **To:** `{{customer_email}}`
+- **From:** info@mavidesign.se
+
+### HTML Template Code (Copy this into EmailJS):
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { 
+            margin: 0; 
+            padding: 0; 
+            font-family: 'Inter', Arial, sans-serif; 
+            background-color: #ffffff; 
+            line-height: 1.5;
+        }
+        .container { 
+            max-width: 600px; 
+            margin: 0 auto; 
+            background-color: white; 
+        }
+        .header { 
+            background-color: #000; 
+            padding: 40px 30px; 
+            text-align: center; 
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        .logo-img {
+            height: 32px;
+            width: auto;
+        }
+        .logo-text { 
+            color: white; 
+            font-size: 28px; 
+            font-weight: bold; 
+            letter-spacing: 2px; 
+        }
+        .content { 
+            padding: 40px 30px; 
+        }
+        .section { 
+            margin-bottom: 30px; 
+        }
+        .order-summary { 
+            background-color: #f8f9fa; 
+            padding: 25px; 
+            border-radius: 4px; 
+            border: 1px solid #e9ecef;
+        }
+        .address-box { 
+            background-color: #f8f9fa; 
+            padding: 20px; 
+            border-radius: 4px; 
+            border: 1px solid #e9ecef;
+        }
+        .product-section { 
+            border: 1px solid #e9ecef; 
+            border-radius: 4px; 
+            overflow: hidden; 
+        }
+        .total-section { 
+            background-color: #000; 
+            color: white; 
+            padding: 25px; 
+            text-align: center;
+        }
+        .info-section { 
+            background-color: #f8f9fa; 
+            padding: 25px; 
+            border-left: 4px solid #000; 
+        }
+        .footer { 
+            text-align: center; 
+            color: #666; 
+            font-size: 14px; 
+            margin-top: 40px; 
+            padding-top: 30px; 
+            border-top: 1px solid #e9ecef; 
+        }
+        h1 {
+            color: #333;
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0 0 20px 0;
+        }
+        h2 {
+            color: #333;
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0 0 15px 0;
+        }
+        h3 {
+            color: #333;
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0 0 10px 0;
+        }
+        p {
+            color: #666;
+            margin: 0 0 10px 0;
+        }
+        .strong {
+            color: #333;
+            font-weight: 600;
+        }
+        .price {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .contact-link {
+            color: #000;
+            text-decoration: none;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo-container">
+                <img src="https://mavidesign.se/img/logo2.png" alt="MAVI Logo" class="logo-img">
+                <div class="logo-text">MAVI</div>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="section">
+                <h1>Tack för din beställning</h1>
+                <p>
+                    Hej <span class="strong">{{customer_name}}</span>,<br><br>
+                    Vi har mottagit din beställning och den bearbetas nu. Du kommer att få en leveransbekräftelse med spårningsinformation så snart din beställning har skickats.
+                </p>
+            </div>
+            
+            <div class="section">
+                <div class="order-summary">
+                    <h2>Beställningsdetaljer</h2>
+                    <p><span class="strong">Beställningsnummer:</span> #{{order_number}}</p>
+                    <p><span class="strong">Beställningsdatum:</span> {{order_date}} kl {{order_time}}</p>
+                    <p><span class="strong">E-postadress:</span> {{customer_email}}</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>Leveransadress</h2>
+                <div class="address-box">
+                    <p class="strong">{{customer_name}}</p>
+                    <p>{{customer_address}}</p>
+                    <p>{{customer_postal_code}} {{customer_city}}</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>Beställda produkter</h2>
+                <div class="product-section">
+                    {{{order_items_html}}}
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="total-section">
+                    <div>
+                        <span>Totalt att betala: </span>
+                        <span class="price">{{order_total}} kr</span>
+                    </div>
+                    <p style="margin-top: 10px; opacity: 0.8; font-size: 14px;">
+                        Inkl. moms
+                    </p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="info-section">
+                    <h3>Nästa steg</h3>
+                    <p>Vi förbereder din beställning för leverans</p>
+                    <p>Du får spårningsinformation när paketet skickas</p>
+                    <p>Förväntad leveranstid: 2-5 arbetsdagar</p>
+                </div>
+            </div>
+            
+            <div class="footer">
+                <h3>Behöver du hjälp?</h3>
+                <p>
+                    E-post: <a href="mailto:info@mavidesign.se" class="contact-link">info@mavidesign.se</a>
+                </p>
+                <p>
+                    Webbplats: <a href="https://mavidesign.se" class="contact-link">mavidesign.se</a>
+                </p>
+                
+                <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e9ecef;">
+                    <p style="margin: 0; color: #333;">
+                        Med vänliga hälsningar,<br>
+                        <span class="strong">MAVI Design Team</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+```
+
+---
+
+## Admin Notification Template (Swedish)
+
+**Template for admin notifications when new orders come in.**
+
+### Template Configuration in EmailJS:
+- **Template Name:** Admin Order Notification
+- **Subject:** `🛒 Ny beställning #{{order_number}} från {{customer_name}} - {{order_total}} kr`
+- **To:** viktor.lehtonen@gmail.com
+- **From:** info@mavidesign.se
+
+### HTML Template Code:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: #000; color: white; padding: 20px; text-align: center; }
+        .content { background: #f9f9f9; padding: 20px; }
+        .order-details { background: white; padding: 15px; margin: 10px 0; border-left: 4px solid #000; }
+        .customer-info { background: white; padding: 15px; margin: 10px 0; }
+        .footer { text-align: center; margin-top: 20px; color: #666; }
+        .urgent { background: #fee2e2; border-left-color: #dc2626; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>MAVI - Ny Beställning Mottagen</h1>
+        </div>
+        
+        <div class="content">
+            <div class="order-details urgent">
+                <h2 style="margin-top: 0;">⚡ ÅTGÄRD KRÄVS</h2>
+                <p><strong>Beställningsnummer:</strong> #{{order_number}}</p>
+                <p><strong>Datum:</strong> {{order_date}} {{order_time}}</p>
+                <p><strong>Totalt:</strong> {{order_total}} kr</p>
+                <p><strong>Status:</strong> Väntar på behandling</p>
+            </div>
+
+            <h2>Kundinformation</h2>
+            <div class="customer-info">
+                <p><strong>Namn:</strong> {{customer_name}}</p>
+                <p><strong>E-post:</strong> {{customer_email}}</p>
+                <p><strong>Telefon:</strong> {{customer_phone}}</p>
+                <p><strong>Adress:</strong> {{customer_address}}</p>
+                <p><strong>Postnummer:</strong> {{customer_postal_code}}</p>
+                <p><strong>Stad:</strong> {{customer_city}}</p>
+            </div>
+
+            <h2>Beställda produkter</h2>
+            <div class="order-details">
+                <pre style="white-space: pre-wrap; font-family: inherit;">{{order_items}}</pre>
+            </div>
+
+            <div class="order-details">
+                <h3>Nästa steg:</h3>
+                <p>
+                    ✅ Kontrollera produkttillgänglighet<br>
+                    📦 Förbered för leverans<br>
+                    📧 Skicka spårningsinformation till kund<br>
+                    💰 Bekräfta betalning i Stripe Dashboard
+                </p>
+            </div>
+
+            <div class="footer">
+                <p><strong>Denna beställning kräver din uppmärksamhet!</strong></p>
+                <p>Logga in på din admin-panel för att hantera beställningen.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+```
+
+---
 
 ```javascript
 const nodemailer = require('nodemailer');

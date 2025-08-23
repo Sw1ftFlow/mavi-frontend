@@ -132,15 +132,22 @@
       </div>
     </div>
   </div>
-  <script>
-    // EmailJS configuration - Replace with your actual EmailJS credentials
+  <script>    // EmailJS configuration for professional domain emails
     // Get these from: https://www.emailjs.com/
-    const EMAILJS_SERVICE_ID = 'service_y1lcs9t'; // Your EmailJS service ID
-    const EMAILJS_TEMPLATE_ID = 'template_247sx9d'; // Your EmailJS template ID
-    const EMAILJS_PUBLIC_KEY = 'EXLO5_EZugAYOuHiB'; // Your EmailJS public key
-    
+    const EMAILJS_CONFIG = {
+      publicKey: 'EXLO5_EZugAYOuHiB', // Your EmailJS public key
+      
+      // Service IDs - you'll need to create these in EmailJS dashboard
+      stratoServiceId: 'service_y1lcs9t', // Strato SMTP service for sending from info@mavidesign.se
+      gmailServiceId: 'service_y1lcs9t', // Gmail service for admin notifications (can be same initially)
+      
+      // Template IDs - you'll need to create these templates
+      customerTemplateId: 'template_cxfpi08', // Customer order confirmation template (UPDATED!)
+      adminTemplateId: 'template_247sx9d' // Admin notification template (can be same initially)
+    };
+
     // Initialize EmailJS
-    emailjs.init(EMAILJS_PUBLIC_KEY);
+    emailjs.init(EMAILJS_CONFIG.publicKey);
 
     // Stripe configuration - Replace with your actual publishable key
     // Get this from: https://dashboard.stripe.com/apikeys
@@ -271,8 +278,17 @@
         const shipping = document.getElementById('shipping-cost').textContent === '99 kr' ? 99 : 0;
         const orderTotal = subtotal + shipping;
         
-        // Send order notification email to store owner (include shipping in email)
-        await sendOrderNotificationEmail(customerData, cart, subtotal, shipping, orderTotal);
+        // Send professional order emails (customer confirmation + admin notification)
+        const emailResult = await sendOrderEmails(customerData, cart, subtotal, shipping, orderTotal);
+        
+        if (emailResult.success) {
+          console.log(`Order emails sent successfully. Order number: ${emailResult.orderNumber}`);
+          // Store order number for success page
+          localStorage.setItem('lastOrderNumber', emailResult.orderNumber);
+        } else {
+          console.warn('Email sending failed:', emailResult.error);
+          // Continue with payment process even if emails fail
+        }
         
         // Check if we're using the Payment Element or Card Element
         if (paymentElement && paymentElement.type === 'payment') {
@@ -528,42 +544,98 @@
       document.getElementById('checkout-cart-total').textContent = `${total} kr`;
     }
 
-    // Function to send order notification email to store owner
-    async function sendOrderNotificationEmail(customerData, cart, subtotal, shipping, orderTotal) {
+    // Function to send professional order emails (customer confirmation + admin notification)
+    async function sendOrderEmails(customerData, cart, subtotal, shipping, orderTotal) {
       try {
-        const orderItems = cart.map(item => 
-          `${item.name} (${item.variant || 'Standard'}) - Antal: ${item.quantity} - Pris: ${item.price * item.quantity} kr`
+        // Generate order number
+        const orderNumber = Date.now().toString().slice(-6);
+        
+        // Format order items for plain text (admin email)
+        const orderItemsText = cart.map(item => 
+          `${item.name}${item.variant ? ` (${item.variant})` : ''} - Antal: ${item.quantity} - Pris: ${item.price * item.quantity} kr`
         ).join('\n');
-
-        const templateParams = {
-          to_email: 'viktor.lehtonen@gmail.com',
-          to_name: 'Viktor Lehtonen',
+        
+        // Format order items for HTML (customer email)
+        const orderItemsHtml = cart.map(item => `
+          <div style="display: flex; padding: 15px; border-bottom: 1px solid #eee; align-items: center;">
+            <img src="${item.thumbnail || 'https://via.placeholder.com/60x60?text=No+Image'}" 
+                 style="width: 60px; height: 60px; object-fit: contain; margin-right: 15px; border-radius: 4px; border: 1px solid #eee;" 
+                 alt="${item.name}">
+            <div style="flex: 1;">
+              <div style="font-weight: 600; margin-bottom: 4px; color: #333;">${item.name}</div>
+              ${item.description ? `<div style="color: #666; font-size: 14px; margin-bottom: 4px;">${item.description}</div>` : ''}
+              ${item.variant ? `<div style="color: #888; font-size: 13px; margin-bottom: 8px;">${item.variant}</div>` : ''}
+              <div style="color: #333; font-size: 14px;">
+                <span style="color: #666;">Antal: ${item.quantity} × ${item.price} kr = </span>
+                <strong style="color: #000;">${item.price * item.quantity} kr</strong>
+              </div>
+            </div>
+          </div>
+        `).join('');
+        
+        const now = new Date();
+        const orderDate = now.toLocaleDateString('sv-SE');
+        const orderTime = now.toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' });
+        
+        // Common email parameters
+        const baseEmailParams = {
+          order_number: orderNumber,
+          order_date: orderDate,
+          order_time: orderTime,
+          order_total: orderTotal,
           customer_name: `${customerData.firstName} ${customerData.lastName}`,
           customer_email: customerData.email,
+          customer_phone: customerData.phone || 'Ej angivet',
           customer_address: customerData.address,
           customer_postal_code: customerData.postalCode,
           customer_city: customerData.city,
-          order_items: orderItems,
+          order_items: orderItemsText,
+          order_items_html: orderItemsHtml,
           order_subtotal: `${subtotal} kr`,
-          order_shipping: `${shipping} kr`,
-          order_total: `${orderTotal} kr`,
-          order_date: new Date().toLocaleDateString('sv-SE'),
-          order_time: new Date().toLocaleTimeString('sv-SE')
+          order_shipping: `${shipping} kr`
         };
 
-        console.log('Sending order notification email...', templateParams);
+        console.log('Sending order emails...', baseEmailParams);
         
-        const result = await emailjs.send(
-          EMAILJS_SERVICE_ID,
-          EMAILJS_TEMPLATE_ID,
-          templateParams
+        // Send customer confirmation email from info@mavidesign.se
+        const customerEmailParams = {
+          ...baseEmailParams,
+          to_email: customerData.email,
+          to_name: `${customerData.firstName} ${customerData.lastName}`,
+          from_name: 'MAVI Design',
+          from_email: 'info@mavidesign.se'
+        };
+        
+        await emailjs.send(
+          EMAILJS_CONFIG.stratoServiceId,
+          EMAILJS_CONFIG.customerTemplateId,
+          customerEmailParams
         );
         
-        console.log('Order notification email sent successfully:', result);
-        return true;
+        console.log('Customer confirmation email sent successfully');
+        
+        // Send admin notification email
+        const adminEmailParams = {
+          ...baseEmailParams,
+          to_email: 'viktor.lehtonen@gmail.com',
+          to_name: 'Viktor Lehtonen',
+          from_name: 'MAVI Webshop',
+          from_email: 'info@mavidesign.se'
+        };
+        
+        await emailjs.send(
+          EMAILJS_CONFIG.stratoServiceId,
+          EMAILJS_CONFIG.adminTemplateId,
+          adminEmailParams
+        );
+        
+        console.log('Admin notification email sent successfully');
+        
+        return { success: true, orderNumber };
+        
       } catch (error) {
-        console.error('Failed to send order notification email:', error);
-        return false;
+        console.error('Failed to send order emails:', error);
+        return { success: false, error: error.message };
       }
     }
 
