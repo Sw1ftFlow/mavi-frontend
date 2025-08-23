@@ -34,8 +34,7 @@
     .video-container {
       transform: translateZ(0);
       will-change: transform;
-      /* Reduced padding */
-      padding: 10px;
+      /* No padding needed now */
     }
     
     /* Alternative: Smaller video size to avoid blurriness */
@@ -54,8 +53,8 @@
   <div id="header-placeholder"></div>
 
   <!-- Hero Video Section -->
-  <section class="relative w-full h-[600px] overflow-hidden bg-gray-100">
-    <div class="video-container w-full h-full">
+  <section class="relative w-full h-[600px] overflow-hidden bg-gray-100 px-8 py-6">
+    <div class="video-container w-full h-full max-w-5xl mx-auto bg-black rounded-lg overflow-hidden shadow-lg">
       <video 
         class="hero-video w-full h-full object-cover" 
         autoplay 
