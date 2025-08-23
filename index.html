@@ -48,16 +48,18 @@
         muted 
         loop 
         playsinline
-        preload="metadata"
+        preload="auto"
         onloadstart="console.log('Video loading started')"
         oncanplay="console.log('Video can play')"
         onerror="console.log('Video error:', event); this.style.display='none'; document.getElementById('video-fallback').style.display='flex';"
+        onloadeddata="console.log('Video loaded successfully'); this.style.display='block';"
       >
-        <!-- MP4 versions first for best quality -->
+        <!-- MP4 first for best quality, MOV as fallback -->
         <source src="./img/front2.mp4" type="video/mp4">
-        <source src="./img/front1.mp4" type="video/mp4">
-        <!-- MOV fallbacks -->
+        <source src="./img/front2.mov" type="video/mp4">
         <source src="./img/front2.mov" type="video/quicktime">
+        <source src="./img/front1.mp4" type="video/mp4">
+        <source src="./img/front1.mov" type="video/mp4">
         <source src="./img/front1.mov" type="video/quicktime">
         <!-- Fallback message -->
         <div id="video-fallback" class="w-full h-full flex items-center justify-center bg-gray-200" style="display: none;">
@@ -136,20 +138,34 @@
         
         // Handle video loading errors and try alternative
         video.addEventListener('error', function(e) {
-          console.log('Primary video failed, trying alternative...');
+          console.log('Video error occurred:', e);
+          console.log('Current source:', video.currentSrc);
           
-          // Try different video files in order of preference
-          const currentSrc = video.currentSrc;
-          if (currentSrc.includes('front2.mp4')) {
-            video.src = './img/front1.mp4';
-          } else if (currentSrc.includes('front1.mp4')) {
+          // Force try the MOV file directly if MP4 fails
+          if (!video.currentSrc.includes('.mov')) {
+            console.log('MP4 failed, trying MOV directly...');
             video.src = './img/front2.mov';
-          } else if (currentSrc.includes('front2.mov')) {
-            video.src = './img/front1.mov';
+            video.load();
+          } else {
+            console.log('All video sources failed, showing fallback');
+            video.style.display = 'none';
+            document.getElementById('video-fallback').style.display = 'flex';
           }
-          
-          video.load();
         });
+        
+        // Also handle if no video sources work
+        video.addEventListener('loadstart', function() {
+          console.log('Video load started, source:', video.currentSrc);
+        });
+        
+        // Timeout fallback if video doesn't load within 5 seconds
+        setTimeout(function() {
+          if (video.readyState === 0) {
+            console.log('Video timeout - forcing MOV fallback');
+            video.src = './img/front2.mov';
+            video.load();
+          }
+        }, 5000);
         
         // Optimize video playback
         video.addEventListener('canplaythrough', function() {
