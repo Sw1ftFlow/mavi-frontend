@@ -6,6 +6,7 @@
   <title>Kassa | Mavi Webshop</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://js.stripe.com/v3/"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script src="./js/utils.js"></script>
   <link href="https://fonts.googleapis.com/css?family=Inter:400,500,600,700&display=swap" rel="stylesheet">
   <style>
@@ -108,6 +109,15 @@
     </div>
   </div>
   <script>
+    // EmailJS configuration - Replace with your actual EmailJS credentials
+    // Get these from: https://www.emailjs.com/
+    const EMAILJS_SERVICE_ID = 'service_y1lcs9t'; // Your EmailJS service ID
+    const EMAILJS_TEMPLATE_ID = 'template_247sx9d'; // Your EmailJS template ID
+    const EMAILJS_PUBLIC_KEY = 'EXLO5_EZugAYOuHiB'; // Your EmailJS public key
+    
+    // Initialize EmailJS
+    emailjs.init(EMAILJS_PUBLIC_KEY);
+
     // Stripe configuration - Replace with your actual publishable key
     // Get this from: https://dashboard.stripe.com/apikeys
     const STRIPE_PUBLISHABLE_KEY = 'pk_live_51RyvauD6syVba6lcZmEWTvwn8IUnT4bwlFH3IHmIpNpDMVLj7jizTsuu6KTKqoZ5BNIFYaWQGMRgB8h2KWBw0h5K00W4RM08w8';
@@ -221,6 +231,13 @@
         // Save customer data to localStorage for success page
         localStorage.setItem('lastOrderCustomer', JSON.stringify(customerData));
         
+        // Get cart for order notification
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const orderTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+        
+        // Send order notification email to store owner
+        await sendOrderNotificationEmail(customerData, cart, orderTotal);
+        
         // Check if we're using the Payment Element or Card Element
         if (paymentElement && paymentElement.type === 'payment') {
           // Use confirmPayment for Payment Element
@@ -299,6 +316,43 @@
       setTimeout(() => {
         messageContainer.style.display = "none";
       }, 4000);
+    }
+
+    // Function to send order notification email to store owner
+    async function sendOrderNotificationEmail(customerData, cart, orderTotal) {
+      try {
+        const orderItems = cart.map(item => 
+          `${item.name} (${item.variant || 'Standard'}) - Antal: ${item.quantity} - Pris: ${item.price * item.quantity} kr`
+        ).join('\n');
+
+        const templateParams = {
+          to_email: 'viktor.lehtonen@gmail.com',
+          to_name: 'Viktor Lehtonen',
+          customer_name: `${customerData.firstName} ${customerData.lastName}`,
+          customer_email: customerData.email,
+          customer_address: customerData.address,
+          customer_postal_code: customerData.postalCode,
+          customer_city: customerData.city,
+          order_items: orderItems,
+          order_total: `${orderTotal} kr`,
+          order_date: new Date().toLocaleDateString('sv-SE'),
+          order_time: new Date().toLocaleTimeString('sv-SE')
+        };
+
+        console.log('Sending order notification email...', templateParams);
+        
+        const result = await emailjs.send(
+          EMAILJS_SERVICE_ID,
+          EMAILJS_TEMPLATE_ID,
+          templateParams
+        );
+        
+        console.log('Order notification email sent successfully:', result);
+        return true;
+      } catch (error) {
+        console.error('Failed to send order notification email:', error);
+        return false;
+      }
     }
 
     // Simple JS to render cart items from localStorage
