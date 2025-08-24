@@ -48,12 +48,12 @@
       border: none;
       cursor: pointer;
       user-select: none;
-      opacity: 0.7;
+      opacity: 1;
       transition: opacity 0.3s ease;
     }
     
     .navigation-arrow:hover {
-      opacity: 1;
+      opacity: 0.7;
     }
     
     /* Ensure full coverage */
@@ -105,11 +105,11 @@
           </div>
           
           <!-- Bottom Right Navigation Dots with Arrows -->
-          <div class="absolute bottom-36 right-16 flex items-center space-x-4">
-            <button id="prev-slide" class="text-5xl navigation-arrow flex items-center">‹</button>
+          <div class="absolute bottom-36 right-16 flex items-center justify-center space-x-4">
+            <button id="prev-slide" class="text-5xl navigation-arrow leading-none">‹</button>
             <button class="slide-indicator active w-4 h-4 rounded-full border-2 border-black bg-black" data-slide="0"></button>
             <button class="slide-indicator w-4 h-4 rounded-full border-2 border-black bg-transparent" data-slide="1"></button>
-            <button id="next-slide" class="text-5xl navigation-arrow flex items-center">›</button>
+            <button id="next-slide" class="text-5xl navigation-arrow leading-none">›</button>
           </div>
         </div>
       </div>
@@ -119,8 +119,8 @@
         <img 
           src="./img/ozonlayers1.png" 
           alt="Ozon Layers Product" 
-          class="w-3/5 h-3/5 object-cover mx-auto"
-          style="object-position: center 60%; margin-top: 10%;"
+          class="w-3/5 h-3/5 object-cover mx-auto transform scale-125"
+          style="object-position: center 40%; margin-top: 5%;"
         />
         <!-- Content Overlay -->
         <div class="absolute inset-0 flex items-center">
@@ -137,11 +137,11 @@
           </div>
           
           <!-- Bottom Right Navigation Dots with Arrows -->
-          <div class="absolute bottom-36 right-16 flex items-center space-x-4">
-            <button id="prev-slide" class="text-5xl navigation-arrow flex items-center">‹</button>
+          <div class="absolute bottom-36 right-16 flex items-center justify-center space-x-4">
+            <button id="prev-slide" class="text-5xl navigation-arrow leading-none">‹</button>
             <button class="slide-indicator w-4 h-4 rounded-full border-2 border-white bg-transparent" data-slide="0"></button>
             <button class="slide-indicator active w-4 h-4 rounded-full border-2 border-white bg-white" data-slide="1"></button>
-            <button id="next-slide" class="text-5xl navigation-arrow flex items-center">›</button>
+            <button id="next-slide" class="text-5xl navigation-arrow leading-none">›</button>
           </div>
         </div>
       </div>
