@@ -45,6 +45,17 @@
       user-select: none;
     }
     
+    /* Ensure full coverage of black background */
+    #hero-section {
+      min-height: 100vh;
+      width: 100vw;
+      margin-left: calc(-50vw + 50%);
+    }
+    
+    #hero-section.bg-black {
+      background-color: #000000 !important;
+    }
+    
     #hero-section.bg-black #prev-slide,
     #hero-section.bg-black #next-slide {
       color: #d1d5db;
@@ -62,7 +73,7 @@
   <div id="header-placeholder"></div>
 
   <!-- Hero Section with Slideshow -->
-  <section id="hero-section" class="relative w-full h-screen bg-white flex items-center justify-center transition-colors duration-500">
+  <section id="hero-section" class="relative w-full h-screen bg-white flex items-center justify-center">
     <div class="max-w-4xl mx-auto px-8 text-center relative">
       <!-- Slide 1: Ozonlamp -->
       <div class="slide active" data-bg="white">
@@ -149,17 +160,17 @@
       const heroSection = document.getElementById('hero-section');
       
       function showSlide(index) {
-        // Hide all slides
+        // Change background color immediately (no transition)
+        const bgColor = slides[index].getAttribute('data-bg');
+        heroSection.className = `relative w-full h-screen bg-${bgColor} flex items-center justify-center`;
+        
+        // Then hide all slides and show the new one
         slides.forEach(slide => slide.classList.remove('active'));
         indicators.forEach(indicator => indicator.classList.remove('active'));
         
         // Show current slide
         slides[index].classList.add('active');
         indicators[index].classList.add('active');
-        
-        // Change background color based on slide data
-        const bgColor = slides[index].getAttribute('data-bg');
-        heroSection.className = `relative w-full h-screen bg-${bgColor} flex items-center justify-center transition-colors duration-500`;
       }
       
       function nextSlide() {
