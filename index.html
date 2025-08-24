@@ -16,34 +16,9 @@
       }
     </style>
   <style>
-    .hero-video {
-      object-position: center 60%; /* Show more top and bottom */
-      /* Optimize video quality for low-res videos */
-      image-rendering: -webkit-optimize-contrast;
-      image-rendering: crisp-edges;
-      image-rendering: pixelated; /* Better for low-res upscaling */
-      /* Ensure high quality scaling */
-      transform: translateZ(0) scale(0.95); /* Light zoom out to show more */
-      backface-visibility: hidden;
-      perspective: 1000px;
-      /* Force better interpolation */
-      filter: contrast(1.1) brightness(1.05);
-    }
-    
-    /* Better video container for quality */
-    .video-container {
-      transform: translateZ(0);
-      will-change: transform;
-      /* No padding needed now */
-    }
-    
-    /* Alternative: Smaller video size to avoid blurriness */
-    .hero-video-small {
-      width: 360px;
-      height: 430px;
+    .hero-image {
       object-fit: cover;
-      margin: 0 auto;
-      display: block;
+      object-position: center;
     }
   </style>
 </head>
@@ -52,27 +27,19 @@
   <!-- Header -->
   <div id="header-placeholder"></div>
 
-  <!-- Hero Video Section -->
-  <section class="relative w-full h-[600px] overflow-hidden bg-gray-50 px-8 py-6">
-    <div class="video-container w-full h-full max-w-5xl mx-auto rounded-xl overflow-hidden shadow-xl">
-      <video 
-        class="hero-video w-full h-full object-cover" 
-        autoplay 
-        muted 
-        loop 
-        playsinline
-        preload="auto"
-        onloadstart="console.log('Video loading started')"
-        oncanplay="console.log('Video can play')"
-        onerror="console.log('Video error:', event); this.style.display='none'; document.getElementById('video-fallback').style.display='flex';"
-        onloadeddata="console.log('Video loaded successfully'); this.style.display='block';"
-      >
-        <!-- No video sources currently -->
-        <!-- Fallback message -->
-        <div id="video-fallback" class="w-full h-full flex items-center justify-center bg-gray-200" style="display: none;">
-          <p class="text-gray-500">Video not supported</p>
-        </div>
-      </video>
+  <!-- Hero Image Section -->
+  <section class="relative w-full h-screen overflow-hidden">
+    <img 
+      src="./img/ozon1.webp" 
+      alt="Hero Image" 
+      class="w-full h-full hero-image"
+    />
+    <div class="absolute inset-0 bg-black bg-opacity-20"></div>
+    <div class="absolute inset-0 flex items-center justify-center">
+      <div class="text-center text-white">
+        <h1 class="text-5xl md:text-7xl font-bold mb-4">MAVI</h1>
+        <p class="text-lg md:text-xl opacity-90">Discover Unique Products</p>
+      </div>
     </div>
   </section>
 
@@ -110,121 +77,9 @@
   </div>
 
   <script>
-    // Video quality optimization
+    // Initialize the page
     document.addEventListener('DOMContentLoaded', function() {
-      const video = document.querySelector('.hero-video');
-      
-      if (video) {
-        // Force high quality rendering
-        video.style.imageRendering = 'high-quality';
-        video.style.imageRendering = '-webkit-optimize-contrast';
-        
-        // Ensure video plays at full quality
-        video.addEventListener('loadedmetadata', function() {
-          console.log('Video dimensions:', video.videoWidth, 'x', video.videoHeight);
-          
-          // Check if this is a high-resolution video
-          if (video.videoWidth >= 720 && video.videoHeight >= 720) {
-            console.log('High resolution detected - using cropped view with more content');
-            
-            // Keep the cropped look but show more content
-            video.style.width = '100%';
-            video.style.height = '100%';
-            video.style.objectFit = 'cover';
-            video.style.objectPosition = 'center 60%'; // Show more top/bottom
-            video.style.transform = 'translateZ(0) scale(0.95)'; // Slight zoom out
-            
-            // Reset container to normal
-            video.parentElement.style.display = 'block';
-            video.parentElement.style.alignItems = 'unset';
-            video.parentElement.style.justifyContent = 'unset';
-            video.parentElement.style.background = 'transparent';
-            video.parentElement.style.padding = '0';
-            
-          } else if (video.videoWidth <= 480 || video.videoHeight <= 480) {
-            console.log('Low resolution detected - adjusting display');
-            
-            // Option 1: Show at native size to avoid blurriness
-            video.style.width = video.videoWidth + 'px';
-            video.style.height = video.videoHeight + 'px';
-            video.style.maxWidth = '100%';
-            video.style.objectFit = 'contain';
-            
-            // Center the video
-            video.parentElement.style.display = 'flex';
-            video.parentElement.style.alignItems = 'center';
-            video.parentElement.style.justifyContent = 'center';
-            video.parentElement.style.background = '#f0f0f0';
-            
-            // Add message about video quality
-            const qualityNote = document.createElement('div');
-            qualityNote.style.cssText = 'position: absolute; top: 20px; left: 50%; transform: translateX(-50%); background: rgba(255,255,255,0.9); padding: 10px 20px; border-radius: 20px; font-size: 14px; color: #666; z-index: 10;';
-            qualityNote.textContent = 'Original video size: ' + video.videoWidth + 'x' + video.videoHeight;
-            video.parentElement.parentElement.appendChild(qualityNote);
-            
-            setTimeout(() => qualityNote.remove(), 4000);
-          }
-          
-          // Show video info temporarily for debugging
-          const infoDiv = document.createElement('div');
-          infoDiv.style.cssText = 'position: fixed; top: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; padding: 10px; border-radius: 5px; z-index: 1000; font-family: monospace;';
-          infoDiv.innerHTML = `
-            Video Info:<br>
-            Resolution: ${video.videoWidth} x ${video.videoHeight}<br>
-            File: ${video.currentSrc.split('/').pop().substring(0, 20)}...<br>
-            Duration: ${video.duration.toFixed(1)}s<br>
-            <span style="color: ${video.videoWidth < 720 ? '#ff6b6b' : '#51cf66'}">
-              Quality: ${video.videoWidth >= 1280 ? 'HIGH' : video.videoWidth >= 720 ? 'GOOD' : 'LOW'}
-            </span>
-          `;
-          document.body.appendChild(infoDiv);
-          
-          // Remove info after 8 seconds
-          setTimeout(() => infoDiv.remove(), 8000);
-          
-          // If video quality seems low, try to reload
-          if (video.videoWidth < 720) {
-            console.log('Low quality video detected, checking alternatives...');
-          }
-        });
-        
-        // Handle video loading errors and try alternative
-        video.addEventListener('error', function(e) {
-          console.log('Video error occurred:', e);
-          console.log('Current source:', video.currentSrc);
-          
-          // Force try the MOV file directly if MP4 fails
-          if (!video.currentSrc.includes('.mov')) {
-            console.log('MP4 failed, trying MOV directly...');
-            video.src = './img/front2.mov';
-            video.load();
-          } else {
-            console.log('All video sources failed, showing fallback');
-            video.style.display = 'none';
-            document.getElementById('video-fallback').style.display = 'flex';
-          }
-        });
-        
-        // Also handle if no video sources work
-        video.addEventListener('loadstart', function() {
-          console.log('Video load started, source:', video.currentSrc);
-        });
-        
-        // Timeout fallback if video doesn't load within 5 seconds
-        setTimeout(function() {
-          if (video.readyState === 0) {
-            console.log('Video timeout - forcing MOV fallback');
-            video.src = './img/front2.mov';
-            video.load();
-          }
-        }, 5000);
-        
-        // Optimize video playback
-        video.addEventListener('canplaythrough', function() {
-          video.style.opacity = '1';
-          console.log('Video ready for high quality playback');
-        });
-      }
+      console.log('Page loaded successfully');
     });
   </script>
 </body>
