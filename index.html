@@ -103,10 +103,12 @@
             </button>
           </div>
           
-          <!-- Bottom Right Navigation Dots - aligned with button -->
-          <div class="absolute bottom-32 right-16 flex space-x-4">
+          <!-- Bottom Right Navigation Dots with Arrows -->
+          <div class="absolute bottom-32 right-16 flex items-center space-x-4">
+            <button id="prev-slide" class="text-2xl navigation-arrow">‹</button>
             <button class="slide-indicator active w-4 h-4 rounded-full border-2 border-black bg-black" data-slide="0"></button>
             <button class="slide-indicator w-4 h-4 rounded-full border-2 border-black bg-transparent" data-slide="1"></button>
+            <button id="next-slide" class="text-2xl navigation-arrow">›</button>
           </div>
         </div>
       </div>
@@ -133,17 +135,16 @@
             </button>
           </div>
           
-          <!-- Bottom Right Navigation Dots - aligned with button -->
-          <div class="absolute bottom-32 right-16 flex space-x-4">
+          <!-- Bottom Right Navigation Dots with Arrows -->
+          <div class="absolute bottom-32 right-16 flex items-center space-x-4">
+            <button id="prev-slide" class="text-2xl navigation-arrow">‹</button>
             <button class="slide-indicator w-4 h-4 rounded-full border-2 border-white bg-transparent" data-slide="0"></button>
             <button class="slide-indicator active w-4 h-4 rounded-full border-2 border-white bg-white" data-slide="1"></button>
+            <button id="next-slide" class="text-2xl navigation-arrow">›</button>
           </div>
         </div>
       </div>
       
-      <!-- Navigation Arrows -->
-      <button id="prev-slide" class="absolute left-8 top-1/2 transform -translate-y-1/2 text-3xl z-10 navigation-arrow">‹</button>
-      <button id="next-slide" class="absolute right-8 top-1/2 transform -translate-y-1/2 text-3xl z-10 navigation-arrow">›</button>
     </div>
   </section>
 
@@ -219,9 +220,13 @@
         showSlide(currentSlide);
       }
       
-      // Event listeners
-      document.getElementById('next-slide').addEventListener('click', nextSlide);
-      document.getElementById('prev-slide').addEventListener('click', prevSlide);
+      // Event listeners for arrows
+      document.querySelectorAll('#next-slide').forEach(button => {
+        button.addEventListener('click', nextSlide);
+      });
+      document.querySelectorAll('#prev-slide').forEach(button => {
+        button.addEventListener('click', prevSlide);
+      });
       
       // Indicator clicks - handle indicators from all slides
       document.querySelectorAll('.slide-indicator').forEach((indicator) => {
