@@ -16,9 +16,11 @@
       }
     </style>
   <style>
-    .hero-image {
-      object-fit: cover;
-      object-position: center;
+    .product-image {
+      transition: transform 0.3s ease;
+    }
+    .product-image:hover {
+      transform: scale(1.05);
     }
   </style>
 </head>
@@ -27,19 +29,19 @@
   <!-- Header -->
   <div id="header-placeholder"></div>
 
-  <!-- Hero Image Section -->
-  <section class="relative w-full h-screen overflow-hidden">
-    <img 
-      src="./img/ozon1.webp" 
-      alt="Hero Image" 
-      class="w-full h-full hero-image"
-    />
-    <div class="absolute inset-0 bg-black bg-opacity-20"></div>
-    <div class="absolute inset-0 flex items-center justify-center">
-      <div class="text-center text-white">
-        <h1 class="text-5xl md:text-7xl font-bold mb-4">MAVI</h1>
-        <p class="text-lg md:text-xl opacity-90">Discover Unique Products</p>
-      </div>
+  <!-- Hero Section -->
+  <section class="relative w-full h-screen bg-white flex items-center justify-center">
+    <div class="max-w-4xl mx-auto px-8 text-center">
+      <img 
+        src="./img/ozon1.webp" 
+        alt="Ozon Product" 
+        class="max-w-full max-h-96 mx-auto mb-8 object-contain"
+      />
+      <h1 class="text-5xl md:text-7xl font-bold mb-6 text-black">MAVI</h1>
+      <p class="text-lg md:text-xl mb-8 text-gray-600">Discover Unique Products</p>
+      <button class="bg-black text-white px-8 py-4 text-lg font-semibold hover:bg-gray-900 transition-colors duration-300 rounded-none">
+        Buy Now
+      </button>
     </div>
   </section>
 
