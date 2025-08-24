@@ -53,8 +53,8 @@
   <div id="header-placeholder"></div>
 
   <!-- Hero Video Section -->
-  <section class="relative w-full h-[600px] overflow-hidden bg-gray-100 px-8 py-6">
-    <div class="video-container w-full h-full max-w-5xl mx-auto bg-black rounded-lg overflow-hidden shadow-lg">
+  <section class="relative w-full h-[600px] overflow-hidden bg-gray-50 px-8 py-6">
+    <div class="video-container w-full h-full max-w-5xl mx-auto rounded-xl overflow-hidden shadow-xl">
       <video 
         class="hero-video w-full h-full object-cover" 
         autoplay 
@@ -148,8 +148,8 @@
             video.parentElement.style.display = 'block';
             video.parentElement.style.alignItems = 'unset';
             video.parentElement.style.justifyContent = 'unset';
-            video.parentElement.style.background = '';
-            video.parentElement.style.padding = '10px';
+            video.parentElement.style.background = 'transparent';
+            video.parentElement.style.padding = '0';
             
           } else if (video.videoWidth <= 480 || video.videoHeight <= 480) {
             console.log('Low resolution detected - adjusting display');
