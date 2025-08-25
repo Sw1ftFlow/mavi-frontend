@@ -33,9 +33,45 @@
     .text-green-600 {
       color: #059669;
     }
+
+    /* Language switcher styles */
+    .language-switcher {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: 2px solid rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+    
+    .language-switcher:hover {
+      background: rgba(255, 255, 255, 1);
+      transform: scale(1.05);
+    }
+    
+    .flag-icon {
+      width: 24px;
+      height: 18px;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
   </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
+  <!-- Language Switcher -->
+  <div id="language-switcher" class="language-switcher" title="Switch Language">
+    <img id="flag-icon" class="flag-icon" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAyNCAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjE4IiBmaWxsPSIjMDA1MkIyIi8+CjxyZWN0IHk9IjYiIHdpZHRoPSIyNCIgaGVpZ2h0PSI2IiBmaWxsPSIjRkZEOTAwIi8+CjxyZWN0IHk9IjEyIiB3aWR0aD0iMjQiIGhlaWdodD0iNiIgZmlsbD0iIzAwNTJCMiIvPgo8L3N2Zz4K" alt="Swedish Flag" />
+  </div>
+
   <!-- Header -->
   <header class="bg-white w-full">
     <div class="max-w-5xl mx-auto flex items-center justify-between px-4 md:px-8 py-6">
@@ -727,19 +763,89 @@
     }
     updateCartCount();
 
+    // Initialize language switcher
+    initializeLanguage();
+    
+    // Language switcher click handler
+    document.getElementById('language-switcher').addEventListener('click', function() {
+      const newLang = currentLanguage === 'sv' ? 'en' : 'sv';
+      updateLanguage(newLang);
+    });
+
     // Rabattkod (discount code) logic (demo only)
     document.getElementById('discount-form').addEventListener('submit', function(e) {
       e.preventDefault();
       const code = document.getElementById('discount-code').value.trim();
       const msg = document.getElementById('discount-message');
       if (code.length > 0) {
-        msg.textContent = 'Rabattkod "' + code + '" har lagts till (demo)';
+        msg.textContent = currentLanguage === 'sv' 
+          ? 'Rabattkod "' + code + '" har lagts till (demo)'
+          : 'Discount code "' + code + '" has been added (demo)';
         msg.style.display = 'block';
       } else {
         msg.textContent = '';
         msg.style.display = 'none';
       }
     });
+
+    // Language switcher functionality
+    let currentLanguage = localStorage.getItem('language') || 'sv';
+    
+    // Flag SVGs
+    const flags = {
+      sv: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAyNCAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjE4IiBmaWxsPSIjMDA1MkIyIi8+CjxyZWN0IHk9IjYiIHdpZHRoPSIyNCIgaGVpZ2h0PSI2IiBmaWxsPSIjRkZEOTAwIi8+CjxyZWN0IHk9IjEyIiB3aWR0aD0iMjQiIGhlaWdodD0iNiIgZmlsbD0iIzAwNTJCMiIvPgo8L3N2Zz4K',
+      en: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAyNCAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjE4IiBmaWxsPSIjMDEyMTY5Ii8+CjxyZWN0IHk9IjciIHdpZHRoPSIyNCIgaGVpZ2h0PSI0IiBmaWxsPSIjRkZGRkZGIi8+CjxyZWN0IHg9IjEwIiB3aWR0aD0iNCIgaGVpZ2h0PSIxOCIgZmlsbD0iI0ZGRkZGRiIvPgo8cmVjdCB5PSI4IiB3aWR0aD0iMjQiIGhlaWdodD0iMiIgZmlsbD0iI0QzMDBDNCIvPgo8cmVjdCB4PSIxMSIgd2lkdGg9IjIiIGhlaWdodD0iMTgiIGZpbGw9IiNEMzAwQzQiLz4KPC9zdmc+Cg=='
+    };
+    
+    function updateLanguage(lang) {
+      currentLanguage = lang;
+      localStorage.setItem('language', lang);
+      
+      // Update flag
+      const flagIcon = document.getElementById('flag-icon');
+      const switcher = document.getElementById('language-switcher');
+      
+      if (lang === 'sv') {
+        flagIcon.src = flags.en;
+        flagIcon.alt = 'Switch to English';
+        switcher.title = 'Switch to English';
+      } else {
+        flagIcon.src = flags.sv;
+        flagIcon.alt = 'Byt till svenska';
+        switcher.title = 'Byt till svenska';
+      }
+      
+      // Update all translatable elements
+      const elements = document.querySelectorAll('[data-en][data-sv]');
+      elements.forEach(element => {
+        const text = element.getAttribute(`data-${lang}`);
+        if (text) {
+          if (element.innerHTML.includes('&copy;') || element.innerHTML.includes('<br>')) {
+            element.innerHTML = text;
+          } else {
+            element.textContent = text;
+          }
+        }
+      });
+      
+      // Update HTML lang attribute
+      document.documentElement.lang = lang === 'sv' ? 'sv' : 'en';
+    }
+    
+    function initializeLanguage() {
+      // Set initial flag (opposite of current language)
+      const flagIcon = document.getElementById('flag-icon');
+      if (currentLanguage === 'sv') {
+        flagIcon.src = flags.en;
+        flagIcon.alt = 'Switch to English';
+      } else {
+        flagIcon.src = flags.sv;
+        flagIcon.alt = 'Byt till svenska';
+      }
+      
+      // Apply current language
+      updateLanguage(currentLanguage);
+    }
   </script>
 </body>
 </html>
