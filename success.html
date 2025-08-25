@@ -8,45 +8,9 @@
   <link href="https://fonts.googleapis.com/css?family=Inter:400,500,600,700&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Inter', sans-serif; }
-
-    /* Language switcher styles */
-    .language-switcher {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 1000;
-      background: rgba(255, 255, 255, 0.9);
-      backdrop-filter: blur(10px);
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      border: 2px solid rgba(0, 0, 0, 0.1);
-      transition: all 0.3s ease;
-    }
-    
-    .language-switcher:hover {
-      background: rgba(255, 255, 255, 1);
-      transform: scale(1.05);
-    }
-    
-    .flag-icon {
-      width: 24px;
-      height: 18px;
-      border-radius: 2px;
-      transition: all 0.3s ease;
-    }
   </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
-  <!-- Language Switcher -->
-  <div id="language-switcher" class="language-switcher" title="Switch Language">
-    <img id="flag-icon" class="flag-icon" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAyNCAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjE4IiBmaWxsPSIjMDA1MkIyIi8+CjxyZWN0IHk9IjYiIHdpZHRoPSIyNCIgaGVpZ2h0PSI2IiBmaWxsPSIjRkZEOTAwIi8+CjxyZWN0IHk9IjEyIiB3aWR0aD0iMjQiIGhlaWdodD0iNiIgZmlsbD0iIzAwNTJCMiIvPgo8L3N2Zz4K" alt="Swedish Flag" />
-  </div>
-
   <!-- Header -->
   <header class="bg-white w-full">
     <div class="max-w-5xl mx-auto flex items-center justify-between px-4 md:px-8 py-6">
@@ -68,9 +32,9 @@
           </svg>
         </div>
 
-        <h1 class="text-3xl font-bold text-gray-900 mb-4" data-en="Thank you for your order!" data-sv="Tack för din beställning!">Tack för din beställning!</h1>
-        <p class="text-lg text-gray-600 mb-2" data-en="We have received your order and payment has been processed successfully." data-sv="Vi har tagit emot din order och betalningen har behandlats framgångsrikt.">Vi har tagit emot din order och betalningen har behandlats framgångsrikt.</p>
-        <p class="text-gray-600 mb-6" data-en="An order confirmation will be sent to your email shortly." data-sv="En orderbekräftelse har skickats till din e-post inom kort.">En orderbekräftelse har skickats till din e-post inom kort.</p>
+        <h1 class="text-3xl font-bold text-gray-900 mb-4">Tack för din beställning!</h1>
+        <p class="text-lg text-gray-600 mb-2">Vi har tagit emot din order och betalningen har behandlats framgångsrikt.</p>
+        <p class="text-gray-600 mb-6">En orderbekräftelse har skickats till din e-post inom kort.</p>
       </div>
 
       <!-- Order Details -->

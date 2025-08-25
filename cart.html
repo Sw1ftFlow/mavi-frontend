@@ -10,45 +10,9 @@
   <link href="https://fonts.googleapis.com/css?family=Inter:400,500,600,700&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Inter', sans-serif; }
-
-    /* Language switcher styles */
-    .language-switcher {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 1000;
-      background: rgba(255, 255, 255, 0.9);
-      backdrop-filter: blur(10px);
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      border: 2px solid rgba(0, 0, 0, 0.1);
-      transition: all 0.3s ease;
-    }
-    
-    .language-switcher:hover {
-      background: rgba(255, 255, 255, 1);
-      transform: scale(1.05);
-    }
-    
-    .flag-icon {
-      width: 24px;
-      height: 18px;
-      border-radius: 2px;
-      transition: all 0.3s ease;
-    }
   </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
-  <!-- Language Switcher -->
-  <div id="language-switcher" class="language-switcher" title="Switch Language">
-    <img id="flag-icon" class="flag-icon" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAyNCAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjE4IiBmaWxsPSIjMDA1MkIyIi8+CjxyZWN0IHk9IjYiIHdpZHRoPSIyNCIgaGVpZ2h0PSI2IiBmaWxsPSIjRkZEOTAwIi8+CjxyZWN0IHk9IjEyIiB3aWR0aD0iMjQiIGhlaWdodD0iNiIgZmlsbD0iIzAwNTJCMiIvPgo8L3N2Zz4K" alt="Swedish Flag" />
-  </div>
-
   <!-- Header -->
   <header class="bg-white w-full">
     <div class="max-w-5xl mx-auto flex items-center justify-between px-4 md:px-8 py-6">
@@ -103,30 +67,30 @@
       <!-- Order Summary -->
       <div class="lg:col-span-2">
         <div id="order-summary" class="bg-white p-8 rounded-lg border border-gray-200 sticky top-8">
-          <h2 class="text-lg font-semibold mb-4 break-words" data-en="Order<br>Summary" data-sv="Beställnings-<br>sammanfattning">Beställnings-<br>sammanfattning</h2>
+          <h2 class="text-lg font-semibold mb-4 break-words">Beställnings-<br>sammanfattning</h2>
           
           <div class="space-y-3 mb-6">
             <div class="flex justify-between">
-              <span data-en="Subtotal" data-sv="Delsumma">Delsumma</span>
+              <span>Delsumma</span>
               <span id="cart-subtotal">0 kr</span>
             </div>
             <div class="flex justify-between text-sm text-gray-600">
-              <span data-en="VAT (20%)" data-sv="Moms (20%)">Moms (20%)</span>
+              <span>Moms (20%)</span>
               <span id="cart-tax">0 kr</span>
             </div>
             <div class="flex justify-between text-sm text-gray-600">
-              <span data-en="Shipping" data-sv="Frakt">Frakt</span>
-              <span data-en="Calculated at checkout" data-sv="Beräknas vid kassan">Beräknas vid kassan</span>
+              <span>Frakt</span>
+              <span>Beräknas vid kassan</span>
             </div>
             <hr class="border-gray-200">
             <div class="flex justify-between font-semibold text-lg">
-              <span data-en="Total" data-sv="Totalt">Totalt</span>
+              <span>Totalt</span>
               <span id="cart-total">0 kr</span>
             </div>
           </div>
           
           <button id="checkout-btn" class="w-full bg-black text-white py-3 font-semibold hover:bg-gray-900 transition disabled:opacity-50 disabled:cursor-not-allowed">
-            <span data-en="Go to checkout" data-sv="Gå till kassan">Gå till kassan</span>
+            Gå till kassan
           </button>
           
 
@@ -600,73 +564,7 @@
     document.addEventListener('DOMContentLoaded', function() {
       updateCartDisplay();
       updateCartCount();
-      initializeLanguage();
-      
-      // Language switcher click handler
-      document.getElementById('language-switcher').addEventListener('click', function() {
-        const newLang = currentLanguage === 'sv' ? 'en' : 'sv';
-        updateLanguage(newLang);
-      });
     });
-
-    // Language switcher functionality
-    let currentLanguage = localStorage.getItem('language') || 'sv';
-    
-    // Flag SVGs
-    const flags = {
-      sv: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAyNCAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjE4IiBmaWxsPSIjMDA1MkIyIi8+CjxyZWN0IHk9IjYiIHdpZHRoPSIyNCIgaGVpZ2h0PSI2IiBmaWxsPSIjRkZEOTAwIi8+CjxyZWN0IHk9IjEyIiB3aWR0aD0iMjQiIGhlaWdodD0iNiIgZmlsbD0iIzAwNTJCMiIvPgo8L3N2Zz4K',
-      en: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAyNCAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjE4IiBmaWxsPSIjMDEyMTY5Ii8+CjxyZWN0IHk9IjciIHdpZHRoPSIyNCIgaGVpZ2h0PSI0IiBmaWxsPSIjRkZGRkZGIi8+CjxyZWN0IHg9IjEwIiB3aWR0aD0iNCIgaGVpZ2h0PSIxOCIgZmlsbD0iI0ZGRkZGRiIvPgo8cmVjdCB5PSI4IiB3aWR0aD0iMjQiIGhlaWdodD0iMiIgZmlsbD0iI0QzMDBDNCIvPgo8cmVjdCB4PSIxMSIgd2lkdGg9IjIiIGhlaWdodD0iMTgiIGZpbGw9IiNEMzAwQzQiLz4KPC9zdmc+Cg=='
-    };
-    
-    function updateLanguage(lang) {
-      currentLanguage = lang;
-      localStorage.setItem('language', lang);
-      
-      // Update flag
-      const flagIcon = document.getElementById('flag-icon');
-      const switcher = document.getElementById('language-switcher');
-      
-      if (lang === 'sv') {
-        flagIcon.src = flags.en;
-        flagIcon.alt = 'Switch to English';
-        switcher.title = 'Switch to English';
-      } else {
-        flagIcon.src = flags.sv;
-        flagIcon.alt = 'Byt till svenska';
-        switcher.title = 'Byt till svenska';
-      }
-      
-      // Update all translatable elements
-      const elements = document.querySelectorAll('[data-en][data-sv]');
-      elements.forEach(element => {
-        const text = element.getAttribute(`data-${lang}`);
-        if (text) {
-          if (element.innerHTML.includes('&copy;') || element.innerHTML.includes('<br>')) {
-            element.innerHTML = text;
-          } else {
-            element.textContent = text;
-          }
-        }
-      });
-      
-      // Update HTML lang attribute
-      document.documentElement.lang = lang === 'sv' ? 'sv' : 'en';
-    }
-    
-    function initializeLanguage() {
-      // Set initial flag (opposite of current language)
-      const flagIcon = document.getElementById('flag-icon');
-      if (currentLanguage === 'sv') {
-        flagIcon.src = flags.en;
-        flagIcon.alt = 'Switch to English';
-      } else {
-        flagIcon.src = flags.sv;
-        flagIcon.alt = 'Byt till svenska';
-      }
-      
-      // Apply current language
-      updateLanguage(currentLanguage);
-    }
   </script>
 </body>
 </html>

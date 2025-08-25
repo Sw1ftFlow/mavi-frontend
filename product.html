@@ -11,45 +11,9 @@
     html, body, #product-overview {
       font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
     }
-
-    /* Language switcher styles */
-    .language-switcher {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 1000;
-      background: rgba(255, 255, 255, 0.9);
-      backdrop-filter: blur(10px);
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      border: 2px solid rgba(0, 0, 0, 0.1);
-      transition: all 0.3s ease;
-    }
-    
-    .language-switcher:hover {
-      background: rgba(255, 255, 255, 1);
-      transform: scale(1.05);
-    }
-    
-    .flag-icon {
-      width: 24px;
-      height: 18px;
-      border-radius: 2px;
-      transition: all 0.3s ease;
-    }
   </style>
 </head>
 <body class="bg-white min-h-screen">
-  <!-- Language Switcher -->
-  <div id="language-switcher" class="language-switcher" title="Switch Language">
-    <img id="flag-icon" class="flag-icon" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAyNCAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjE4IiBmaWxsPSIjMDA1MkIyIi8+CjxyZWN0IHk9IjYiIHdpZHRoPSIyNCIgaGVpZ2h0PSI2IiBmaWxsPSIjRkZEOTAwIi8+CjxyZWN0IHk9IjEyIiB3aWR0aD0iMjQiIGhlaWdodD0iNiIgZmlsbD0iIzAwNTJCMiIvPgo8L3N2Zz4K" alt="Swedish Flag" />
-  </div>
-
   <div id="header-placeholder"></div>
 
   <main id="product-overview" class="w-full max-w-none px-0 py-8 mx-auto">
@@ -60,96 +24,22 @@
 <div id="cart-backdrop" class="fixed inset-0 z-40 hidden" style="background: rgba(255,255,255,0.4);"></div>
 <div id="cart-drawer" class="fixed top-0 right-0 h-full w-full max-w-xl bg-white shadow-xl z-50 transform translate-x-full transition-transform duration-300 flex flex-col" style="width:40vw; min-width:320px;">
   <div class="flex items-center justify-between px-6 py-4 border-b">
-    <span class="text-xl font-semibold" style="font-family: 'Inter', sans-serif;" data-en="Shopping Cart" data-sv="Varukorg">Varukorg</span>
+    <span class="text-xl font-semibold" style="font-family: 'Inter', sans-serif;">Varukorg</span>
     <button id="cart-close" class="text-2xl text-gray-400 hover:text-black">&times;</button>
   </div>
   <!-- Cart items go here -->
   <div id="cart-items" class="flex-1 overflow-y-auto px-6 py-4"></div>
   <div class="border-t px-6 py-4">
     <div class="flex justify-between items-center mb-4">
-      <span class="font-semibold" data-en="Total:" data-sv="Totalt:">Totalt:</span>
+      <span class="font-semibold">Totalt:</span>
       <span id="cart-total" class="font-semibold">0 kr</span>
     </div>
-    <button class="w-full bg-black text-white py-3 rounded-none font-semibold text-base hover:bg-gray-900 transition">
-      <span data-en="Checkout" data-sv="Till kassan">Till kassan</span>
-    </button>
+    <button class="w-full bg-black text-white py-3 rounded-none font-semibold text-base hover:bg-gray-900 transition">Till kassan</button>
   </div>
 </div>
   <script src="./js/utils.js"></script>
   <script src="./js/header.js"></script>
   <script src="./js/productOverview.js"></script>
   <script src="./js/cart.js"></script>
-  
-  <script>
-    // Language switcher functionality
-    let currentLanguage = localStorage.getItem('language') || 'sv';
-    
-    // Flag SVGs
-    const flags = {
-      sv: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAyNCAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjE4IiBmaWxsPSIjMDA1MkIyIi8+CjxyZWN0IHk9IjYiIHdpZHRoPSIyNCIgaGVpZ2h0PSI2IiBmaWxsPSIjRkZEOTAwIi8+CjxyZWN0IHk9IjEyIiB3aWR0aD0iMjQiIGhlaWdodD0iNiIgZmlsbD0iIzAwNTJCMiIvPgo8L3N2Zz4K',
-      en: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAyNCAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjE4IiBmaWxsPSIjMDEyMTY5Ii8+CjxyZWN0IHk9IjciIHdpZHRoPSIyNCIgaGVpZ2h0PSI0IiBmaWxsPSIjRkZGRkZGIi8+CjxyZWN0IHg9IjEwIiB3aWR0aD0iNCIgaGVpZ2h0PSIxOCIgZmlsbD0iI0ZGRkZGRiIvPgo8cmVjdCB5PSI4IiB3aWR0aD0iMjQiIGhlaWdodD0iMiIgZmlsbD0iI0QzMDBDNCIvPgo8cmVjdCB4PSIxMSIgd2lkdGg9IjIiIGhlaWdodD0iMTgiIGZpbGw9IiNEMzAwQzQiLz4KPC9zdmc+Cg=='
-    };
-    
-    function updateLanguage(lang) {
-      currentLanguage = lang;
-      localStorage.setItem('language', lang);
-      
-      // Update flag
-      const flagIcon = document.getElementById('flag-icon');
-      const switcher = document.getElementById('language-switcher');
-      
-      if (lang === 'sv') {
-        flagIcon.src = flags.en;
-        flagIcon.alt = 'Switch to English';
-        switcher.title = 'Switch to English';
-      } else {
-        flagIcon.src = flags.sv;
-        flagIcon.alt = 'Byt till svenska';
-        switcher.title = 'Byt till svenska';
-      }
-      
-      // Update all translatable elements
-      const elements = document.querySelectorAll('[data-en][data-sv]');
-      elements.forEach(element => {
-        const text = element.getAttribute(`data-${lang}`);
-        if (text) {
-          if (element.innerHTML.includes('&copy;')) {
-            element.innerHTML = text;
-          } else {
-            element.textContent = text;
-          }
-        }
-      });
-      
-      // Update HTML lang attribute
-      document.documentElement.lang = lang === 'sv' ? 'sv' : 'en';
-    }
-    
-    function initializeLanguage() {
-      // Set initial flag (opposite of current language)
-      const flagIcon = document.getElementById('flag-icon');
-      if (currentLanguage === 'sv') {
-        flagIcon.src = flags.en;
-        flagIcon.alt = 'Switch to English';
-      } else {
-        flagIcon.src = flags.sv;
-        flagIcon.alt = 'Byt till svenska';
-      }
-      
-      // Apply current language
-      updateLanguage(currentLanguage);
-    }
-    
-    // Initialize language when page loads
-    document.addEventListener('DOMContentLoaded', function() {
-      initializeLanguage();
-      
-      // Language switcher click handler
-      document.getElementById('language-switcher').addEventListener('click', function() {
-        const newLang = currentLanguage === 'sv' ? 'en' : 'sv';
-        updateLanguage(newLang);
-      });
-    });
-  </script>
 </body>
 </html>
