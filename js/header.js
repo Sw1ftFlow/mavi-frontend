@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         <nav>
           <ul class="flex space-x-6">
             <li><a href="index.html" class="text-gray-700 hover:text-blue-700">Hem</a></li>
-            <li><a href="product.html" class="text-gray-700 hover:text-blue-700">Produkter</a></li>
+            <li><a href="product.html" class="text-gray-700 hover:text-blue-700">Kollektion</a></li>
             <li><a href="#" class="text-gray-700 hover:text-blue-700">Kontakt</a></li>
           </ul>
         </nav>
