@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Product Overview</title>
+  <title>Produkter | Mavi Webshop</title>
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -16,9 +16,12 @@
 <body class="bg-white min-h-screen">
   <div id="header-placeholder"></div>
 
-  <main id="product-overview" class="w-full max-w-none px-0 py-8 mx-auto">
-    <!-- Product details will be injected here -->
-    <img src="./img/${product.thumbnail}" alt="${product.name}" class="w-full h-auto object-contain rounded" />
+  <!-- Products Page -->
+  <main class="flex-1 container mx-auto px-4 py-8 bg-white">
+    <h1 class="text-3xl font-bold text-gray-800 mb-8">Produkter</h1>
+    <div id="products-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 bg-white">
+      <!-- Products will be injected here -->
+    </div>
   </main>
   <!-- Cart Drawer -->
 <div id="cart-backdrop" class="fixed inset-0 z-40 hidden" style="background: rgba(255,255,255,0.4);"></div>
@@ -39,7 +42,7 @@
 </div>
   <script src="./js/utils.js"></script>
   <script src="./js/header.js"></script>
-  <script src="./js/productOverview.js"></script>
+  <script src="./js/getProducts.js"></script>
   <script src="./js/cart.js"></script>
 </body>
 </html>
