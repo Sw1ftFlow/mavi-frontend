@@ -34,7 +34,7 @@ async function getProducts() {
 
         const productDiv = document.createElement('div');
         productDiv.innerHTML = `
-        <a href="product.html?id=${product.id}">
+        <a href="productDetail.html?id=${product.id}">
             <div class="bg-[#f5f5f5] w-full aspect-[3/5] flex items-center justify-center overflow-hidden relative p-6">
                 <!-- Lager badge -->
                 <div class="absolute bottom-2 left-2 flex items-center z-10">
