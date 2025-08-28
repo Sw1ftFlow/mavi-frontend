@@ -72,6 +72,49 @@
     #hero-section[data-bg="black"] .navigation-arrow {
       color: #ffffff;
     }
+    
+    /* Cookie Banner Styles */
+    .cookie-banner {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0, 0, 0, 0.95);
+      color: white;
+      padding: 20px;
+      z-index: 1000;
+      transform: translateY(100%);
+      transition: transform 0.3s ease-in-out;
+    }
+    
+    .cookie-banner.show {
+      transform: translateY(0);
+    }
+    
+    .cookie-banner button {
+      background: white;
+      color: black;
+      border: none;
+      padding: 10px 20px;
+      margin-left: 15px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background-color 0.3s ease;
+    }
+    
+    .cookie-banner button:hover {
+      background: #f0f0f0;
+    }
+    
+    .cookie-banner .decline-btn {
+      background: transparent;
+      color: white;
+      border: 1px solid white;
+    }
+    
+    .cookie-banner .decline-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
   </style>
 </head>
 
@@ -188,10 +231,65 @@
     </div>
   </div>
 
+  <!-- Cookie Banner -->
+  <div id="cookie-banner" class="cookie-banner">
+    <div class="container mx-auto px-4 flex flex-col sm:flex-row items-start sm:items-center justify-between">
+      <div class="flex-1 mb-4 sm:mb-0">
+        <p class="text-sm">
+          Vi använder cookies för att förbättra din upplevelse på vår webbplats. Detta inkluderar nödvändiga cookies för webbplatsens funktion och varukorgen. 
+          <a href="#" class="underline hover:no-underline">Läs mer om vår integritetspolicy</a>
+        </p>
+      </div>
+      <div class="flex flex-col sm:flex-row gap-2">
+        <button id="decline-cookies" class="decline-btn px-4 py-2 text-sm">Avvisa</button>
+        <button id="accept-cookies" class="px-4 py-2 text-sm">Acceptera alla</button>
+      </div>
+    </div>
+  </div>
+
   <script>
+    // Cookie consent functionality
+    function showCookieBanner() {
+      const banner = document.getElementById('cookie-banner');
+      const hasConsent = localStorage.getItem('cookieConsent');
+      
+      if (!hasConsent) {
+        setTimeout(() => {
+          banner.classList.add('show');
+        }, 1000); // Show after 1 second
+      }
+    }
+    
+    function setCookieConsent(accepted) {
+      localStorage.setItem('cookieConsent', accepted ? 'accepted' : 'declined');
+      localStorage.setItem('cookieConsentDate', new Date().toISOString());
+      
+      const banner = document.getElementById('cookie-banner');
+      banner.classList.remove('show');
+      
+      if (accepted) {
+        // Here you can initialize analytics or other tracking
+        console.log('Cookies accepted - analytics can be initialized');
+      } else {
+        console.log('Cookies declined - only essential cookies will be used');
+      }
+    }
+
     // Initialize the page and slideshow
     document.addEventListener('DOMContentLoaded', function() {
       console.log('Page loaded successfully');
+      
+      // Show cookie banner if needed
+      showCookieBanner();
+      
+      // Cookie banner event listeners
+      document.getElementById('accept-cookies').addEventListener('click', () => {
+        setCookieConsent(true);
+      });
+      
+      document.getElementById('decline-cookies').addEventListener('click', () => {
+        setCookieConsent(false);
+      });
       
       // Slideshow functionality
       let currentSlide = 0;
