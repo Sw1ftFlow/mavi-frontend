@@ -54,7 +54,6 @@
   <!-- Contact Page Content -->
   <main class="flex-1 container mx-auto px-4 py-8 max-w-4xl">
     <div class="text-center mb-12">
-
       <p class="text-lg text-gray-600 max-w-2xl mx-auto">
         Har du frågor om våra produkter, din beställning eller behöver hjälp? Vi hjälper dig gärna.
         Skicka oss ett meddelande så återkommer vi så snart som möjligt.
@@ -293,8 +292,20 @@
   </div>
 
   <script>
+    // Check if EmailJS is loaded
+    if (typeof emailjs === 'undefined') {
+      console.error('EmailJS library not loaded!');
+    } else {
+      console.log('EmailJS library loaded successfully');
+    }
+    
     // Initialize EmailJS with your actual Public Key
-    emailjs.init("EXLO5_EZugAYOuHiB"); // Your EmailJS Public Key
+    try {
+      emailjs.init("EXLO5_EZugAYOuHiB"); // Your EmailJS Public Key
+      console.log('EmailJS initialized successfully');
+    } catch (error) {
+      console.error('EmailJS initialization failed:', error);
+    }
 
     // File handling
     const attachmentsInput = document.getElementById('attachments');
@@ -394,13 +405,12 @@
         // Process attachments
         let attachmentData = '';
         if (selectedFiles.length > 0) {
-          const attachmentPromises = selectedFiles.map(async (file, index) => {
-            const base64 = await fileToBase64(file);
-            return `\n\n--- Bilaga ${index + 1}: ${file.name} ---\n[Bild bifogad - se e-postmeddelandet för full bild]`;
+          attachmentData = `\n\n--- BILAGOR ---\nKunden har bifogat ${selectedFiles.length} fil(er):\n`;
+          selectedFiles.forEach((file, index) => {
+            const sizeInMB = (file.size / (1024 * 1024)).toFixed(2);
+            attachmentData += `${index + 1}. ${file.name} (${sizeInMB} MB, ${file.type})\n`;
           });
-          
-          const attachmentTexts = await Promise.all(attachmentPromises);
-          attachmentData = attachmentTexts.join('');
+          attachmentData += '\nOBS: Filerna kunde inte bifogas automatiskt p.g.a. storleksbegränsningar. Kunden kan skicka dem separat vid behov.';
         }
 
         // Create date/time for email
@@ -433,21 +443,18 @@
         };
 
         // Add base64 attachments to template params for EmailJS (only if files exist)
-        if (selectedFiles.length > 0) {
-          for (let i = 0; i < selectedFiles.length; i++) {
-            const base64 = await fileToBase64(selectedFiles[i]);
-            templateParams[`attachment_${i + 1}`] = base64;
-            templateParams[`attachment_${i + 1}_name`] = selectedFiles[i].name;
-          }
-        }
-
+        // Note: Skipping actual file attachments due to EmailJS 50KB limit
+        // Instead, we'll mention them in the message text above
+        
         // Send email using EmailJS
+        console.log('Sending email with template params:', templateParams);
         await emailjs.send(
           'service_a599pmp', // Your Gmail Service ID
           'template_247sx9d', // Your order template ID
           templateParams,
           'EXLO5_EZugAYOuHiB' // Your public key
         );
+        console.log('Email sent successfully');
 
         // Show success message
         messageDiv.className = 'success-message p-4 rounded-lg border';
@@ -456,7 +463,7 @@
             <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
             </svg>
-            <span><strong>Tack för ditt meddelande!</strong> Vi återkommer så snart som möjligt. ${selectedFiles.length > 0 ? `Dina ${selectedFiles.length} bilaga(r) har skickats med.` : ''}</span>
+            <span><strong>Tack för ditt meddelande!</strong> Vi återkommer så snart som möjligt. ${selectedFiles.length > 0 ? `Information om dina ${selectedFiles.length} bilaga(r) har skickats med. Vid behov kan du skicka filerna separat till info@mavidesign.se.` : ''}</span>
           </div>
         `;
         messageDiv.classList.remove('hidden');
@@ -467,6 +474,7 @@
         displayFilePreview();
 
       } catch (error) {
+        console.error('EmailJS error:', error);
         // Show error message
         messageDiv.className = 'error-message p-4 rounded-lg border';
         messageDiv.innerHTML = `
