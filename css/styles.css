@@ -222,7 +222,7 @@
   /* Position text and buttons below the image */
   #hero-section .absolute.left-4 {
     position: absolute !important;
-    top: 70vh !important;
+    top: 56vh !important;
     left: 1rem !important;
     bottom: auto !important;
     z-index: 10;
@@ -231,7 +231,7 @@
   /* Position navigation below the image */
   #hero-section .absolute.bottom-20 {
     position: absolute !important;
-    top: 82vh !important;
+    top: 66vh !important;
     right: 1rem !important;
     bottom: auto !important;
     z-index: 10;
@@ -247,11 +247,11 @@
   
   /* Adjust positioning for very small screens */
   #hero-section .absolute.left-4 {
-    top: 65vh !important;
+    top: 52vh !important;
   }
   
   #hero-section .absolute.bottom-20 {
-    top: 78vh !important;
+    top: 62vh !important;
   }
   
   /* Even smaller text on very small screens */
