@@ -211,7 +211,7 @@
     position: absolute;
     top: 0;
     left: 50%;
-    transform: translateX(-50%) scale(2.4) !important;
+    transform: translateX(-50%) scale(1.7) !important;
     object-fit: contain;
     width: 100vw;
     height: 60vh;
@@ -240,7 +240,7 @@
 
 @media (max-width: 480px) {
   #hero-section .slide img {
-    transform: translateX(-50%) scale(2.8) !important;
+    transform: translateX(-50%) scale(1.9) !important;
     height: 55vh;
   }
   
