@@ -183,21 +183,23 @@
     justify-content: center;
   }
   
-  #hero-section .slide img {
-    margin-top: 0 !important;
-    transform: scale(1.2) !important;
-    object-fit: contain;
-    max-height: 80vh;
-  }
-  
   #hero-section .slide {
     display: flex;
     align-items: center;
     justify-content: center;
+    height: 100vh;
   }
   
-  /* Ensure navigation arrows don't overlap with content */
-  #hero-section .absolute.bottom-4 {
+  #hero-section .slide img {
+    margin-top: 0 !important;
+    transform: scale(1.0) !important;
+    object-fit: contain;
+    max-height: 85vh;
+    max-width: 90vw;
+  }
+  
+  /* Ensure navigation arrows are properly positioned */
+  #hero-section .absolute.bottom-20 {
     z-index: 10;
   }
   
@@ -209,8 +211,8 @@
 
 @media (max-width: 480px) {
   #hero-section .slide img {
-    transform: scale(1.1) !important;
-    max-height: 70vh;
+    max-height: 75vh;
+    max-width: 85vw;
   }
   
   /* Even smaller text on very small screens */
