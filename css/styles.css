@@ -209,12 +209,12 @@
   /* Target mobile images specifically - any image that is not hidden on mobile */
   #hero-section .slide img:not(.hidden) {
     position: absolute !important;
-    top: 0 !important;
+    top: 15vh !important;
     left: 50% !important;
     transform: translateX(-50%) scale(1.3) !important;
     object-fit: contain !important;
     width: 100vw !important;
-    height: 60vh !important;
+    height: 50vh !important;
     object-position: center !important;
     z-index: 1 !important;
   }
@@ -222,7 +222,7 @@
   /* Position text and buttons below the image */
   #hero-section .absolute.left-4 {
     position: absolute !important;
-    top: 55vh !important;
+    top: 65vh !important;
     left: 1rem !important;
     bottom: auto !important;
     z-index: 10;
@@ -231,7 +231,7 @@
   /* Position navigation below the image */
   #hero-section .absolute.bottom-20 {
     position: absolute !important;
-    top: 70vh !important;
+    top: 80vh !important;
     right: 1rem !important;
     bottom: auto !important;
     z-index: 10;
@@ -241,16 +241,17 @@
 @media (max-width: 480px) {
   #hero-section .slide img:not(.hidden) {
     transform: translateX(-50%) scale(1.4) !important;
-    height: 55vh !important;
+    top: 12vh !important;
+    height: 48vh !important;
   }
   
   /* Adjust positioning for very small screens */
   #hero-section .absolute.left-4 {
-    top: 50vh !important;
+    top: 60vh !important;
   }
   
   #hero-section .absolute.bottom-20 {
-    top: 65vh !important;
+    top: 75vh !important;
   }
   
   /* Even smaller text on very small screens */
