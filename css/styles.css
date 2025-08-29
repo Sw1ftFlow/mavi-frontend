@@ -219,10 +219,15 @@
     z-index: 1 !important;
   }
   
+  /* Special positioning for black slide desktop image on mobile (should be hidden) */
+  #hero-section .slide.bg-black img.hidden {
+    display: none !important;
+  }
+  
   /* Position text and buttons below the image */
   #hero-section .absolute.left-4 {
     position: absolute !important;
-    top: 61vh !important;
+    top: 59vh !important;
     left: 1rem !important;
     bottom: auto !important;
     z-index: 10;
@@ -247,7 +252,7 @@
   
   /* Adjust positioning for very small screens */
   #hero-section .absolute.left-4 {
-    top: 58vh !important;
+    top: 56vh !important;
   }
   
   #hero-section .absolute.bottom-20 {
