@@ -178,6 +178,7 @@
 @media (max-width: 1024px) {
   #hero-section {
     min-height: 100vh;
+    height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -188,14 +189,17 @@
     align-items: center;
     justify-content: center;
     height: 100vh;
+    position: relative;
   }
   
   #hero-section .slide img {
-    margin-top: 0 !important;
-    transform: scale(1.4) !important;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1.4) !important;
     object-fit: contain;
-    max-height: 95vh;
-    max-width: 95vw;
+    max-height: 100vh;
+    max-width: 100vw;
     object-position: center;
   }
   
@@ -212,9 +216,9 @@
 
 @media (max-width: 480px) {
   #hero-section .slide img {
-    transform: scale(1.6) !important;
-    max-height: 95vh;
-    max-width: 95vw;
+    transform: translate(-50%, -50%) scale(1.6) !important;
+    max-height: 100vh;
+    max-width: 100vw;
   }
   
   /* Even smaller text on very small screens */
