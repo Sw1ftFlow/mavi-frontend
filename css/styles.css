@@ -206,17 +206,17 @@
     flex-direction: column;
   }
   
-  /* Mobile image positioning - take up top 60% of screen */
-  #hero-section .slide img {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%) scale(1.7) !important;
-    object-fit: contain;
-    width: 100vw;
-    height: 60vh;
-    object-position: center;
-    z-index: 1;
+  /* Target mobile images specifically - any image that is not hidden on mobile */
+  #hero-section .slide img:not(.hidden) {
+    position: absolute !important;
+    top: 0 !important;
+    left: 50% !important;
+    transform: translateX(-50%) scale(1.3) !important;
+    object-fit: contain !important;
+    width: 100vw !important;
+    height: 60vh !important;
+    object-position: center !important;
+    z-index: 1 !important;
   }
   
   /* Position text and buttons below the image */
@@ -239,9 +239,9 @@
 }
 
 @media (max-width: 480px) {
-  #hero-section .slide img {
-    transform: translateX(-50%) scale(1.9) !important;
-    height: 55vh;
+  #hero-section .slide img:not(.hidden) {
+    transform: translateX(-50%) scale(1.4) !important;
+    height: 55vh !important;
   }
   
   /* Adjust positioning for very small screens */
