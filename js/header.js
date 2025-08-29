@@ -31,30 +31,105 @@ document.addEventListener('DOMContentLoaded', async () => {
           }
           <span class="text-2xl font-semibold tracking-tight text-black" style="font-family: 'Inter', sans-serif;">MAVI</span>
         </a>
-        <nav>
+        
+        <!-- Desktop Navigation -->
+        <nav class="hidden md:block">
           <ul class="flex space-x-6">
             <li><a href="index.html" class="text-gray-700 hover:text-blue-700">Hem</a></li>
             <li><a href="product.html" class="text-gray-700 hover:text-blue-700">Kollektion</a></li>
             <li><a href="contact.html" class="text-gray-700 hover:text-blue-700">Kontakt</a></li>
           </ul>
         </nav>
-        <button id="cart-open" class="relative px-2 py-2 rounded transition cursor-pointer" aria-label="Öppna varukorg" style="background: none;">
-          <!-- Smaller bag icon SVG -->
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28" fill="none" class="w-6 h-6 stroke-black" stroke="currentColor" stroke-width="1.3">
-            <rect x="5" y="9" width="18" height="13" rx="3" />
-            <path d="M9 9V7a5 5 0 0 1 10 0v2" />
-          </svg>
-          <span id="cart-count"
-            class="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 rounded-full bg-black text-white text-[10px] font-medium border-2 border-white select-none"
-            style="font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif; display: none;">
-            0
-          </span>
-        </button>
+
+        <!-- Mobile & Desktop Cart + Mobile Menu Toggle -->
+        <div class="flex items-center space-x-4">
+          <!-- Cart Button -->
+          <button id="cart-open" class="relative px-2 py-2 rounded transition cursor-pointer" aria-label="Öppna varukorg" style="background: none;">
+            <!-- Smaller bag icon SVG -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28" fill="none" class="w-6 h-6 stroke-black" stroke="currentColor" stroke-width="1.3">
+              <rect x="5" y="9" width="18" height="13" rx="3" />
+              <path d="M9 9V7a5 5 0 0 1 10 0v2" />
+            </svg>
+            <span id="cart-count"
+              class="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 rounded-full bg-black text-white text-[10px] font-medium border-2 border-white select-none"
+              style="font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif; display: none;">
+              0
+            </span>
+          </button>
+
+          <!-- Mobile Menu Toggle -->
+          <button id="mobile-menu-toggle" class="md:hidden p-2" aria-label="Öppna meny">
+            <svg id="menu-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+            <svg id="close-icon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Navigation Menu -->
+      <div id="mobile-menu" class="md:hidden hidden bg-white border-t border-gray-200">
+        <nav class="container mx-auto px-4 py-4">
+          <ul class="space-y-4">
+            <li><a href="index.html" class="block text-gray-700 hover:text-blue-700 py-2 text-lg">Hem</a></li>
+            <li><a href="product.html" class="block text-gray-700 hover:text-blue-700 py-2 text-lg">Kollektion</a></li>
+            <li><a href="contact.html" class="block text-gray-700 hover:text-blue-700 py-2 text-lg">Kontakt</a></li>
+          </ul>
+        </nav>
       </div>
     </header>
   `;
   const placeholder = document.getElementById('header-placeholder');
   if (placeholder) {
     placeholder.innerHTML = headerHTML;
+    
+    // Initialize mobile menu functionality
+    initializeMobileMenu();
   }
 });
+
+function initializeMobileMenu() {
+  const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const menuIcon = document.getElementById('menu-icon');
+  const closeIcon = document.getElementById('close-icon');
+
+  if (mobileMenuToggle && mobileMenu && menuIcon && closeIcon) {
+    mobileMenuToggle.addEventListener('click', () => {
+      const isHidden = mobileMenu.classList.contains('hidden');
+      
+      if (isHidden) {
+        // Show menu
+        mobileMenu.classList.remove('hidden');
+        menuIcon.classList.add('hidden');
+        closeIcon.classList.remove('hidden');
+      } else {
+        // Hide menu
+        mobileMenu.classList.add('hidden');
+        menuIcon.classList.remove('hidden');
+        closeIcon.classList.add('hidden');
+      }
+    });
+
+    // Close menu when clicking on a link
+    const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+    mobileMenuLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.add('hidden');
+        menuIcon.classList.remove('hidden');
+        closeIcon.classList.add('hidden');
+      });
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (event) => {
+      if (!mobileMenuToggle.contains(event.target) && !mobileMenu.contains(event.target)) {
+        mobileMenu.classList.add('hidden');
+        menuIcon.classList.remove('hidden');
+        closeIcon.classList.add('hidden');
+      }
+    });
+  }
+}
