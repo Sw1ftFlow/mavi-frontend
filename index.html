@@ -10,110 +10,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="stylesheet" href="./css/styles.css">
   <style type="text/tailwindcss">
     @theme {
         --color-clifford: #da373d;
       }
     </style>
-  <style>
-    .product-image {
-      transition: transform 0.3s ease;
-    }
-    .product-image:hover {
-      transform: scale(1.05);
-    }
-    
-    /* Slideshow Styles */
-    .slide {
-      display: none;
-      opacity: 0;
-      transition: opacity 0.5s ease-in-out;
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-    }
-    .slide.active {
-      display: block;
-      opacity: 1;
-    }
-    
-    .slide-indicator.active {
-      opacity: 1 !important;
-    }
-    
-    .navigation-arrow {
-      background: none;
-      border: none;
-      cursor: pointer;
-      user-select: none;
-      opacity: 1;
-      transition: opacity 0.3s ease;
-    }
-    
-    .navigation-arrow:hover {
-      opacity: 0.7;
-    }
-    
-    /* Ensure full coverage */
-    #hero-section {
-      min-height: 100vh;
-      overflow: hidden;
-    }
-    
-    /* Dynamic arrow colors based on background */
-    #hero-section[data-bg="white"] .navigation-arrow {
-      color: #000000;
-    }
-    
-    #hero-section[data-bg="black"] .navigation-arrow {
-      color: #ffffff;
-    }
-    
-    /* Cookie Banner Styles */
-    .cookie-banner {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: rgba(0, 0, 0, 0.95);
-      color: white;
-      padding: 20px;
-      z-index: 1000;
-      transform: translateY(100%);
-      transition: transform 0.3s ease-in-out;
-    }
-    
-    .cookie-banner.show {
-      transform: translateY(0);
-    }
-    
-    .cookie-banner button {
-      background: white;
-      color: black;
-      border: none;
-      padding: 10px 20px;
-      margin-left: 15px;
-      cursor: pointer;
-      font-weight: 500;
-      transition: background-color 0.3s ease;
-    }
-    
-    .cookie-banner button:hover {
-      background: #f0f0f0;
-    }
-    
-    .cookie-banner .decline-btn {
-      background: transparent;
-      color: white;
-      border: 1px solid white;
-    }
-    
-    .cookie-banner .decline-btn:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
-  </style>
 </head>
 
 <body class="bg-white min-h-screen flex flex-col">
@@ -137,12 +39,12 @@
           <div class="absolute left-16 bottom-32 text-black">
             <h2 class="text-6xl font-light mb-2">"OZON"</h2>
             <p class="text-lg mb-8">av MAVI</p>
-            <button class="border-2 border-black px-8 py-3 text-black hover:bg-black hover:text-white transition-colors duration-300 flex items-center">
+            <a href="productDetail.html?id=3" class="border-2 border-black px-8 py-3 text-black hover:bg-black hover:text-white transition-colors duration-300 flex items-center">
               <span>UPPTÄCK MER</span>
               <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
               </svg>
-            </button>
+            </a>
           </div>
           
           <!-- Bottom Right Navigation Dots with Arrows -->
@@ -171,12 +73,12 @@
           <div class="absolute left-16 bottom-32 text-white">
             <h2 class="text-6xl font-light mb-2">"OZON"</h2>
             <p class="text-lg mb-8">av MAVI</p>
-            <button class="border-2 border-white px-8 py-3 text-white hover:bg-white hover:text-black transition-colors duration-300 flex items-center">
+            <a href="productDetail.html?id=3" class="border-2 border-white px-8 py-3 text-white hover:bg-white hover:text-black transition-colors duration-300 flex items-center">
               <span>UPPTÄCK MER</span>
               <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
               </svg>
-            </button>
+            </a>
           </div>
           
           <!-- Bottom Right Navigation Dots with Arrows -->
