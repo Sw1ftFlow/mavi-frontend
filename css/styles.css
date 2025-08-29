@@ -192,10 +192,11 @@
   
   #hero-section .slide img {
     margin-top: 0 !important;
-    transform: scale(1.0) !important;
+    transform: scale(1.4) !important;
     object-fit: contain;
-    max-height: 85vh;
-    max-width: 90vw;
+    max-height: 95vh;
+    max-width: 95vw;
+    object-position: center;
   }
   
   /* Ensure navigation arrows are properly positioned */
@@ -211,8 +212,9 @@
 
 @media (max-width: 480px) {
   #hero-section .slide img {
-    max-height: 75vh;
-    max-width: 85vw;
+    transform: scale(1.6) !important;
+    max-height: 95vh;
+    max-width: 95vw;
   }
   
   /* Even smaller text on very small screens */
