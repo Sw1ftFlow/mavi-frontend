@@ -267,6 +267,19 @@ async function loadProduct() {
           cartCount.textContent = totalCount;
           cartCount.style.display = totalCount > 0 ? 'flex' : 'none';
         }
+
+        // Open the cart drawer immediately
+        const backdrop = document.getElementById('cart-backdrop');
+        const drawer = document.getElementById('cart-drawer');
+        if (backdrop && drawer) {
+          // Render the cart with updated items
+          if (window.renderCart) {
+            window.renderCart();
+          }
+          // Show the cart drawer
+          backdrop.classList.remove('hidden');
+          drawer.classList.remove('translate-x-full');
+        }
       });
     }
 

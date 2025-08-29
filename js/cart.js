@@ -312,8 +312,9 @@ document.addEventListener('DOMContentLoaded', () => {
     updateCartCount();
   });
 
-  // Expose updateCartCount for other scripts (like product add)
+  // Expose updateCartCount and renderCart for other scripts (like product add)
   window.updateCartCount = updateCartCount;
+  window.renderCart = renderCart;
 });
 
 // Example: Add product to cart in localStorage
