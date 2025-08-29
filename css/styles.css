@@ -176,19 +176,31 @@
 
 /* Mobile Hero Section Improvements */
 @media (max-width: 1024px) {
+  /* Make header overlay on top of hero section */
+  #header-placeholder {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+  }
+  
   #hero-section {
-    min-height: calc(100vh - 80px);
-    height: calc(100vh - 80px);
+    min-height: 100vh;
+    height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-top: 0;
   }
   
   #hero-section .slide {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100%;
+    height: 100vh;
     position: relative;
   }
   
@@ -196,9 +208,9 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) scale(1.5) !important;
+    transform: translate(-50%, -50%) scale(1.6) !important;
     object-fit: contain;
-    max-height: calc(100vh - 80px);
+    max-height: 100vh;
     max-width: 100vw;
     object-position: center;
   }
@@ -215,14 +227,9 @@
 }
 
 @media (max-width: 480px) {
-  #hero-section {
-    min-height: calc(100vh - 70px);
-    height: calc(100vh - 70px);
-  }
-  
   #hero-section .slide img {
-    transform: translate(-50%, -50%) scale(1.7) !important;
-    max-height: calc(100vh - 70px);
+    transform: translate(-50%, -50%) scale(1.8) !important;
+    max-height: 100vh;
     max-width: 100vw;
   }
   
