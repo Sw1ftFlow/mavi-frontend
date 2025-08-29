@@ -216,7 +216,6 @@
             <div>
               <h3 class="font-semibold text-gray-900">E-post</h3>
               <p class="text-gray-600">info@mavidesign.se</p>
-              <p class="text-sm text-gray-500 mt-1">Vi svarar vanligtvis inom 24 timmar</p>
             </div>
           </div>
 
@@ -422,7 +421,6 @@
           // Shared fields (reuse for date/time)
           order_date: orderDate,
           order_time: orderTime,
-          to_email: 'info@mavidesign.se',
           
           // Order fields set to null/empty (so template knows this is a contact form)
           order_items: null,
@@ -434,18 +432,21 @@
           order_total: null
         };
 
-        // Add base64 attachments to template params for EmailJS
-        for (let i = 0; i < selectedFiles.length; i++) {
-          const base64 = await fileToBase64(selectedFiles[i]);
-          templateParams[`attachment_${i + 1}`] = base64;
-          templateParams[`attachment_${i + 1}_name`] = selectedFiles[i].name;
+        // Add base64 attachments to template params for EmailJS (only if files exist)
+        if (selectedFiles.length > 0) {
+          for (let i = 0; i < selectedFiles.length; i++) {
+            const base64 = await fileToBase64(selectedFiles[i]);
+            templateParams[`attachment_${i + 1}`] = base64;
+            templateParams[`attachment_${i + 1}_name`] = selectedFiles[i].name;
+          }
         }
 
         // Send email using EmailJS
         await emailjs.send(
-          'service_8ysj6fh', // Your Gmail Service ID
+          'service_a599pmp', // Your Gmail Service ID
           'template_247sx9d', // Your order template ID
-          templateParams
+          templateParams,
+          'EXLO5_EZugAYOuHiB' // Your public key
         );
 
         // Show success message
@@ -466,13 +467,11 @@
         displayFilePreview();
 
       } catch (error) {
-        console.error('Error sending email:', error);
-        
         // Show error message
         messageDiv.className = 'error-message p-4 rounded-lg border';
         messageDiv.innerHTML = `
-          <div class="flex items-center">
-            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+          <div class="flex items-start">
+            <svg class="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
             </svg>
             <span><strong>Fel:</strong> Meddelandet kunde inte skickas. Försök igen eller kontakta oss direkt på info@mavidesign.se</span>
