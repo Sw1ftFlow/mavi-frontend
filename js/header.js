@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           <ul class="flex space-x-6">
             <li><a href="index.html" class="text-gray-700 hover:text-blue-700">Hem</a></li>
             <li><a href="product.html" class="text-gray-700 hover:text-blue-700">Kollektion</a></li>
-            <li><a href="#" class="text-gray-700 hover:text-blue-700">Kontakt</a></li>
+            <li><a href="contact.html" class="text-gray-700 hover:text-blue-700">Kontakt</a></li>
           </ul>
         </nav>
         <button id="cart-open" class="relative px-2 py-2 rounded transition cursor-pointer" aria-label="Öppna varukorg" style="background: none;">
