@@ -23,7 +23,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const headerHTML = `
     <header class="bg-white" style="font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;">
-      <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+      <!-- Desktop Layout -->
+      <div class="container mx-auto px-4 py-4 hidden lg:flex justify-between items-center">
         <a href="index.html" class="flex items-center gap-3">
           ${logoUrl
             ? `<img src="${logoUrl}" alt="Logo" class="h-10 w-auto object-contain" />`
@@ -33,7 +34,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         </a>
         
         <!-- Desktop Navigation -->
-        <nav class="hidden md:block">
+        <nav>
           <ul class="flex space-x-6">
             <li><a href="index.html" class="text-gray-700 hover:text-blue-700">Hem</a></li>
             <li><a href="product.html" class="text-gray-700 hover:text-blue-700">Kollektion</a></li>
@@ -41,11 +42,9 @@ document.addEventListener('DOMContentLoaded', async () => {
           </ul>
         </nav>
 
-        <!-- Mobile & Desktop Cart + Mobile Menu Toggle -->
-        <div class="flex items-center space-x-4">
-          <!-- Cart Button -->
+        <!-- Desktop Cart -->
+        <div class="flex items-center">
           <button id="cart-open" class="relative px-2 py-2 rounded transition cursor-pointer" aria-label="Öppna varukorg" style="background: none;">
-            <!-- Smaller bag icon SVG -->
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28" fill="none" class="w-6 h-6 stroke-black" stroke="currentColor" stroke-width="1.3">
               <rect x="5" y="9" width="18" height="13" rx="3" />
               <path d="M9 9V7a5 5 0 0 1 10 0v2" />
@@ -56,21 +55,48 @@ document.addEventListener('DOMContentLoaded', async () => {
               0
             </span>
           </button>
-
-          <!-- Mobile Menu Toggle -->
-          <button id="mobile-menu-toggle" class="md:hidden p-2" aria-label="Öppna meny">
-            <svg id="menu-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-            </svg>
-            <svg id="close-icon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-          </button>
         </div>
       </div>
 
+      <!-- Mobile Layout -->
+      <div class="container mx-auto px-4 py-4 lg:hidden flex items-center">
+        <!-- Mobile Menu Toggle (Left) -->
+        <button id="mobile-menu-toggle" class="p-3 rounded-md hover:bg-gray-100 transition-colors" aria-label="Öppna meny">
+          <svg id="menu-icon" class="w-7 h-7 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+          <svg id="close-icon" class="w-7 h-7 text-gray-700 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+
+        <!-- Logo (Center) -->
+        <div class="flex-1 flex justify-center">
+          <a href="index.html" class="flex items-center gap-2">
+            ${logoUrl
+              ? `<img src="${logoUrl}" alt="Logo" class="h-8 w-auto object-contain" />`
+              : `<span class="text-xl font-bold text-blue-700">Mavi</span>`
+            }
+            <span class="text-xl font-semibold tracking-tight text-black" style="font-family: 'Inter', sans-serif;">MAVI</span>
+          </a>
+        </div>
+
+        <!-- Cart Button (Right) -->
+        <button id="cart-open-mobile" class="relative px-2 py-2 rounded transition cursor-pointer" aria-label="Öppna varukorg" style="background: none;">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28" fill="none" class="w-6 h-6 stroke-black" stroke="currentColor" stroke-width="1.3">
+            <rect x="5" y="9" width="18" height="13" rx="3" />
+            <path d="M9 9V7a5 5 0 0 1 10 0v2" />
+          </svg>
+          <span id="cart-count-mobile"
+            class="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 rounded-full bg-black text-white text-[10px] font-medium border-2 border-white select-none"
+            style="font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif; display: none;">
+            0
+          </span>
+        </button>
+      </div>
+
       <!-- Mobile Navigation Menu -->
-      <div id="mobile-menu" class="md:hidden hidden bg-white border-t border-gray-200">
+      <div id="mobile-menu" class="lg:hidden hidden bg-white border-t border-gray-200">
         <nav class="container mx-auto px-4 py-4">
           <ul class="space-y-4">
             <li><a href="index.html" class="block text-gray-700 hover:text-blue-700 py-2 text-lg">Hem</a></li>
@@ -131,5 +157,17 @@ function initializeMobileMenu() {
         closeIcon.classList.add('hidden');
       }
     });
+  }
+
+  // Handle both desktop and mobile cart buttons
+  const cartButton = document.getElementById('cart-open');
+  const cartButtonMobile = document.getElementById('cart-open-mobile');
+  
+  if (cartButton && window.openCart) {
+    cartButton.addEventListener('click', window.openCart);
+  }
+  
+  if (cartButtonMobile && window.openCart) {
+    cartButtonMobile.addEventListener('click', window.openCart);
   }
 }

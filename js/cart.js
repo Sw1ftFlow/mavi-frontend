@@ -66,17 +66,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function setupCartDrawer() {
     const openBtn = document.getElementById('cart-open');
+    const openBtnMobile = document.getElementById('cart-open-mobile');
     const closeBtn = document.getElementById('cart-close');
     const backdrop = document.getElementById('cart-backdrop');
     const drawer = document.getElementById('cart-drawer');
     const cartCount = document.getElementById('cart-count');
 
-    if (openBtn && closeBtn && backdrop && drawer) {
-      openBtn.addEventListener('click', () => {
-        renderCart(); // <-- Make sure this is called!
-        backdrop.classList.remove('hidden');
-        drawer.classList.remove('translate-x-full');
-      });
+    const openCart = () => {
+      renderCart(); // <-- Make sure this is called!
+      backdrop.classList.remove('hidden');
+      drawer.classList.remove('translate-x-full');
+    };
+
+    if (closeBtn && backdrop && drawer) {
+      // Desktop cart button
+      if (openBtn) {
+        openBtn.addEventListener('click', openCart);
+      }
+      
+      // Mobile cart button
+      if (openBtnMobile) {
+        openBtnMobile.addEventListener('click', openCart);
+      }
+      
       closeBtn.addEventListener('click', () => {
         backdrop.classList.add('hidden');
         drawer.classList.add('translate-x-full');
@@ -85,6 +97,9 @@ document.addEventListener('DOMContentLoaded', () => {
         backdrop.classList.add('hidden');
         drawer.classList.add('translate-x-full');
       });
+      
+      // Make openCart available globally for header.js
+      window.openCart = openCart;
     } else {
       setTimeout(setupCartDrawer, 100);
     }
@@ -275,33 +290,20 @@ document.addEventListener('DOMContentLoaded', () => {
   function updateCartCount() {
     const cart = JSON.parse(localStorage.getItem('cart')) || [];
     const cartCount = document.getElementById('cart-count');
+    const cartCountMobile = document.getElementById('cart-count-mobile');
     const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+    
+    // Update desktop cart count
     if (cartCount) {
       cartCount.textContent = totalCount;
       cartCount.style.display = totalCount > 0 ? 'flex' : 'none';
     }
-  }
-
-  // Open cart
-  const openBtn = document.getElementById('cart-open');
-  const closeBtn = document.getElementById('cart-close');
-  const backdrop = document.getElementById('cart-backdrop');
-  const drawer = document.getElementById('cart-drawer');
-
-  if (openBtn && closeBtn && backdrop && drawer) {
-    openBtn.addEventListener('click', () => {
-      renderCart();
-      backdrop.classList.remove('hidden');
-      drawer.classList.remove('translate-x-full');
-    });
-    closeBtn.addEventListener('click', () => {
-      backdrop.classList.add('hidden');
-      drawer.classList.add('translate-x-full');
-    });
-    backdrop.addEventListener('click', () => {
-      backdrop.classList.add('hidden');
-      drawer.classList.add('translate-x-full');
-    });
+    
+    // Update mobile cart count
+    if (cartCountMobile) {
+      cartCountMobile.textContent = totalCount;
+      cartCountMobile.style.display = totalCount > 0 ? 'flex' : 'none';
+    }
   }
 
   // Update cart count on page load
