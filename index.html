@@ -279,10 +279,10 @@
       }
       
       // Event listeners for arrows
-      document.querySelectorAll('.prev-slide-btn').forEach(button => {
+      document.querySelectorAll('#prev-slide, .prev-slide-btn').forEach(button => {
         button.addEventListener('click', prevSlide);
       });
-      document.querySelectorAll('.next-slide-btn').forEach(button => {
+      document.querySelectorAll('#next-slide, .next-slide-btn').forEach(button => {
         button.addEventListener('click', nextSlide);
       });
       
