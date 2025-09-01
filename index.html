@@ -1,363 +1,313 @@
 <!DOCTYPE html>
 <html lang="sv">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAVI - Premium Design Lamps</title>
-    
-    <!-- Favicons -->
-    <link rel="icon" type="image/png" sizes="32x32" href="./img/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="./img/favicon-16x16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="./img/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="./img/android-chrome-192x192.png">
-    <link rel="icon" type="image/png" sizes="512x512" href="./img/android-chrome-512x512.png">
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Custom Styles -->
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        
-        * {
-            font-family: 'Inter', sans-serif;
-        }
-        
-        .hero-gradient {
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-        }
-        
-        .product-hover {
-            transition: all 0.3s ease;
-        }
-        
-        .product-hover:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-        }
-        
-        .nav-link {
-            position: relative;
-            transition: color 0.3s ease;
-        }
-        
-        .nav-link:hover {
-            color: #1f2937;
-        }
-        
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: -4px;
-            left: 0;
-            background-color: #1f2937;
-            transition: width 0.3s ease;
-        }
-        
-        .nav-link:hover::after {
-            width: 100%;
-        }
-        
-        .btn-primary {
-            background: #1f2937;
-            color: white;
-            padding: 12px 32px;
-            border-radius: 6px;
-            text-decoration: none;
-            display: inline-block;
-            transition: all 0.3s ease;
-            border: 2px solid #1f2937;
-        }
-        
-        .btn-primary:hover {
-            background: transparent;
-            color: #1f2937;
-        }
-        
-        .btn-secondary {
-            background: transparent;
-            color: #1f2937;
-            padding: 12px 32px;
-            border-radius: 6px;
-            text-decoration: none;
-            display: inline-block;
-            transition: all 0.3s ease;
-            border: 2px solid #1f2937;
-        }
-        
-        .btn-secondary:hover {
-            background: #1f2937;
-            color: white;
-        }
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script src="./js/utils.js"></script>
+  <script src="./js/getProducts.js"></script>
+  <script src="./js/header.js"></script>
+  <script src="./js/cart.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="./img/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="./img/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="./img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="./img/android-chrome-192x192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="./img/android-chrome-512x512.png">
+  
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="stylesheet" href="./css/styles.css">
+  <style type="text/tailwindcss">
+    @theme {
+        --color-clifford: #da373d;
+      }
     </style>
 </head>
-<body class="bg-white">
-    <!-- Navigation -->
-    <nav class="bg-white shadow-sm fixed w-full top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <!-- Logo -->
-                <div class="flex-shrink-0">
-                    <h1 class="text-2xl font-bold text-gray-900">MAVI</h1>
-                </div>
-                
-                <!-- Desktop Navigation -->
-                <div class="hidden md:block">
-                    <div class="ml-10 flex items-baseline space-x-8">
-                        <a href="index.html" class="nav-link text-gray-600">Hem</a>
-                        <a href="product.html" class="nav-link text-gray-600">Produkter</a>
-                        <a href="contact.html" class="nav-link text-gray-600">Kontakt</a>
-                    </div>
-                </div>
-                
-                <!-- Cart -->
-                <div class="flex items-center space-x-4">
-                    <button id="cart-btn" class="relative p-2">
-                        <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 6M7 13l-1.5 6m0 0h9"></path>
-                        </svg>
-                        <span id="cart-count" class="absolute -top-1 -right-1 bg-gray-900 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
-                    </button>
-                    
-                    <!-- Mobile menu button -->
-                    <button id="mobile-menu-btn" class="md:hidden p-2">
-                        <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Mobile Navigation -->
-        <div id="mobile-menu" class="md:hidden hidden bg-white border-t">
-            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                <a href="index.html" class="block px-3 py-2 text-gray-600">Hem</a>
-                <a href="product.html" class="block px-3 py-2 text-gray-600">Produkter</a>
-                <a href="contact.html" class="block px-3 py-2 text-gray-600">Kontakt</a>
-            </div>
-        </div>
-    </nav>
 
-    <!-- Hero Section -->
-    <section class="hero-gradient min-h-screen flex items-center pt-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                <!-- Content -->
-                <div class="text-center lg:text-left">
-                    <h2 class="text-4xl sm:text-5xl lg:text-6xl font-light text-gray-900 mb-6">
-                        Premium
-                        <span class="font-semibold block">Design Lamps</span>
-                    </h2>
-                    <p class="text-xl text-gray-600 mb-8 max-w-lg mx-auto lg:mx-0">
-                        Upptäck vår exklusiva kollektion av handgjorda lampor som förvandlar ditt hem till en designoase.
-                    </p>
-                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                        <a href="product.html" class="btn-primary text-center">
-                            Utforska Kollektionen
-                        </a>
-                        <a href="contact.html" class="btn-secondary text-center">
-                            Kontakta Oss
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- Product Image -->
-                <div class="flex justify-center lg:justify-end">
-                    <div class="relative">
-                        <div class="absolute inset-0 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-full blur-3xl opacity-30"></div>
-                        <img 
-                            src="./img/ozon_thumbnail4.png" 
-                            alt="OZON Premium Lamp" 
-                            class="relative z-10 w-full max-w-lg h-auto object-contain"
-                        >
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<body class="bg-white min-h-screen flex flex-col">
+  <!-- Header -->
+  <div id="header-placeholder"></div>
 
-    <!-- Featured Product Section -->
-    <section class="py-20 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h3 class="text-3xl sm:text-4xl font-light text-gray-900 mb-4">
-                    Utvalda Produkter
-                </h3>
-                <p class="text-lg text-gray-600 max-w-2xl mx-auto">
-                    Handplockat från vår premiumkollektion för att skapa den perfekta atmosfären i ditt hem.
-                </p>
+  <!-- Hero Section with Slideshow -->
+  <section id="hero-section" class="relative w-full h-screen bg-white flex items-center justify-center">
+    <div class="relative w-full h-full">
+      <!-- Slide 1: Ozonlamp -->
+      <div class="slide active" data-bg="white">
+        <!-- Desktop Image -->
+        <img 
+          src="./img/ozon_thumbnail4.png" 
+          alt="Ozon Lamp Product" 
+          class="hidden lg:block w-full h-full object-contain mx-auto transform lg:scale-110"
+        />
+        <!-- Mobile Image -->
+        <img 
+          src="./img/ozon_thumbnail4.png" 
+          alt="Ozon Lamp Product" 
+          class="block lg:hidden w-full h-full object-contain mx-auto transform"
+        />
+        <!-- Content Overlay -->
+        <div class="absolute inset-0 flex items-end justify-between px-4 lg:px-16 xl:px-40 2xl:px-64 pb-32 lg:pb-40">
+          <!-- Left Content -->
+          <div class="text-black">
+            <h2 class="text-4xl lg:text-6xl font-light mb-2">"OZON"</h2>
+            <p class="text-base lg:text-lg mb-6 lg:mb-8">av MAVI</p>
+            <a href="productDetail.html?id=3" class="border-2 border-black px-6 lg:px-8 py-2 lg:py-3 text-black hover:bg-black hover:text-white transition-colors duration-300 flex items-center text-sm lg:text-base">
+              <span>UPPTÄCK MER</span>
+              <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </a>
+          </div>
+          
+          <!-- Navigation Dots with Arrows - Same height as button -->
+          <div class="flex items-center space-x-3 lg:space-x-3">
+            <button id="prev-slide" class="text-4xl lg:text-4xl navigation-arrow leading-none">‹</button>
+            <div class="flex items-center space-x-2 lg:space-x-2 mt-2 lg:mt-0">
+              <button class="slide-indicator active w-4 h-4 lg:w-3 lg:h-3 rounded-full border-2 border-black bg-black" data-slide="0"></button>
+              <button class="slide-indicator w-4 h-4 lg:w-3 lg:h-3 rounded-full border-2 border-black bg-transparent" data-slide="1"></button>
             </div>
-            
-            <!-- Product Grid -->
-            <div id="products-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                <!-- Products will be loaded here -->
-            </div>
+            <button id="next-slide" class="text-4xl lg:text-4xl navigation-arrow leading-none">›</button>
+          </div>
         </div>
-    </section>
-
-    <!-- About Section -->
-    <section class="py-20 bg-gray-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                <div>
-                    <h3 class="text-3xl sm:text-4xl font-light text-gray-900 mb-6">
-                        Skandinavisk Design
-                        <span class="font-semibold block">Möter Innovation</span>
-                    </h3>
-                    <p class="text-lg text-gray-600 mb-6">
-                        Varje MAVI-lampa är noggrant utformad med fokus på minimalistisk skönhet och funktionalitet. Vi kombinerar traditionellt hantverk med modern teknik för att skapa belysning som är både tidlös och innovativ.
-                    </p>
-                    <p class="text-lg text-gray-600 mb-8">
-                        Våra produkter tillverkas med hållbara material och designas för att vara en del av ditt hem i många år framöver.
-                    </p>
-                    <a href="product.html" class="btn-primary">
-                        Läs Mer Om Oss
-                    </a>
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="bg-white p-6 rounded-lg shadow-sm">
-                        <div class="text-3xl font-bold text-gray-900 mb-2">100%</div>
-                        <div class="text-gray-600">Hållbara Material</div>
-                    </div>
-                    <div class="bg-white p-6 rounded-lg shadow-sm">
-                        <div class="text-3xl font-bold text-gray-900 mb-2">5år</div>
-                        <div class="text-gray-600">Garanti</div>
-                    </div>
-                    <div class="bg-white p-6 rounded-lg shadow-sm">
-                        <div class="text-3xl font-bold text-gray-900 mb-2">24h</div>
-                        <div class="text-gray-600">Snabb Leverans</div>
-                    </div>
-                    <div class="bg-white p-6 rounded-lg shadow-sm">
-                        <div class="text-3xl font-bold text-gray-900 mb-2">∞</div>
-                        <div class="text-gray-600">Tidlös Design</div>
-                    </div>
-                </div>
+      </div>
+      
+      <!-- Slide 2: Ozon Layers -->
+      <div class="slide bg-black" data-bg="black">
+        <!-- Desktop Image -->
+        <img 
+          src="./img/ozonlayers1.png" 
+          alt="Ozon Layers Product" 
+          class="hidden lg:block w-3/5 h-3/5 object-cover mx-auto transform scale-125"
+          style="object-position: center 40%;"
+        />
+        <!-- Mobile Image -->
+        <img 
+          src="./img/ozon16.jpeg" 
+          alt="Ozon Layers Product" 
+          class="block lg:hidden w-full h-full object-contain mx-auto transform"
+        />
+        <!-- Content Overlay -->
+        <div class="absolute inset-0 flex items-end justify-between px-4 lg:px-16 xl:px-40 2xl:px-64 pb-32 lg:pb-40">
+          <!-- Left Content -->
+          <div class="text-white">
+            <h2 class="text-4xl lg:text-6xl font-light mb-2">"OZON"</h2>
+            <p class="text-base lg:text-lg mb-6 lg:mb-8">av MAVI</p>
+            <a href="productDetail.html?id=3" class="border-2 border-white px-6 lg:px-8 py-2 lg:py-3 text-white hover:bg-white hover:text-black transition-colors duration-300 flex items-center text-sm lg:text-base">
+              <span>UPPTÄCK MER</span>
+              <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </a>
+          </div>
+          
+          <!-- Navigation Dots with Arrows - Same height as button, white for slide 2 -->
+          <div class="flex items-center space-x-3 lg:space-x-3">
+            <button class="prev-slide-btn text-4xl lg:text-4xl navigation-arrow leading-none text-white">‹</button>
+            <div class="flex items-center space-x-2 lg:space-x-2 mt-2 lg:mt-0">
+              <button class="slide-indicator w-4 h-4 lg:w-3 lg:h-3 rounded-full border-2 border-white bg-transparent" data-slide="0"></button>
+              <button class="slide-indicator active w-4 h-4 lg:w-3 lg:h-3 rounded-full border-2 border-white bg-white" data-slide="1"></button>
             </div>
+            <button class="next-slide-btn text-4xl lg:text-4xl navigation-arrow leading-none text-white">›</button>
+          </div>
         </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-white py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div class="col-span-1 md:col-span-2">
-                    <h4 class="text-2xl font-bold mb-4">MAVI</h4>
-                    <p class="text-gray-400 mb-6 max-w-md">
-                        Skapar exceptionella lampor som förvandlar ditt hem till en designoase med skandinavisk elegans och modern funktionalitet.
-                    </p>
-                </div>
-                <div>
-                    <h5 class="font-semibold mb-4">Snabblänkar</h5>
-                    <ul class="space-y-2 text-gray-400">
-                        <li><a href="index.html" class="hover:text-white transition-colors">Hem</a></li>
-                        <li><a href="product.html" class="hover:text-white transition-colors">Produkter</a></li>
-                        <li><a href="contact.html" class="hover:text-white transition-colors">Kontakt</a></li>
-                        <li><a href="privacy-policy.html" class="hover:text-white transition-colors">Integritetspolicy</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h5 class="font-semibold mb-4">Kontakt</h5>
-                    <ul class="space-y-2 text-gray-400">
-                        <li>info@mavidesign.se</li>
-                        <li>+46 123 456 789</li>
-                        <li>Stockholm, Sverige</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-                <p>&copy; 2025 MAVI. Alla rättigheter förbehållna.</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Cart Sidebar -->
-    <div id="cart-sidebar" class="fixed inset-y-0 right-0 max-w-sm w-full bg-white shadow-xl transform translate-x-full transition-transform duration-300 ease-in-out z-50">
-        <div class="flex flex-col h-full">
-            <div class="flex items-center justify-between p-6 border-b">
-                <h3 class="text-lg font-semibold">Varukorg</h3>
-                <button id="close-cart" class="p-2 hover:bg-gray-100 rounded">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
-            </div>
-            <div id="cart-items" class="flex-1 overflow-y-auto p-6">
-                <p class="text-gray-500 text-center py-8">Din varukorg är tom</p>
-            </div>
-            <div class="border-t p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <span class="font-semibold">Totalt:</span>
-                    <span id="cart-total" class="font-semibold">0 kr</span>
-                </div>
-                <button class="w-full btn-primary text-center">
-                    Gå till kassan
-                </button>
-            </div>
-        </div>
+      </div>
+      
     </div>
+  </section>
 
-    <!-- Cart Backdrop -->
-    <div id="cart-backdrop" class="fixed inset-0 bg-black bg-opacity-50 hidden z-40"></div>
+  <!-- Products Grid -->
+  <main class="flex-1 container mx-auto px-4 py-8 bg-white">
+    <h3 class="text-2xl font-bold text-gray-800 mb-6">Utvalda Produkter</h3>
+    <div id="products-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 bg-white">
+      <!-- Products will be injected here -->
+    </div>
+  </main>
 
-    <!-- Scripts -->
-    <script>
-        // Mobile menu toggle
-        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden');
+  <!-- Footer -->
+  <footer class="bg-white mt-8">
+    <div class="container mx-auto px-4 py-6 text-center text-gray-500">
+      <span>&copy; 2025 Mavi. Alla rättigheter förbehållna.</span>
+    </div>
+  </footer>
+
+  <!-- Cart Drawer -->
+  <div id="cart-backdrop" class="fixed inset-0 z-40 hidden" style="background: rgba(255,255,255,0.4);"></div>
+  <div id="cart-drawer" class="fixed top-0 right-0 h-full w-full max-w-xl bg-white shadow-xl z-50 transform translate-x-full transition-transform duration-300 flex flex-col" style="width:40vw; min-width:320px;">
+    <div class="flex items-center justify-between px-6 py-4 border-b">
+      <span class="text-xl font-semibold" style="font-family: 'Inter', sans-serif;">Varukorg</span>
+      <button id="cart-close" class="text-2xl text-gray-400 hover:text-black">&times;</button>
+    </div>
+    <!-- Cart items go here -->
+    <div id="cart-items" class="flex-1 overflow-y-auto px-6 py-4"></div>
+    <div class="border-t px-6 py-4">
+      <div class="flex justify-between items-center mb-4">
+        <span class="font-semibold">Totalt:</span>
+        <span id="cart-total" class="font-semibold">0 kr</span>
+      </div>
+      <button class="w-full bg-black text-white py-3 rounded-none font-semibold text-base hover:bg-gray-900 transition">
+        <span>Till kassan</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Cookie Banner -->
+  <div id="cookie-banner" class="cookie-banner">
+    <div class="container mx-auto px-4 flex flex-col sm:flex-row items-start sm:items-center justify-between">
+      <div class="flex-1 mb-4 sm:mb-0">
+        <p class="text-sm">
+          Vi använder cookies för att förbättra din upplevelse på vår webbplats. Detta inkluderar nödvändiga cookies för webbplatsens funktion och varukorgen. 
+          <a href="privacy-policy.html" class="underline hover:no-underline">Läs mer om vår integritetspolicy</a>
+        </p>
+      </div>
+      <div class="flex flex-col sm:flex-row gap-2">
+        <button id="decline-cookies" class="decline-btn px-4 py-2 text-sm">Avvisa</button>
+        <button id="accept-cookies" class="px-4 py-2 text-sm">Acceptera alla</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Cookie consent functionality
+    function showCookieBanner() {
+      const banner = document.getElementById('cookie-banner');
+      const hasConsent = localStorage.getItem('cookieConsent');
+      
+      if (!hasConsent) {
+        setTimeout(() => {
+          banner.classList.add('show');
+        }, 1000); // Show after 1 second
+      }
+    }
+    
+    function setCookieConsent(accepted) {
+      localStorage.setItem('cookieConsent', accepted ? 'accepted' : 'declined');
+      localStorage.setItem('cookieConsentDate', new Date().toISOString());
+      
+      const banner = document.getElementById('cookie-banner');
+      banner.classList.remove('show');
+      
+      if (accepted) {
+        // Here you can initialize analytics or other tracking
+        console.log('Cookies accepted - analytics can be initialized');
+      } else {
+        console.log('Cookies declined - only essential cookies will be used');
+      }
+    }
+
+    // Initialize the page and slideshow
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('Page loaded successfully');
+      
+      // Show cookie banner if needed
+      showCookieBanner();
+      
+      // Cookie banner event listeners
+      document.getElementById('accept-cookies').addEventListener('click', () => {
+        setCookieConsent(true);
+      });
+      
+      document.getElementById('decline-cookies').addEventListener('click', () => {
+        setCookieConsent(false);
+      });
+      
+      // Slideshow functionality
+      let currentSlide = 0;
+      const slides = document.querySelectorAll('.slide');
+      const indicators = document.querySelectorAll('.slide-indicator');
+      const heroSection = document.getElementById('hero-section');
+      
+      function showSlide(index) {
+        // Hide all slides and show the new one
+        slides.forEach(slide => slide.classList.remove('active'));
+        indicators.forEach(indicator => indicator.classList.remove('active'));
+        
+        // Show current slide
+        slides[index].classList.add('active');
+        
+        // Update indicators - find all indicators with matching data-slide attribute
+        document.querySelectorAll(`.slide-indicator[data-slide="${index}"]`).forEach(indicator => {
+          indicator.classList.add('active');
         });
-
-        // Cart functionality
-        let cartCount = 0;
-        let cartTotal = 0;
-
-        function updateCartDisplay() {
-            document.getElementById('cart-count').textContent = cartCount;
-            document.getElementById('cart-total').textContent = cartTotal + ' kr';
+        
+        // Update navigation colors based on slide
+        const arrows = document.querySelectorAll('.navigation-arrow');
+        const slideIndicators = document.querySelectorAll('.slide-indicator');
+        
+        if (index === 0) {
+          // Slide 1 - Black colors
+          arrows.forEach(arrow => {
+            arrow.style.color = 'black';
+          });
+          slideIndicators.forEach(indicator => {
+            indicator.style.borderColor = 'black';
+            if (indicator.classList.contains('active')) {
+              indicator.style.backgroundColor = 'black';
+            } else {
+              indicator.style.backgroundColor = 'transparent';
+            }
+          });
+        } else {
+          // Slide 2 - White colors  
+          arrows.forEach(arrow => {
+            arrow.style.color = 'white';
+          });
+          slideIndicators.forEach(indicator => {
+            indicator.style.borderColor = 'white';
+            if (indicator.classList.contains('active')) {
+              indicator.style.backgroundColor = 'white';
+            } else {
+              indicator.style.backgroundColor = 'transparent';
+            }
+          });
         }
-
-        function toggleCart() {
-            const sidebar = document.getElementById('cart-sidebar');
-            const backdrop = document.getElementById('cart-backdrop');
-            
-            sidebar.classList.toggle('translate-x-full');
-            backdrop.classList.toggle('hidden');
-        }
-
-        document.getElementById('cart-btn').addEventListener('click', toggleCart);
-        document.getElementById('close-cart').addEventListener('click', toggleCart);
-        document.getElementById('cart-backdrop').addEventListener('click', toggleCart);
-
-        // Load products (placeholder)
-        function loadProducts() {
-            const container = document.getElementById('products-container');
-            // This would normally fetch from your database
-            // For now, showing placeholder
-            container.innerHTML = `
-                <div class="product-hover bg-white rounded-lg shadow-sm overflow-hidden">
-                    <div class="aspect-square bg-gray-50 flex items-center justify-center">
-                        <img src="./img/ozon_thumbnail4.png" alt="OZON Lamp" class="w-full h-full object-contain p-4">
-                    </div>
-                    <div class="p-6">
-                        <h4 class="font-semibold text-gray-900 mb-2">OZON Premium Lamp</h4>
-                        <p class="text-gray-600 mb-4">Elegant designlampa med minimalistisk stil</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-xl font-bold text-gray-900">2,499 kr</span>
-                            <button class="btn-primary text-sm px-4 py-2">Köp nu</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            loadProducts();
-            updateCartDisplay();
+        
+        // Update hero section data attribute for arrow colors
+        const bgColor = slides[index].getAttribute('data-bg');
+        heroSection.setAttribute('data-bg', bgColor);
+      }
+      
+      function nextSlide() {
+        currentSlide = (currentSlide + 1) % slides.length;
+        showSlide(currentSlide);
+      }
+      
+      function prevSlide() {
+        currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+        showSlide(currentSlide);
+      }
+      
+      // Event listeners for arrows
+      document.querySelectorAll('#prev-slide, .prev-slide-btn').forEach(button => {
+        button.addEventListener('click', prevSlide);
+      });
+      document.querySelectorAll('#next-slide, .next-slide-btn').forEach(button => {
+        button.addEventListener('click', nextSlide);
+      });
+      
+      // Indicator clicks - handle indicators from all slides
+      document.querySelectorAll('.slide-indicator').forEach((indicator) => {
+        indicator.addEventListener('click', () => {
+          const slideIndex = parseInt(indicator.getAttribute('data-slide'));
+          currentSlide = slideIndex;
+          showSlide(currentSlide);
         });
-    </script>
+      });
+      
+      // Keyboard navigation
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') prevSlide();
+        if (e.key === 'ArrowRight') nextSlide();
+      });
+      
+      // Initialize first slide with correct colors
+      showSlide(0);
+      
+      // Auto-advance slides every 5 seconds (optional)
+      // setInterval(nextSlide, 5000);
+    });
+  </script>
 </body>
+
 </html>
