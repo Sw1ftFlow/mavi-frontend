@@ -265,3 +265,42 @@
     line-height: 1.1;
   }
 }
+
+/* Slide-specific navigation colors */
+.hero-slide[data-slide="0"] .navigation-arrow,
+.hero-slide[data-slide="0"] .slide-indicator {
+  color: #2563EB; /* Blue for slide 1 */
+  border-color: #2563EB;
+}
+
+.hero-slide[data-slide="1"] .navigation-arrow,
+.hero-slide[data-slide="1"] .slide-indicator {
+  color: white; /* White for slide 2 (black background) */
+  border-color: white;
+}
+
+/* Active slide indicator colors */
+.hero-slide[data-slide="0"] .slide-indicator.active {
+  background-color: #2563EB;
+  border-color: #2563EB;
+}
+
+.hero-slide[data-slide="1"] .slide-indicator.active {
+  background-color: white;
+  border-color: white;
+}
+
+/* On mobile, always use appropriate colors for each slide */
+@media (max-width: 768px) {
+  .hero-slide[data-slide="0"] .navigation-arrow,
+  .hero-slide[data-slide="0"] .slide-indicator {
+    color: #2563EB;
+    border-color: #2563EB;
+  }
+  
+  .hero-slide[data-slide="1"] .navigation-arrow,
+  .hero-slide[data-slide="1"] .slide-indicator {
+    color: white;
+    border-color: white;
+  }
+}
