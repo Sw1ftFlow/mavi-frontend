@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script src="./js/utils.js"></script>
+  <script src="./js/getProducts.js"></script>
+  <script src="./js/header.js"></script>
+  <script src="./js/cart.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="./img/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="./img/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="./img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="./img/android-chrome-192x192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="./img/android-chrome-512x512.png">
+  
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="stylesheet" href="./css/styles.css">
+  
+  <title>Leverans och Retur - MAVI</title>
+  <meta name="description" content="Information om leverans, retur och våra villkor för MAVI ljusdesign.">
+  
+  <style type="text/tailwindcss">
+    @theme {
+        --color-clifford: #da373d;
+      }
+    </style>
+</head>
+
+<body class="bg-white min-h-screen flex flex-col">
+  <!-- Header -->
+  <div id="header-placeholder"></div>
+
+  <main class="flex-1 container mx-auto px-4 py-16 lg:py-24">
+    <div class="max-w-4xl mx-auto">
+      <!-- Header -->
+      <div class="text-center mb-12">
+        <h1 class="text-4xl lg:text-5xl font-light text-gray-900 mb-4">Leverans och Retur</h1>
+        <p class="text-lg font-light text-gray-600">Information om våra leverans- och returvillkor</p>
+      </div>
+
+      <!-- Content Sections -->
+      <div class="space-y-12">
+        
+        <!-- Leverans -->
+        <section>
+          <h2 class="text-2xl lg:text-3xl font-light text-gray-900 mb-8 border-b border-gray-200 pb-4">Leverans</h2>
+          
+          <div class="space-y-8">
+            <div>
+              <h3 class="text-lg font-medium text-gray-900 mb-4">Leveransområden</h3>
+              <p class="text-gray-700 font-light leading-relaxed mb-4">Vi levererar för närvarande inom Sverige från vårt lager i Göteborg.</p>
+            </div>
+            
+            <div>
+              <h3 class="text-lg font-medium text-gray-900 mb-4">Leveranstider</h3>
+              <ul class="space-y-2 text-gray-700 font-light">
+                <li>• <strong>Orderhantering:</strong> 1-2 arbetsdagar</li>
+                <li>• <strong>Leverans:</strong> 1-3 arbetsdagar med DHL till närmsta ombud</li>
+                <li>• <strong>Total leveranstid:</strong> 2-5 arbetsdagar</li>
+              </ul>
+            </div>
+            
+            <div>
+              <h3 class="text-lg font-medium text-gray-900 mb-4">Leveransavgifter</h3>
+              <div class="bg-gray-50 p-6 rounded-lg">
+                <ul class="space-y-3 text-gray-700 font-light">
+                  <li class="flex justify-between">
+                    <span>Beställningar över 1000 kr:</span>
+                    <span class="font-medium text-green-600">Fri frakt</span>
+                  </li>
+                  <li class="flex justify-between">
+                    <span>Beställningar under 1000 kr:</span>
+                    <span class="font-medium">99 kr</span>
+                  </li>
+                </ul>
+                <p class="text-sm text-gray-600 mt-4 italic">Endast ett leveransalternativ tillgängligt.</p>
+              </div>
+            </div>
+            
+            <div>
+              <h3 class="text-lg font-medium text-gray-900 mb-4">Leveransprocess</h3>
+              <div class="space-y-4 text-gray-700 font-light">
+                <p>1. <strong>Orderbekräftelse:</strong> Du får en bekräftelse direkt efter din beställning</p>
+                <p>2. <strong>Packning:</strong> Din beställning packas noggrant inom 1-2 arbetsdagar</p>
+                <p>3. <strong>Avsändning:</strong> Paketet skickas med DHL från vårt lager i Göteborg</p>
+                <p>4. <strong>Leverans:</strong> DHL levererar till närmsta ombud inom 1-3 arbetsdagar</p>
+                <p>5. <strong>Spårning:</strong> Du får spårningsinformation via e-post</p>
+              </div>
+            </div>
+            
+            <div>
+              <h3 class="text-lg font-medium text-gray-900 mb-4">Leveranspartner</h3>
+              <p class="text-gray-700 font-light leading-relaxed">Alla varor fraktas från vårt lager i Göteborg och levereras med DHL till närmsta ombud för säker och pålitlig leverans.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Retur -->
+        <section>
+          <h2 class="text-2xl lg:text-3xl font-light text-gray-900 mb-8 border-b border-gray-200 pb-4">Retur och Ångerrätt</h2>
+          
+          <div class="space-y-8">
+            <div>
+              <h3 class="text-lg font-medium text-gray-900 mb-4">Ångerrätt</h3>
+              <p class="text-gray-700 font-light leading-relaxed mb-4">Du har 14 dagars ångerrätt från den dag du mottagit produkten, enligt lagen om konsumentköp. Detta gäller köp som görs online eller på distans.</p>
+              
+              <div class="bg-blue-50 border-l-4 border-blue-400 p-4">
+                <p class="text-blue-800 text-sm font-light">
+                  <strong>Observera:</strong> Ångerrätten gäller inte för specialbeställda eller anpassade produkter.
+                </p>
+              </div>
+            </div>
+            
+            <div>
+              <h3 class="text-lg font-medium text-gray-900 mb-4">Villkor för retur</h3>
+              <ul class="space-y-2 text-gray-700 font-light">
+                <li>• Produkten ska vara i original, oanvänt skick</li>
+                <li>• Originalförpackning och alla tillbehör ska finnas kvar</li>
+                <li>• Produkten får inte vara skadad eller ha tecken på användning</li>
+                <li>• Returen ska anmälas inom 14 dagar från mottagandet</li>
+              </ul>
+            </div>
+            
+            <div>
+              <h3 class="text-lg font-medium text-gray-900 mb-4">Hur du returnerar</h3>
+              <div class="space-y-4 text-gray-700 font-light">
+                <p><strong>Steg 1:</strong> Kontakta oss på info@mavidesign.se med ditt ordernummer</p>
+                <p><strong>Steg 2:</strong> Vi skickar returetikett och instruktioner till dig</p>
+                <p><strong>Steg 3:</strong> Packa produkten säkert i originalförpackningen</p>
+                <p><strong>Steg 4:</strong> Använd vår returetikett för kostnadsfri retur</p>
+                <p><strong>Steg 5:</strong> Återbetalning sker inom 14 dagar efter att vi mottagit returen</p>
+              </div>
+            </div>
+            
+            <div>
+              <h3 class="text-lg font-medium text-gray-900 mb-4">Returkostnader</h3>
+              <div class="bg-gray-50 p-6 rounded-lg">
+                <ul class="space-y-3 text-gray-700 font-light">
+                  <li class="flex justify-between">
+                    <span>Ångerrätt/Retur utan fel:</span>
+                    <span class="font-medium">Kostnadsfri</span>
+                  </li>
+                  <li class="flex justify-between">
+                    <span>Retur vid fel/skada:</span>
+                    <span class="font-medium text-green-600">Kostnadsfri</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            
+            <div>
+              <h3 class="text-lg font-medium text-gray-900 mb-4">Återbetalning</h3>
+              <p class="text-gray-700 font-light leading-relaxed">Återbetalning sker till samma betalningsmetod som användes vid köpet. Återbetalningen genomförs inom 14 dagar efter att vi mottagit och kontrollerat returen. Eventuella leveransavgifter återbetalas endast om hela beställningen returneras eller om returen beror på fel från vår sida.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Skador och Reklamationer -->
+        <section>
+          <h2 class="text-2xl lg:text-3xl font-light text-gray-900 mb-8 border-b border-gray-200 pb-4">Skador och Reklamationer</h2>
+          
+          <div class="space-y-8">
+            <div>
+              <h3 class="text-lg font-medium text-gray-900 mb-4">Skador vid leverans</h3>
+              <p class="text-gray-700 font-light leading-relaxed mb-4">Kontrollera alltid paketet vid mottagandet. Om du upptäcker skador på förpackningen eller produkten, kontakta oss omedelbart på info@mavidesign.se.</p>
+              
+              <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4">
+                <p class="text-yellow-800 text-sm font-light">
+                  <strong>Viktigt:</strong> Anmäl transportskador inom 7 dagar från leveransdatum.
+                </p>
+              </div>
+            </div>
+            
+            <div>
+              <h3 class="text-lg font-medium text-gray-900 mb-4">Reklamationer</h3>
+              <p class="text-gray-700 font-light leading-relaxed">Om du upptäcker fel på produkten som inte beror på normal förslitning eller felaktig hantering, kontakta oss så snart som möjligt. Vi erbjuder reparation, utbyte eller återbetalning enligt konsumentköplagen.</p>
+            </div>
+            
+            <div>
+              <h3 class="text-lg font-medium text-gray-900 mb-4">Garanti</h3>
+              <p class="text-gray-700 font-light leading-relaxed">Alla våra produkter kommer med 2 års garanti mot fabrikationsfel. Garantin gäller från köpdatum och täcker material- och tillverkningsfel. Normal förslitning, felaktig användning eller skador orsakade av olycka omfattas inte av garantin.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Kontakt -->
+        <section class="bg-gray-50 p-8 lg:p-12 rounded-lg">
+          <h2 class="text-2xl lg:text-3xl font-light text-gray-900 mb-6">Frågor om leverans eller retur?</h2>
+          <p class="text-gray-700 font-light leading-relaxed mb-6">Kontakta vår kundservice för hjälp med leveranser, returer eller andra frågor.</p>
+          <div class="space-y-4">
+            <p class="text-gray-800"><strong>E-post:</strong> info@mavidesign.se</p>
+            <p class="text-gray-800"><strong>Svarstid:</strong> Inom 24 timmar på vardagar</p>
+          </div>
+          <a href="contact.html" class="inline-block mt-6 border-2 border-black px-6 py-3 text-black hover:bg-black hover:text-white transition-colors duration-300 font-light">
+            Kontakta oss
+          </a>
+        </section>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-white">
+    <div class="container mx-auto px-4 py-16 lg:py-20">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+        
+        <!-- Help Section -->
+        <div>
+          <h3 class="text-lg font-light mb-6 text-white">Hjälp</h3>
+          <ul class="space-y-3">
+            <li><a href="faq.html" class="text-gray-300 hover:text-white transition-colors font-light text-sm">Vanliga frågor</a></li>
+            <li><a href="contact.html" class="text-gray-300 hover:text-white transition-colors font-light text-sm">Kontakta oss</a></li>
+            <li><a href="shipping-returns.html" class="text-gray-300 hover:text-white transition-colors font-light text-sm">Leverans och retur</a></li>
+            <li><a href="terms.html" class="text-gray-300 hover:text-white transition-colors font-light text-sm">Försäljningsvillkor</a></li>
+            <li><a href="privacy-policy.html" class="text-gray-300 hover:text-white transition-colors font-light text-sm">Integritetspolicy</a></li>
+          </ul>
+        </div>
+
+        <!-- Services Section -->
+        <div>
+          <h3 class="text-lg font-light mb-6 text-white">Exklusiv Service</h3>
+          <ul class="space-y-3">
+            <li class="flex items-center text-gray-300 font-light text-sm">
+              <svg class="w-4 h-4 mr-3 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              Fri frakt över 1000 kr
+            </li>
+            <li class="flex items-center text-gray-300 font-light text-sm">
+              <svg class="w-4 h-4 mr-3 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              14 dagars öppet köp
+            </li>
+            <li class="flex items-center text-gray-300 font-light text-sm">
+              <svg class="w-4 h-4 mr-3 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              Säkra betalningar
+            </li>
+            <li class="flex items-center text-gray-300 font-light text-sm">
+              <svg class="w-4 h-4 mr-3 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              Personlig rådgivning
+            </li>
+          </ul>
+        </div>
+
+        <!-- Store Locator -->
+        <div>
+          <h3 class="text-lg font-light mb-6 text-white">Hitta oss</h3>
+          <div class="space-y-3">
+            <p class="text-gray-300 font-light text-sm">MAVI Showroom</p>
+            <p class="text-gray-300 font-light text-sm">
+              Göteborg, Sverige<br>
+              Öppettider efter överenskommelse
+            </p>
+            <a href="contact.html" class="inline-block text-white border border-white px-4 py-2 text-sm font-light hover:bg-white hover:text-gray-900 transition-colors duration-300 mt-4">
+              Boka visning
+            </a>
+          </div>
+        </div>
+
+        <!-- Follow Section -->
+        <div>
+          <h3 class="text-lg font-light mb-6 text-white">Följ oss</h3>
+          <div class="space-y-4">
+            <a href="#" class="flex items-center text-gray-300 hover:text-white transition-colors font-light text-sm">
+              <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>
+              </svg>
+              TikTok
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bottom Bar -->
+      <div class="border-t border-gray-700 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+        <div class="flex items-center mb-4 md:mb-0">
+          <span class="text-sm font-light text-gray-400">&copy; 2025 MAVI</span>
+        </div>
+        
+        <!-- Payment Methods -->
+        <div class="flex items-center space-x-4">
+          <span class="text-xs text-gray-400 font-light">Säkra betalningar:</span>
+          <div class="flex space-x-4">
+            <!-- VISA (Official Logo from datatrans/payment-logos) -->
+            <img src="https://raw.githubusercontent.com/datatrans/payment-logos/master/assets/cards/visa.svg" 
+                 alt="VISA" 
+                 class="h-5 object-contain">
+            
+            <!-- Mastercard (Official Logo from datatrans/payment-logos) -->
+            <img src="https://raw.githubusercontent.com/datatrans/payment-logos/master/assets/cards/mastercard.svg" 
+                 alt="Mastercard" 
+                 class="h-5 object-contain">
+            
+            <!-- Klarna (Official Logo from datatrans/payment-logos) -->
+            <img src="https://raw.githubusercontent.com/datatrans/payment-logos/master/assets/apm/klarna.svg" 
+                 alt="Klarna" 
+                 class="h-5 object-contain">
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Cart Drawer -->
+  <div id="cart-backdrop" class="fixed inset-0 z-40 hidden" style="background: rgba(255,255,255,0.4);"></div>
+  <div id="cart-drawer" class="fixed top-0 right-0 h-full w-full max-w-xl bg-white shadow-xl z-50 transform translate-x-full transition-transform duration-300 flex flex-col" style="width:40vw; min-width:320px;">
+    <div class="flex items-center justify-between px-6 py-4 border-b">
+      <span class="text-xl font-semibold">Varukorg</span>
+      <button id="cart-close" class="text-2xl text-gray-400 hover:text-black">&times;</button>
+    </div>
+    <!-- Cart items go here -->
+    <div id="cart-items" class="flex-1 overflow-y-auto px-6 py-4"></div>
+    <div class="border-t px-6 py-4">
+      <div class="flex justify-between items-center mb-4">
+        <span class="font-semibold">Totalt:</span>
+        <span id="cart-total" class="font-semibold">0 kr</span>
+      </div>
+      <button class="w-full bg-black text-white py-3 rounded-none font-semibold text-base hover:bg-gray-900 transition">
+        <span>Till kassan</span>
+      </button>
+    </div>
+  </div>
+</body>
+
+</html>
