@@ -75,9 +75,9 @@ async function loadProduct() {
               </button>
             </div>
             <div class="mt-4 flex justify-center">
-              <div class="flex gap-4">
+              <div class="flex gap-4 overflow-x-auto scrollbar-hide px-4 w-full max-w-full" style="scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;">
                 ${images.map((img, i) => `
-<img src="${getBaseUrl()}img/${img}" alt="Thumbnail ${i+1}" class="carousel-thumb h-24 w-24 object-contain cursor-pointer bg-white" data-index="${i}">
+<img src="${getBaseUrl()}img/${img}" alt="Thumbnail ${i+1}" class="carousel-thumb h-24 w-24 flex-shrink-0 object-contain cursor-pointer bg-white" data-index="${i}" style="scroll-snap-align: center;">
 `).join('')}
               </div>
             </div>

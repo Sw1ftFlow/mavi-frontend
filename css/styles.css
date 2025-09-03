@@ -389,3 +389,24 @@
     max-width: 1700px;
   }
 }
+
+/* Mobile thumbnail carousel improvements */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  scrollbar-width: none;  /* Firefox */
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;  /* Safari and Chrome */
+}
+
+/* Prevent body horizontal scroll on mobile */
+@media (max-width: 768px) {
+  body {
+    overflow-x: hidden;
+  }
+  
+  .carousel-thumb {
+    min-width: 96px; /* Ensure consistent thumbnail size */
+    height: 96px;
+  }
+}
