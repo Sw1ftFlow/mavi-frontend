@@ -321,7 +321,7 @@
   transform: translateY(-50%) scale(0.95);
 }
 
-/* Completely disable ALL effects on carousel navigation buttons */
+/* Reddit-style carousel navigation buttons - only click feedback */
 .main-carousel-prev,
 .main-carousel-next {
   transition: none !important;
@@ -332,14 +332,23 @@
 .main-carousel-prev:hover,
 .main-carousel-next:hover,
 .main-carousel-prev:focus,
-.main-carousel-next:focus,
+.main-carousel-next:focus {
+  transition: none !important;
+  transform: translateY(-50%) !important;
+  animation: none !important;
+  scale: 1 !important;
+  background: rgba(0,0,0,0.7) !important; /* Same as default */
+  opacity: 1 !important;
+}
+
+/* Only change background on active/click - Reddit style */
 .main-carousel-prev:active,
 .main-carousel-next:active {
   transition: none !important;
   transform: translateY(-50%) !important;
   animation: none !important;
   scale: 1 !important;
-  background: rgba(0,0,0,0.7) !important;
+  background: rgba(0,0,0,0.85) !important; /* Slightly darker when clicked */
   opacity: 1 !important;
 }
 
