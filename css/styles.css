@@ -379,14 +379,14 @@
 
 @media (min-width: 1024px) {
   .product-overview-container {
-    max-width: 1600px;
+    max-width: 1800px; /* Ökad från 1600px */
     padding: 0 2rem;
   }
 }
 
 @media (min-width: 1920px) {
   .product-overview-container {
-    max-width: 1700px;
+    max-width: 1900px; /* Ökad från 1700px */
   }
 }
 
@@ -408,5 +408,21 @@
   .carousel-thumb {
     min-width: 96px; /* Ensure consistent thumbnail size */
     height: 96px;
+  }
+  
+  /* Fix main product image on mobile */
+  #main-product-image {
+    object-fit: contain !important;
+    width: 100% !important;
+    height: auto !important;
+    max-height: 70vh !important;
+  }
+  
+  /* Ensure image container doesn't crop */
+  #image-container {
+    min-height: 300px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
 }
