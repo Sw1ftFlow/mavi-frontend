@@ -62,47 +62,48 @@ async function loadProduct() {
 
     // Render the Tailwind UI Product Overview component with pure CSS accordions
     document.getElementById('product-overview').innerHTML = `
-      <div class="bg-white w-full grid grid-cols-1 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] gap-6">
-        <div class="flex flex-col h-full">
-          <div class="relative flex-1 flex items-start justify-start overflow-hidden min-h-0 min-w-0 bg-[#f5f5f5] touch-manipulation select-none" id="image-container">
-            <button type="button" class="main-carousel-prev absolute left-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 lg:w-9 lg:h-9 flex items-center justify-center text-xl lg:text-2xl font-normal transition-all duration-200 rounded-full hover:bg-opacity-80 hover:scale-110 active:scale-95" style="outline:none; border:none; background: rgba(0,0,0,0.7); color: white; backdrop-filter: blur(4px); line-height: 1; font-family: monospace;">
-              &lt;
-            </button>
-            <img id="main-product-image" src="${imageUrl}" alt="${data.name}" class="w-full aspect-[4/3] object-contain transition-all duration-300 select-none" style="display:block; user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; touch-action: pan-x pan-y; -webkit-touch-callout: none;" draggable="false" />
-            <button type="button" class="main-carousel-next absolute right-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 lg:w-9 lg:h-9 flex items-center justify-center text-xl lg:text-2xl font-normal transition-all duration-200 rounded-full hover:bg-opacity-80 hover:scale-110 active:scale-95" style="outline:none; border:none; background: rgba(0,0,0,0.7); color: white; backdrop-filter: blur(4px); line-height: 1; font-family: monospace;">
-              &gt;
-            </button>
-          </div>
-          <div class="mt-4 flex justify-center">
-            <div class="flex gap-4">
-              ${images.map((img, i) => `
+      <div class="product-overview-container">
+        <div class="bg-white w-full grid grid-cols-1 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] gap-6 lg:gap-8">
+          <div class="flex flex-col h-full">
+            <div class="relative flex-1 flex items-start justify-start overflow-hidden min-h-0 min-w-0 bg-[#f5f5f5] touch-manipulation select-none" id="image-container">
+              <button type="button" class="main-carousel-prev absolute left-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 lg:w-9 lg:h-9 flex items-center justify-center text-xl lg:text-2xl font-normal transition-all duration-200 rounded-full hover:bg-opacity-80 hover:scale-110 active:scale-95" style="outline:none; border:none; background: rgba(0,0,0,0.7); color: white; backdrop-filter: blur(4px); line-height: 1; font-family: monospace; pointer-events: auto;">
+                &lt;
+              </button>
+              <img id="main-product-image" src="${imageUrl}" alt="${data.name}" class="w-full aspect-[4/3] object-contain transition-all duration-300 select-none" style="display:block; user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; touch-action: pan-x pan-y; -webkit-touch-callout: none;" draggable="false" />
+              <button type="button" class="main-carousel-next absolute right-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 lg:w-9 lg:h-9 flex items-center justify-center text-xl lg:text-2xl font-normal transition-all duration-200 rounded-full hover:bg-opacity-80 hover:scale-110 active:scale-95" style="outline:none; border:none; background: rgba(0,0,0,0.7); color: white; backdrop-filter: blur(4px); line-height: 1; font-family: monospace; pointer-events: auto;">
+                &gt;
+              </button>
+            </div>
+            <div class="mt-4 flex justify-center">
+              <div class="flex gap-4">
+                ${images.map((img, i) => `
 <img src="${getBaseUrl()}img/${img}" alt="Thumbnail ${i+1}" class="carousel-thumb h-24 w-24 object-contain cursor-pointer bg-white" data-index="${i}">
 `).join('')}
+              </div>
             </div>
           </div>
-        </div>
-        <div class="px-4 lg:pl-8 lg:pr-12 py-4 lg:py-0">
-          <h1 class="text-2xl font-semibold text-black mb-1">${data.name}</h1>
-          <p class="mb-4 text-sm text-gray-500">${data.description || ''}</p>
-            <div class="flex items-center gap-3 mb-6">
-              <div class="flex items-center border border-gray-300 rounded-none h-10">
-                <button type="button" class="quantity-decrease px-2 py-1 text-sm font-bold text-black hover:bg-gray-100 h-10">−</button>
-                <span class="quantity-value px-3 py-1 select-none text-sm font-semibold text-black h-10 flex items-center">1</span>
-                <button type="button" class="quantity-increase px-2 py-1 text-sm font-bold text-black hover:bg-gray-100 h-10">+</button>
+          <div class="px-4 lg:pl-8 lg:pr-12 py-4 lg:py-0">
+            <h1 class="text-2xl font-semibold text-black mb-1">${data.name}</h1>
+            <p class="mb-4 text-sm text-gray-500">${data.description || ''}</p>
+              <div class="flex items-center gap-3 mb-6">
+                <div class="flex items-center border border-gray-300 rounded-none h-10">
+                  <button type="button" class="quantity-decrease px-2 py-1 text-sm font-bold text-black hover:bg-gray-100 h-10">−</button>
+                  <span class="quantity-value px-3 py-1 select-none text-sm font-semibold text-black h-10 flex items-center">1</span>
+                  <button type="button" class="quantity-increase px-2 py-1 text-sm font-bold text-black hover:bg-gray-100 h-10">+</button>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <button class="w-full border-none bg-black text-white px-3 lg:px-4 py-3 lg:py-2.5 rounded-none font-semibold flex items-center justify-between transition hover:bg-gray-900 text-sm lg:text-sm h-12 lg:h-10" id="add-to-cart-btn">
+                    <span class="flex items-center gap-1">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.35 2.7A1 1 0 007.5 17h9a1 1 0 00.85-1.53L17 13M7 13V6a1 1 0 011-1h8a1 1 0 011 1v7" />
+                      </svg>
+                      <span class="text-sm whitespace-nowrap overflow-hidden text-ellipsis">Lägg i varukorgen</span>
+                    </span>
+                    <span class="text-sm text-white font-semibold ml-2 whitespace-nowrap">${data.price} kr</span>
+                  </button>
+                </div>
               </div>
-              <div class="flex-1 min-w-0">
-                <button class="w-full border-none bg-black text-white px-3 lg:px-4 py-3 lg:py-2.5 rounded-none font-semibold flex items-center justify-between transition hover:bg-gray-900 text-sm lg:text-sm h-12 lg:h-10" id="add-to-cart-btn">
-                  <span class="flex items-center gap-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.35 2.7A1 1 0 007.5 17h9a1 1 0 00.85-1.53L17 13M7 13V6a1 1 0 011-1h8a1 1 0 011 1v7" />
-                    </svg>
-                    <span class="text-sm whitespace-nowrap overflow-hidden text-ellipsis">Lägg i varukorgen</span>
-                  </span>
-                  <span class="text-sm text-white font-semibold ml-2 whitespace-nowrap">${data.price} kr</span>
-                </button>
-              </div>
-            </div>
-          <div class="mt-6 space-y-1 text-sm">
+            <div class="mt-6 space-y-1 text-sm">
 
             <!-- Accordion for Features (now Beskrivning) -->
             <div class="mb-4 bg-white rounded-[8px]">
@@ -224,22 +225,36 @@ async function loadProduct() {
       let startX = 0;
       let startY = 0;
       let isDragging = false;
+      let touchTarget = null;
 
       imageContainer.addEventListener('touchstart', (e) => {
-        e.preventDefault(); // Prevent zoom
+        touchTarget = e.target;
+        // Don't prevent default if touching an arrow button
+        if (!e.target.closest('.main-carousel-prev') && !e.target.closest('.main-carousel-next')) {
+          e.preventDefault(); // Prevent zoom only if not touching arrows
+        }
         startX = e.touches[0].clientX;
         startY = e.touches[0].clientY;
         isDragging = false;
       }, { passive: false });
 
       imageContainer.addEventListener('touchmove', (e) => {
-        e.preventDefault(); // Prevent scroll/zoom
+        // Don't prevent default if touching an arrow button
+        if (!touchTarget || (!touchTarget.closest('.main-carousel-prev') && !touchTarget.closest('.main-carousel-next'))) {
+          e.preventDefault(); // Prevent scroll/zoom only if not touching arrows
+        }
         if (Math.abs(e.touches[0].clientX - startX) > 10 || Math.abs(e.touches[0].clientY - startY) > 10) {
           isDragging = true;
         }
       }, { passive: false });
 
       imageContainer.addEventListener('touchend', (e) => {
+        // Don't handle swipe if an arrow button was touched
+        if (touchTarget && (touchTarget.closest('.main-carousel-prev') || touchTarget.closest('.main-carousel-next'))) {
+          touchTarget = null;
+          return;
+        }
+        
         e.preventDefault();
         if (!isDragging) return;
         
@@ -257,6 +272,7 @@ async function loadProduct() {
           }
           updateMainImage();
         }
+        touchTarget = null;
       }, { passive: false });
 
       // Prevent double-tap zoom
