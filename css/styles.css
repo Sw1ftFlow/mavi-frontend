@@ -426,3 +426,18 @@
     justify-content: center !important;
   }
 }
+
+/* Mobile Header Fix for Non-Hero Pages */
+@media (max-width: 1024px) {
+  /* Product detail pages need padding-top when header is fixed */
+  #product-overview.product-overview-container {
+    padding-top: 80px;
+  }
+  
+  /* General fix for other main content areas that aren't hero sections */
+  body:has(#product-overview) main,
+  body[data-page="product"] main,
+  body[data-page="productDetail"] main {
+    padding-top: 80px;
+  }
+}
