@@ -5,6 +5,29 @@ document.addEventListener('DOMContentLoaded', () => {
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFxZnN2dnp1a3RpcnBkaWN3Z2lsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA4NDg2MzAsImV4cCI6MjA2NjQyNDYzMH0.LAJmKc1RiJT-JSNqucL8cWq8ogtrswysG1A5K1bmCh4';
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+  // Define closeCart function early to ensure it's available
+  window.closeCart = function() {
+    console.log('closeCart called'); // Debug log
+    const backdrop = document.getElementById('cart-backdrop');
+    const drawer = document.getElementById('cart-drawer');
+    
+    if (backdrop && drawer) {
+      // Hide the cart drawer
+      backdrop.classList.add('hidden');
+      drawer.classList.add('translate-x-full');
+      
+      // Reset inline styles that might interfere
+      backdrop.style.display = 'none';
+      backdrop.style.pointerEvents = '';
+      backdrop.style.opacity = '';
+      drawer.style.transform = '';
+      
+      console.log('Cart closed successfully'); // Debug log
+    } else {
+      console.error('Cart elements not found:', { backdrop: !!backdrop, drawer: !!drawer });
+    }
+  };
+
   // Function to fetch fresh stock information for cart items
   async function fetchStockInfo(cartItems) {
     if (cartItems.length === 0) return cartItems;
@@ -74,11 +97,43 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const openCart = () => {
       renderCart(); // <-- Make sure this is called!
-      backdrop.classList.remove('hidden');
-      drawer.classList.remove('translate-x-full');
+      if (backdrop && drawer) {
+        backdrop.classList.remove('hidden');
+        drawer.classList.remove('translate-x-full');
+        // Ensure backdrop is clickable
+        backdrop.style.display = 'block';
+        backdrop.style.pointerEvents = 'auto';
+      }
     };
 
     if (closeBtn && backdrop && drawer) {
+      // Remove any existing event listeners to prevent duplicates
+      closeBtn.removeEventListener('click', window.closeCart);
+      backdrop.removeEventListener('click', window.closeCart);
+      
+      // Add fresh event listeners with better error handling
+      closeBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('Close button clicked'); // Debug log
+        window.closeCart();
+      });
+      
+      backdrop.addEventListener('click', (e) => {
+        // Only close if clicking the backdrop itself, not the drawer
+        if (e.target === backdrop) {
+          console.log('Backdrop clicked'); // Debug log
+          window.closeCart();
+        }
+      });
+      
+      // Add ESC key listener to close cart
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !backdrop.classList.contains('hidden')) {
+          window.closeCart();
+        }
+      });
+      
       // Desktop cart button
       if (openBtn) {
         openBtn.addEventListener('click', openCart);
@@ -89,12 +144,10 @@ document.addEventListener('DOMContentLoaded', () => {
         openBtnMobile.addEventListener('click', openCart);
       }
       
-      closeBtn.addEventListener('click', window.closeCart);
-      backdrop.addEventListener('click', window.closeCart);
-      
       // Make openCart available globally for header.js
       window.openCart = openCart;
     } else {
+      // Retry if elements not found yet
       setTimeout(setupCartDrawer, 100);
     }
 
@@ -311,23 +364,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Expose updateCartCount and renderCart for other scripts (like product add)
   window.updateCartCount = updateCartCount;
   window.renderCart = renderCart;
-
-  // Global function to properly close the cart
-  window.closeCart = function() {
-    const backdrop = document.getElementById('cart-backdrop');
-    const drawer = document.getElementById('cart-drawer');
-    
-    if (backdrop && drawer) {
-      backdrop.classList.add('hidden');
-      drawer.classList.add('translate-x-full');
-      // Reset inline styles that might interfere
-      backdrop.style.display = 'none';
-      drawer.style.transform = '';
-      // Remove any pointer-events or opacity issues
-      backdrop.style.pointerEvents = '';
-      backdrop.style.opacity = '';
-    }
-  };
 });
 
 // Example: Add product to cart in localStorage
