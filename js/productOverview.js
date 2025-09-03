@@ -66,11 +66,11 @@ async function loadProduct() {
         <div class="bg-white w-full grid grid-cols-1 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] gap-6 lg:gap-8">
           <div class="flex flex-col h-full">
             <div class="relative flex-1 flex items-start justify-start overflow-hidden min-h-0 min-w-0 bg-[#f5f5f5] touch-manipulation select-none" id="image-container">
-              <button type="button" class="main-carousel-prev absolute left-3 top-1/2 -translate-y-1/2 z-20 w-9 h-9 lg:w-10 lg:h-10 flex items-center justify-center text-xl lg:text-2xl font-normal rounded-full hover:bg-opacity-90" style="outline:none; border:none; background: rgba(0,0,0,0.7); color: white; backdrop-filter: blur(4px); line-height: 1; font-family: monospace; pointer-events: auto; transition: background-color 0.2s ease;">
+              <button type="button" class="main-carousel-prev absolute left-3 top-1/2 -translate-y-1/2 z-20 w-9 h-9 lg:w-10 lg:h-10 flex items-center justify-center text-xl lg:text-2xl font-normal rounded-full" style="outline:none; border:none; background: rgba(0,0,0,0.7); color: white; backdrop-filter: blur(4px); line-height: 1; font-family: monospace; pointer-events: auto;">
                 &lt;
               </button>
               <img id="main-product-image" src="${imageUrl}" alt="${data.name}" class="w-full aspect-[4/3] object-contain transition-all duration-300 select-none" style="display:block; user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; touch-action: pan-x pan-y; -webkit-touch-callout: none;" draggable="false" />
-              <button type="button" class="main-carousel-next absolute right-3 top-1/2 -translate-y-1/2 z-20 w-9 h-9 lg:w-10 lg:h-10 flex items-center justify-center text-xl lg:text-2xl font-normal rounded-full hover:bg-opacity-90" style="outline:none; border:none; background: rgba(0,0,0,0.7); color: white; backdrop-filter: blur(4px); line-height: 1; font-family: monospace; pointer-events: auto; transition: background-color 0.2s ease;">
+              <button type="button" class="main-carousel-next absolute right-3 top-1/2 -translate-y-1/2 z-20 w-9 h-9 lg:w-10 lg:h-10 flex items-center justify-center text-xl lg:text-2xl font-normal rounded-full" style="outline:none; border:none; background: rgba(0,0,0,0.7); color: white; backdrop-filter: blur(4px); line-height: 1; font-family: monospace; pointer-events: auto;">
                 &gt;
               </button>
             </div>

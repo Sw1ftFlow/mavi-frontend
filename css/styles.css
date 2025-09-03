@@ -321,36 +321,43 @@
   transform: translateY(-50%) scale(0.95);
 }
 
-/* Override any transform effects on carousel navigation buttons */
+/* Completely disable ALL effects on carousel navigation buttons */
 .main-carousel-prev,
 .main-carousel-next {
-  transition: background-color 0.2s ease, opacity 0.2s ease !important;
+  transition: none !important;
+  transform: translateY(-50%) !important;
+  animation: none !important;
 }
 
 .main-carousel-prev:hover,
-.main-carousel-next:hover {
-  transform: translateY(-50%) !important; /* Keep only the centering transform */
-  scale: none !important;
-}
-
+.main-carousel-next:hover,
+.main-carousel-prev:focus,
+.main-carousel-next:focus,
 .main-carousel-prev:active,
 .main-carousel-next:active {
-  transform: translateY(-50%) !important; /* Keep only the centering transform */
-  scale: none !important;
+  transition: none !important;
+  transform: translateY(-50%) !important;
+  animation: none !important;
+  scale: 1 !important;
+  background: rgba(0,0,0,0.7) !important;
+  opacity: 1 !important;
 }
 
 .carousel-thumb {
+  transition: none !important;
   transform: none !important;
-  transition: opacity 0.2s ease, border 0.2s ease !important;
+  animation: none !important;
 }
 
-/* Remove any Tailwind hover scale effects */
-.hover\:scale-110:hover {
+/* Override ALL Tailwind hover/active effects */
+.hover\:scale-110:hover,
+.active\:scale-95:active,
+.hover\:bg-opacity-90:hover,
+.hover\:bg-opacity-80:hover {
+  transition: none !important;
   transform: translateY(-50%) !important;
-}
-
-.active\:scale-95:active {
-  transform: translateY(-50%) !important;
+  animation: none !important;
+  scale: 1 !important;
 }
 
 /* Prevent double-tap zoom on mobile */
