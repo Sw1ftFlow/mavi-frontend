@@ -365,19 +365,27 @@
 
 /* Product Overview Page Widescreen Constraints */
 .product-overview-container {
-  max-width: 1280px; /* max-w-7xl equivalent */
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0;
+  width: 100%;
+}
+
+/* Only apply max-width constraints on desktop/larger screens */
+@media (min-width: 768px) {
+  .product-overview-container {
+    padding: 0 1rem;
+  }
 }
 
 @media (min-width: 1024px) {
   .product-overview-container {
+    max-width: 1600px;
     padding: 0 2rem;
   }
 }
 
 @media (min-width: 1920px) {
   .product-overview-container {
-    max-width: 1400px; /* Slightly larger for very wide screens */
+    max-width: 1700px;
   }
 }
