@@ -390,6 +390,19 @@
   }
 }
 
+/* Checkout Page Widescreen Constraints */
+.checkout-container {
+  margin: 0 auto;
+  padding: 0;
+  width: 100%;
+}
+
+@media (min-width: 1920px) {
+  .checkout-container {
+    max-width: 1900px;
+  }
+}
+
 /* Mobile thumbnail carousel improvements */
 .scrollbar-hide {
   -ms-overflow-style: none;  /* Internet Explorer 10+ */

@@ -43,7 +43,7 @@
 <body class="bg-gray-50 min-h-screen">
   <!-- Header -->
   <header class="bg-white w-full">
-    <div class="max-w-5xl mx-auto flex items-center justify-between px-4 md:px-8 py-6">
+    <div class="max-w-[1800px] mx-auto flex items-center justify-between px-4 md:px-8 py-6">
       <a href="./index.html" class="flex items-center gap-3">
         <img src="./img/logo2.png" alt="Mavi Logo" class="h-8 w-auto" />
         <span class="text-2xl font-bold tracking-tight text-black">MAVI</span>
@@ -64,9 +64,11 @@
     <hr class="border-gray-200" />
   </header>
   <div class="min-h-screen flex flex-col md:flex-row px-0">
-    <!-- Left: Checkout form, full white including edge, with extra left padding -->
-    <div class="w-full md:w-[58%] bg-white flex items-start">
-      <div class="w-full max-w-xl mx-auto px-6 md:pl-20 md:pr-8 py-10 md:py-16">
+    <!-- Container wrapper for centering on widescreen -->
+    <div class="w-full max-w-[1800px] mx-auto flex flex-col md:flex-row">
+      <!-- Left: Checkout form, full white including edge, with extra left padding -->
+      <div class="w-full md:w-[58%] bg-white flex items-start">
+        <div class="w-full max-w-xl mx-auto px-6 md:pl-20 md:pr-8 py-10 md:py-16">
         <h1 class="text-2xl font-bold mb-8">Kassa</h1>
         <form class="space-y-8">
           <!-- Kontaktuppgifter -->
@@ -136,6 +138,7 @@
         </div>
       </div>
     </div>
+    </div> <!-- End of max-width wrapper -->
   </div>
   <script>    // EmailJS configuration for professional domain emails
     // Get these from: https://www.emailjs.com/
