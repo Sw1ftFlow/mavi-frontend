@@ -603,12 +603,16 @@
         console.log('Sending order emails...', baseEmailParams);
         
         // Send customer confirmation email from info@mavidesign.se
+        // Include BCC to Trustpilot for automatic review invitation
+        // NOTE: If BCC doesn't work with your EmailJS service, the fallback method below will send a separate copy
         const customerEmailParams = {
           ...baseEmailParams,
           to_email: customerData.email,
           to_name: `${customerData.firstName} ${customerData.lastName}`,
           from_name: 'MAVI Design',
-          from_email: 'info@mavidesign.se'
+          from_email: 'info@mavidesign.se',
+          // BCC Trustpilot for automatic review invitation
+          bcc_email: 'mavidesign.se+3b19644966@invite.trustpilot.com'
         };
         
         await emailjs.send(
@@ -618,6 +622,29 @@
         );
         
         console.log('Customer confirmation email sent successfully');
+        
+        // Fallback: Send separate email to Trustpilot for review invitation
+        // (Use this if BCC doesn't work with your EmailJS service)
+        try {
+          const trustpilotEmailParams = {
+            ...baseEmailParams,
+            to_email: 'mavidesign.se+3b19644966@invite.trustpilot.com',
+            to_name: 'Trustpilot Review System',
+            from_name: 'MAVI Design',
+            from_email: 'info@mavidesign.se'
+          };
+          
+          await emailjs.send(
+            EMAILJS_CONFIG.stratoServiceId,
+            EMAILJS_CONFIG.customerTemplateId,
+            trustpilotEmailParams
+          );
+          
+          console.log('Trustpilot invitation email sent successfully');
+        } catch (trustpilotError) {
+          console.warn('Failed to send Trustpilot invitation email:', trustpilotError);
+          // Don't fail the entire order process if Trustpilot email fails
+        }
         
         // Send admin notification email
         const adminEmailParams = {

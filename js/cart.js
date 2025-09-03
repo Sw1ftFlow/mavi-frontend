@@ -89,14 +89,8 @@ document.addEventListener('DOMContentLoaded', () => {
         openBtnMobile.addEventListener('click', openCart);
       }
       
-      closeBtn.addEventListener('click', () => {
-        backdrop.classList.add('hidden');
-        drawer.classList.add('translate-x-full');
-      });
-      backdrop.addEventListener('click', () => {
-        backdrop.classList.add('hidden');
-        drawer.classList.add('translate-x-full');
-      });
+      closeBtn.addEventListener('click', window.closeCart);
+      backdrop.addEventListener('click', window.closeCart);
       
       // Make openCart available globally for header.js
       window.openCart = openCart;
@@ -317,6 +311,23 @@ document.addEventListener('DOMContentLoaded', () => {
   // Expose updateCartCount and renderCart for other scripts (like product add)
   window.updateCartCount = updateCartCount;
   window.renderCart = renderCart;
+
+  // Global function to properly close the cart
+  window.closeCart = function() {
+    const backdrop = document.getElementById('cart-backdrop');
+    const drawer = document.getElementById('cart-drawer');
+    
+    if (backdrop && drawer) {
+      backdrop.classList.add('hidden');
+      drawer.classList.add('translate-x-full');
+      // Reset inline styles that might interfere
+      backdrop.style.display = 'none';
+      drawer.style.transform = '';
+      // Remove any pointer-events or opacity issues
+      backdrop.style.pointerEvents = '';
+      backdrop.style.opacity = '';
+    }
+  };
 });
 
 // Example: Add product to cart in localStorage

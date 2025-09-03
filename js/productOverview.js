@@ -64,13 +64,13 @@ async function loadProduct() {
     document.getElementById('product-overview').innerHTML = `
       <div class="bg-white w-full grid grid-cols-1 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] gap-6">
         <div class="flex flex-col h-full">
-          <div class="relative flex-1 flex items-start justify-start overflow-hidden min-h-0 min-w-0 bg-[#f5f5f5]">
-            <button type="button" class="main-carousel-prev absolute left-2 top-1/2 -translate-y-1/2 z-20 text-black w-10 h-10 flex items-center justify-center text-4xl font-light opacity-80 hover:opacity-100 hover:bg-white transition" style="outline:none; border:none; background:transparent;">
-              &#8249;
+          <div class="relative flex-1 flex items-start justify-start overflow-hidden min-h-0 min-w-0 bg-[#f5f5f5] touch-manipulation select-none" id="image-container">
+            <button type="button" class="main-carousel-prev absolute left-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 lg:w-9 lg:h-9 flex items-center justify-center text-xl lg:text-2xl font-normal transition-all duration-200 rounded-full hover:bg-opacity-80 hover:scale-110 active:scale-95" style="outline:none; border:none; background: rgba(0,0,0,0.7); color: white; backdrop-filter: blur(4px); line-height: 1; font-family: monospace;">
+              &lt;
             </button>
-            <img id="main-product-image" src="${imageUrl}" alt="${data.name}" class="w-full aspect-[4/3] object-contain transition-all duration-300" style="display:block;" />
-            <button type="button" class="main-carousel-next absolute right-2 top-1/2 -translate-y-1/2 z-20 text-black w-10 h-10 flex items-center justify-center text-4xl font-light opacity-80 hover:opacity-100 hover:bg-white transition" style="outline:none; border:none; background:transparent;">
-              &#8250;
+            <img id="main-product-image" src="${imageUrl}" alt="${data.name}" class="w-full aspect-[4/3] object-contain transition-all duration-300 select-none" style="display:block; user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; touch-action: pan-x pan-y; -webkit-touch-callout: none;" draggable="false" />
+            <button type="button" class="main-carousel-next absolute right-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 lg:w-9 lg:h-9 flex items-center justify-center text-xl lg:text-2xl font-normal transition-all duration-200 rounded-full hover:bg-opacity-80 hover:scale-110 active:scale-95" style="outline:none; border:none; background: rgba(0,0,0,0.7); color: white; backdrop-filter: blur(4px); line-height: 1; font-family: monospace;">
+              &gt;
             </button>
           </div>
           <div class="mt-4 flex justify-center">
@@ -81,27 +81,27 @@ async function loadProduct() {
             </div>
           </div>
         </div>
-        <div class="pl-8 pr-12"> <!-- Increased right padding from pr-6 to pr-12 -->
+        <div class="px-4 lg:pl-8 lg:pr-12 py-4 lg:py-0">
           <h1 class="text-2xl font-semibold text-black mb-1">${data.name}</h1>
           <p class="mb-4 text-sm text-gray-500">${data.description || ''}</p>
-          <div class="flex items-center gap-3 mb-6">
-            <div class="flex items-center border border-gray-300 rounded-none h-10">
-              <button type="button" class="quantity-decrease px-2 py-1 text-sm font-bold text-black hover:bg-gray-100 h-10">−</button>
-              <span class="quantity-value px-3 py-1 select-none text-sm font-semibold text-black h-10 flex items-center">1</span>
-              <button type="button" class="quantity-increase px-2 py-1 text-sm font-bold text-black hover:bg-gray-100 h-10">+</button>
+            <div class="flex items-center gap-3 mb-6">
+              <div class="flex items-center border border-gray-300 rounded-none h-10">
+                <button type="button" class="quantity-decrease px-2 py-1 text-sm font-bold text-black hover:bg-gray-100 h-10">−</button>
+                <span class="quantity-value px-3 py-1 select-none text-sm font-semibold text-black h-10 flex items-center">1</span>
+                <button type="button" class="quantity-increase px-2 py-1 text-sm font-bold text-black hover:bg-gray-100 h-10">+</button>
+              </div>
+              <div class="flex-1 min-w-0">
+                <button class="w-full border-none bg-black text-white px-3 lg:px-4 py-3 lg:py-2.5 rounded-none font-semibold flex items-center justify-between transition hover:bg-gray-900 text-sm lg:text-sm h-12 lg:h-10" id="add-to-cart-btn">
+                  <span class="flex items-center gap-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.35 2.7A1 1 0 007.5 17h9a1 1 0 00.85-1.53L17 13M7 13V6a1 1 0 011-1h8a1 1 0 011 1v7" />
+                    </svg>
+                    <span class="text-sm whitespace-nowrap overflow-hidden text-ellipsis">Lägg i varukorgen</span>
+                  </span>
+                  <span class="text-sm text-white font-semibold ml-2 whitespace-nowrap">${data.price} kr</span>
+                </button>
+              </div>
             </div>
-            <div class="flex w-full max-w-xs lg:max-w-md">
-              <button class="flex-1 border-none bg-black text-white px-4 py-2 rounded-none font-semibold flex items-center justify-between transition hover:bg-gray-900 text-sm h-10">
-                <span class="flex items-center gap-1">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.35 2.7A1 1 0 007.5 17h9a1 1 0 00.85-1.53L17 13M7 13V6a1 1 0 011-1h8a1 1 0 011 1v7" />
-                  </svg>
-                  <span class="text-sm">Lägg i varukorgen</span>
-                </span>
-                <span class="text-sm text-white font-semibold ml-2">${data.price} kr</span>
-              </button>
-            </div>
-          </div>
           <div class="mt-6 space-y-1 text-sm">
 
             <!-- Accordion for Features (now Beskrivning) -->
@@ -188,31 +188,90 @@ async function loadProduct() {
       });
     });
 
-    // Main image carousel logic
+    // Main image carousel logic with circular navigation
     let mainImageIndex = 0;
     const mainImageEl = document.getElementById('main-product-image');
     const mainPrevBtn = document.querySelector('.main-carousel-prev');
     const mainNextBtn = document.querySelector('.main-carousel-next');
+    const imageContainer = document.getElementById('image-container');
 
     function updateMainImage() {
-      mainImageEl.src = `${getBaseUrl()}img/${images[mainImageIndex]}`;
-      mainPrevBtn.disabled = mainImageIndex === 0;
-      mainNextBtn.disabled = mainImageIndex === images.length - 1;
+      if (images.length > 0) {
+        mainImageEl.src = `${getBaseUrl()}img/${images[mainImageIndex]}`;
+        // Update button visibility - always show if there are multiple images
+        if (images.length > 1) {
+          mainPrevBtn.style.display = 'flex';
+          mainNextBtn.style.display = 'flex';
+        } else {
+          mainPrevBtn.style.display = 'none';
+          mainNextBtn.style.display = 'none';
+        }
+      }
     }
 
-    if (mainPrevBtn && mainNextBtn && mainImageEl) {
+    if (mainPrevBtn && mainNextBtn && mainImageEl && images.length > 0) {
       mainPrevBtn.addEventListener('click', () => {
-        if (mainImageIndex > 0) {
-          mainImageIndex--;
-          updateMainImage();
-        }
+        mainImageIndex = mainImageIndex > 0 ? mainImageIndex - 1 : images.length - 1;
+        updateMainImage();
       });
+      
       mainNextBtn.addEventListener('click', () => {
-        if (mainImageIndex < images.length - 1) {
-          mainImageIndex++;
+        mainImageIndex = mainImageIndex < images.length - 1 ? mainImageIndex + 1 : 0;
+        updateMainImage();
+      });
+      
+      // Touch/Swipe functionality
+      let startX = 0;
+      let startY = 0;
+      let isDragging = false;
+
+      imageContainer.addEventListener('touchstart', (e) => {
+        e.preventDefault(); // Prevent zoom
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        isDragging = false;
+      }, { passive: false });
+
+      imageContainer.addEventListener('touchmove', (e) => {
+        e.preventDefault(); // Prevent scroll/zoom
+        if (Math.abs(e.touches[0].clientX - startX) > 10 || Math.abs(e.touches[0].clientY - startY) > 10) {
+          isDragging = true;
+        }
+      }, { passive: false });
+
+      imageContainer.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        if (!isDragging) return;
+        
+        const endX = e.changedTouches[0].clientX;
+        const diffX = startX - endX;
+        
+        // Only trigger if horizontal swipe is significant and images exist
+        if (Math.abs(diffX) > 50 && images.length > 1) {
+          if (diffX > 0) {
+            // Swipe left - next image
+            mainImageIndex = mainImageIndex < images.length - 1 ? mainImageIndex + 1 : 0;
+          } else {
+            // Swipe right - previous image
+            mainImageIndex = mainImageIndex > 0 ? mainImageIndex - 1 : images.length - 1;
+          }
           updateMainImage();
         }
+      }, { passive: false });
+
+      // Prevent double-tap zoom
+      imageContainer.addEventListener('gesturestart', (e) => {
+        e.preventDefault();
       });
+      
+      imageContainer.addEventListener('gesturechange', (e) => {
+        e.preventDefault();
+      });
+      
+      imageContainer.addEventListener('gestureend', (e) => {
+        e.preventDefault();
+      });
+
       // Thumbnail click to change main image and update index
       document.querySelectorAll('.carousel-thumb').forEach((img, i) => {
         img.addEventListener('click', () => {
@@ -220,6 +279,7 @@ async function loadProduct() {
           updateMainImage();
         });
       });
+      
       updateMainImage();
     }
 
@@ -238,9 +298,14 @@ async function loadProduct() {
     });
 
     // Add to cart logic
-    const addToCartBtn = document.querySelector('button.flex-1.bg-black');
+    const addToCartBtn = document.getElementById('add-to-cart-btn');
+    console.log('Add to cart button found:', addToCartBtn);
+    
     if (addToCartBtn) {
-      addToCartBtn.addEventListener('click', () => {
+      addToCartBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        console.log('Add to cart clicked!');
+        
         // Get current cart from localStorage or initialize
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
         // Check if product already in cart
@@ -259,28 +324,69 @@ async function loadProduct() {
           });
         }
         localStorage.setItem('cart', JSON.stringify(cart));
+        console.log('Cart updated:', cart);
 
-        // Update cart count in header
-        const cartCount = document.getElementById('cart-count');
+        // Update cart count in header - try multiple possible selectors
+        const cartCount = document.getElementById('cart-count') || 
+                         document.querySelector('.cart-count') ||
+                         document.querySelector('[class*="cart-count"]');
         const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+        console.log('Total count:', totalCount, 'Cart count element:', cartCount);
+        
         if (cartCount) {
           cartCount.textContent = totalCount;
           cartCount.style.display = totalCount > 0 ? 'flex' : 'none';
         }
 
-        // Open the cart drawer immediately
+        // Render cart if function exists
+        if (window.renderCart) {
+          console.log('Calling renderCart');
+          window.renderCart();
+        } else {
+          console.log('renderCart function not found');
+        }
+
+        // Open the cart drawer immediately - try multiple methods
         const backdrop = document.getElementById('cart-backdrop');
         const drawer = document.getElementById('cart-drawer');
+        
+        console.log('Cart elements:', { backdrop, drawer });
+        
         if (backdrop && drawer) {
-          // Render the cart with updated items
-          if (window.renderCart) {
-            window.renderCart();
-          }
+          console.log('Opening cart drawer');
           // Show the cart drawer
           backdrop.classList.remove('hidden');
           drawer.classList.remove('translate-x-full');
+          backdrop.style.display = 'block';
+          drawer.style.transform = 'translateX(0)';
+          
+          // Ensure we can close the cart properly by using the global close function
+          const closeBtn = document.getElementById('cart-close');
+          if (closeBtn && window.closeCart) {
+            // Remove existing listeners to avoid duplicates
+            closeBtn.removeEventListener('click', window.closeCart);
+            closeBtn.addEventListener('click', window.closeCart);
+          }
+          
+          // Also handle backdrop clicks with global close function
+          if (window.closeCart) {
+            backdrop.removeEventListener('click', window.closeCart);
+            backdrop.addEventListener('click', window.closeCart);
+          }
+          
+        } else {
+          console.log('Cart drawer elements not found');
         }
+        
+        // Alternative method - dispatch custom event
+        window.dispatchEvent(new CustomEvent('cartUpdated', { 
+          detail: { cart, totalCount } 
+        }));
+        
+        console.log('Added to cart:', { product: data.name, quantity, totalCount });
       });
+    } else {
+      console.error('Add to cart button not found');
     }
 
     // Global add to cart function
