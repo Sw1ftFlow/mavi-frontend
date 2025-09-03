@@ -321,6 +321,38 @@
   transform: translateY(-50%) scale(0.95);
 }
 
+/* Override any transform effects on carousel navigation buttons */
+.main-carousel-prev,
+.main-carousel-next {
+  transition: background-color 0.2s ease, opacity 0.2s ease !important;
+}
+
+.main-carousel-prev:hover,
+.main-carousel-next:hover {
+  transform: translateY(-50%) !important; /* Keep only the centering transform */
+  scale: none !important;
+}
+
+.main-carousel-prev:active,
+.main-carousel-next:active {
+  transform: translateY(-50%) !important; /* Keep only the centering transform */
+  scale: none !important;
+}
+
+.carousel-thumb {
+  transform: none !important;
+  transition: opacity 0.2s ease, border 0.2s ease !important;
+}
+
+/* Remove any Tailwind hover scale effects */
+.hover\:scale-110:hover {
+  transform: translateY(-50%) !important;
+}
+
+.active\:scale-95:active {
+  transform: translateY(-50%) !important;
+}
+
 /* Prevent double-tap zoom on mobile */
 #image-container {
   -webkit-user-select: none;
