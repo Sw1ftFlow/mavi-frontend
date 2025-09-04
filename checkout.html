@@ -159,6 +159,8 @@
 
     // Stripe configuration - Replace with your actual publishable key
     // Get this from: https://dashboard.stripe.com/apikeys
+    // NOTE: For Apple Pay to work, you need to verify your domain in Stripe Dashboard:
+    // Go to: Settings > Payment methods > Apple Pay > Add domain
     const STRIPE_PUBLISHABLE_KEY = 'pk_live_51RyvauD6syVba6lcZmEWTvwn8IUnT4bwlFH3IHmIpNpDMVLj7jizTsuu6KTKqoZ5BNIFYaWQGMRgB8h2KWBw0h5K00W4RM08w8';
     const stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
     let elements;
@@ -185,6 +187,7 @@
             mode: 'payment',
             amount: Math.round(amount * 100), // Convert SEK to öre
             currency: 'sek',
+            paymentMethodTypes: ['card', 'apple_pay', 'google_pay'], // Exclude amazon_pay
             appearance: {
               theme: 'stripe',
               variables: {
@@ -202,6 +205,11 @@
           paymentElement = elements.create('payment', {
             business: {
               name: 'MAVI'
+            },
+            paymentMethodTypes: ['card', 'apple_pay', 'google_pay'], // Exclude amazon_pay
+            wallets: {
+              applePay: 'auto',
+              googlePay: 'auto'
             }
           });
           
@@ -211,7 +219,7 @@
         } catch (clientModeError) {
           console.warn('Client-only mode failed, trying basic card element:', clientModeError);
           
-          // Fallback: Use basic card element without client-only mode
+          // Fallback: Use basic card element without client-only mode (excludes Apple Pay/Google Pay)
           elements = stripe.elements({
             appearance: {
               theme: 'stripe',
@@ -240,7 +248,7 @@
           });
           
           await paymentElement.mount('#payment-element');
-          console.log('Basic card element mounted successfully');
+          console.log('Basic card element mounted successfully (mobile wallets not available)');
         }
         
         console.log('Stripe initialized successfully with amount:', amount, 'SEK');
