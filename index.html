@@ -37,6 +37,31 @@
     <div class="relative w-full h-full">
       <!-- Slide 1: Ozonlamp -->
       <div class="slide active" data-bg="white">
+        <!-- Content Overlay - Moved above images -->
+        <div class="absolute inset-0 flex flex-col justify-between px-4 lg:px-16 xl:px-40 2xl:px-64 pt-12 lg:pt-16 pb-32 lg:pb-40">
+          <!-- Top Content -->
+          <div class="text-black">
+            <h2 class="text-4xl lg:text-6xl font-light mb-2">"OZON"</h2>
+            <p class="text-base lg:text-lg mb-6 lg:mb-8">av MAVI</p>
+            <a href="productDetail.html?id=3" class="border-2 border-black px-6 lg:px-8 py-2 lg:py-3 text-black hover:bg-black hover:text-white transition-colors duration-300 flex items-center text-sm lg:text-base w-fit">
+              <span>UPPTÄCK MER</span>
+              <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </a>
+          </div>
+          
+          <!-- Navigation Dots with Arrows - Bottom right -->
+          <div class="hidden lg:flex items-center space-x-3 lg:space-x-3 self-end">
+            <button id="prev-slide" class="text-4xl lg:text-4xl navigation-arrow leading-none">‹</button>
+            <div class="flex items-center space-x-2 lg:space-x-2 mt-2 lg:mt-3">
+              <button class="slide-indicator active w-4 h-4 lg:w-3 lg:h-3 rounded-full border-2 border-black bg-black" data-slide="0"></button>
+              <button class="slide-indicator w-4 h-4 lg:w-3 lg:h-3 rounded-full border-2 border-black bg-transparent" data-slide="1"></button>
+            </div>
+            <button id="next-slide" class="text-4xl lg:text-4xl navigation-arrow leading-none">›</button>
+          </div>
+        </div>
+        
         <!-- Desktop Image -->
         <img 
           src="./img/ozon_thumbnail4.png" 
@@ -49,13 +74,17 @@
           alt="Ozon Lamp Product" 
           class="block lg:hidden w-full h-full object-contain mx-auto transform"
         />
-        <!-- Content Overlay -->
-        <div class="absolute inset-0 flex items-end justify-between px-4 lg:px-16 xl:px-40 2xl:px-64 pb-32 lg:pb-40">
-          <!-- Left Content -->
-          <div class="text-black">
+      </div>
+      
+      <!-- Slide 2: Ozon Layers -->
+      <div class="slide bg-black hidden lg:block" data-bg="black">
+        <!-- Content Overlay - Moved above images -->
+        <div class="absolute inset-0 flex flex-col justify-between px-4 lg:px-16 xl:px-40 2xl:px-64 pt-12 lg:pt-16 pb-32 lg:pb-40">
+          <!-- Top Content -->
+          <div class="text-white">
             <h2 class="text-4xl lg:text-6xl font-light mb-2">"OZON"</h2>
             <p class="text-base lg:text-lg mb-6 lg:mb-8">av MAVI</p>
-            <a href="productDetail.html?id=3" class="border-2 border-black px-6 lg:px-8 py-2 lg:py-3 text-black hover:bg-black hover:text-white transition-colors duration-300 flex items-center text-sm lg:text-base">
+            <a href="productDetail.html?id=2" class="border-2 border-white px-6 lg:px-8 py-2 lg:py-3 text-white hover:bg-white hover:text-black transition-colors duration-300 flex items-center text-sm lg:text-base w-fit">
               <span>UPPTÄCK MER</span>
               <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
@@ -63,20 +92,17 @@
             </a>
           </div>
           
-          <!-- Navigation Dots with Arrows - Same height as button -->
-          <div class="hidden lg:flex items-center space-x-3 lg:space-x-3">
-            <button id="prev-slide" class="text-4xl lg:text-4xl navigation-arrow leading-none">‹</button>
+          <!-- Navigation Dots with Arrows - Bottom right, white for slide 2 -->
+          <div class="flex items-center space-x-3 lg:space-x-3 self-end">
+            <button class="prev-slide-btn text-4xl lg:text-4xl navigation-arrow leading-none text-white">‹</button>
             <div class="flex items-center space-x-2 lg:space-x-2 mt-2 lg:mt-3">
-              <button class="slide-indicator active w-4 h-4 lg:w-3 lg:h-3 rounded-full border-2 border-black bg-black" data-slide="0"></button>
-              <button class="slide-indicator w-4 h-4 lg:w-3 lg:h-3 rounded-full border-2 border-black bg-transparent" data-slide="1"></button>
+              <button class="slide-indicator w-4 h-4 lg:w-3 lg:h-3 rounded-full border-2 border-white bg-transparent" data-slide="0"></button>
+              <button class="slide-indicator active w-4 h-4 lg:w-3 lg:h-3 rounded-full border-2 border-white bg-white" data-slide="1"></button>
             </div>
-            <button id="next-slide" class="text-4xl lg:text-4xl navigation-arrow leading-none">›</button>
+            <button class="next-slide-btn text-4xl lg:text-4xl navigation-arrow leading-none text-white">›</button>
           </div>
         </div>
-      </div>
-      
-      <!-- Slide 2: Ozon Layers -->
-      <div class="slide bg-black hidden lg:block" data-bg="black">
+        
         <!-- Desktop Image -->
         <img 
           src="./img/ozon19.png" 
@@ -89,30 +115,6 @@
           alt="Ozon Layers Product" 
           class="block lg:hidden w-full h-full object-contain mx-auto transform"
         />
-        <!-- Content Overlay -->
-        <div class="absolute inset-0 flex items-end justify-between px-4 lg:px-16 xl:px-40 2xl:px-64 pb-32 lg:pb-40">
-          <!-- Left Content -->
-          <div class="text-white">
-            <h2 class="text-4xl lg:text-6xl font-light mb-2">"OZON"</h2>
-            <p class="text-base lg:text-lg mb-6 lg:mb-8">av MAVI</p>
-            <a href="productDetail.html?id=2" class="border-2 border-white px-6 lg:px-8 py-2 lg:py-3 text-white hover:bg-white hover:text-black transition-colors duration-300 flex items-center text-sm lg:text-base">
-              <span>UPPTÄCK MER</span>
-              <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-              </svg>
-            </a>
-          </div>
-          
-          <!-- Navigation Dots with Arrows - Same height as button, white for slide 2 -->
-          <div class="flex items-center space-x-3 lg:space-x-3">
-            <button class="prev-slide-btn text-4xl lg:text-4xl navigation-arrow leading-none text-white">‹</button>
-            <div class="flex items-center space-x-2 lg:space-x-2 mt-2 lg:mt-3">
-              <button class="slide-indicator w-4 h-4 lg:w-3 lg:h-3 rounded-full border-2 border-white bg-transparent" data-slide="0"></button>
-              <button class="slide-indicator active w-4 h-4 lg:w-3 lg:h-3 rounded-full border-2 border-white bg-white" data-slide="1"></button>
-            </div>
-            <button class="next-slide-btn text-4xl lg:text-4xl navigation-arrow leading-none text-white">›</button>
-          </div>
-        </div>
       </div>
       
     </div>

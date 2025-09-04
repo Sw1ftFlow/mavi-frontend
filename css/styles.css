@@ -209,12 +209,12 @@
   /* Target mobile images specifically - any image that is not hidden on mobile */
   #hero-section .slide img:not(.hidden) {
     position: absolute !important;
-    top: 20vh !important;
+    top: 25vh !important;
     left: 50% !important;
-    transform: translateX(-50%) scale(1.3) !important;
+    transform: translateX(-50%) scale(1.2) !important;
     object-fit: contain !important;
     width: 100vw !important;
-    height: 40vh !important;
+    height: 35vh !important;
     object-position: center !important;
     z-index: 1 !important;
   }
@@ -224,39 +224,44 @@
     display: none !important;
   }
   
-  /* Position text and buttons below the image */
-  #hero-section .absolute.left-4 {
-    position: absolute !important;
-    top: 64vh !important;
-    left: 1rem !important;
-    bottom: auto !important;
-    z-index: 10;
+  /* Position content overlay - ensure text is above image */
+  #hero-section .slide .absolute.inset-0 {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    align-items: flex-start !important;
+    padding: 80px 1rem 1rem 1rem !important;
+    z-index: 10 !important;
   }
   
-  /* Position navigation below the image */
-  #hero-section .absolute.bottom-20 {
+  /* Ensure text is at the top and visible */
+  #hero-section .slide .absolute.inset-0 > div:first-child {
+    position: relative !important;
+    z-index: 15 !important;
+    margin-bottom: auto !important;
+  }
+  
+  /* Position navigation at bottom */
+  #hero-section .slide .absolute.inset-0 > div:last-child {
     position: absolute !important;
-    top: 76vh !important;
+    bottom: 2rem !important;
     right: 1rem !important;
-    bottom: auto !important;
-    z-index: 10;
+    left: auto !important;
+    z-index: 15 !important;
+    margin-top: auto !important;
   }
 }
 
 @media (max-width: 480px) {
   #hero-section .slide img:not(.hidden) {
-    transform: translateX(-50%) scale(1.4) !important;
-    top: 15vh !important;
-    height: 38vh !important;
+    transform: translateX(-50%) scale(1.3) !important;
+    top: 20vh !important;
+    height: 30vh !important;
   }
   
-  /* Adjust positioning for very small screens */
-  #hero-section .absolute.left-4 {
-    top: 61vh !important;
-  }
-  
-  #hero-section .absolute.bottom-20 {
-    top: 73vh !important;
+  /* Ensure content overlay positioning for very small screens */
+  #hero-section .slide .absolute.inset-0 {
+    padding: 70px 0.75rem 1rem 0.75rem !important;
   }
   
   /* Even smaller text on very small screens */
@@ -266,43 +271,27 @@
   }
 }
 
-/* Slide-specific navigation colors */
-.hero-slide[data-slide="0"] .navigation-arrow,
-.hero-slide[data-slide="0"] .slide-indicator {
-  color: #2563EB; /* Blue for slide 1 */
-  border-color: #2563EB;
+/* Slide navigation colors for desktop */
+#hero-section[data-bg="white"] .navigation-arrow,
+#hero-section[data-bg="white"] .slide-indicator {
+  color: #000;
+  border-color: #000;
 }
 
-.hero-slide[data-slide="1"] .navigation-arrow,
-.hero-slide[data-slide="1"] .slide-indicator {
-  color: white; /* White for slide 2 (black background) */
+#hero-section[data-bg="black"] .navigation-arrow,
+#hero-section[data-bg="black"] .slide-indicator {
+  color: white;
   border-color: white;
 }
 
-/* Active slide indicator colors */
-.hero-slide[data-slide="0"] .slide-indicator.active {
-  background-color: #2563EB;
-  border-color: #2563EB;
+#hero-section[data-bg="white"] .slide-indicator.active {
+  background-color: #000;
+  border-color: #000;
 }
 
-.hero-slide[data-slide="1"] .slide-indicator.active {
+#hero-section[data-bg="black"] .slide-indicator.active {
   background-color: white;
   border-color: white;
-}
-
-/* On mobile, always use appropriate colors for each slide */
-@media (max-width: 768px) {
-  .hero-slide[data-slide="0"] .navigation-arrow,
-  .hero-slide[data-slide="0"] .slide-indicator {
-    color: #2563EB;
-    border-color: #2563EB;
-  }
-  
-  .hero-slide[data-slide="1"] .navigation-arrow,
-  .hero-slide[data-slide="1"] .slide-indicator {
-    color: white;
-    border-color: white;
-  }
 }
 
 /* Product Overview Carousel Improvements */
