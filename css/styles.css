@@ -187,15 +187,6 @@
     backdrop-filter: blur(10px);
   }
   
-  /* Ensure text content is always above images on mobile */
-  #hero-section .slide .absolute.inset-0 {
-    z-index: 10;
-  }
-  
-  #hero-section .slide img {
-    z-index: 1;
-  }
-  
   /* Product detail pages need padding-top when header is fixed */
   #product-overview.product-overview-container {
     padding-top: 80px;
