@@ -38,27 +38,30 @@
       <!-- Slide 1: Ozonlamp -->
       <div class="slide active" data-bg="white">
         <!-- Content Overlay - Moved above images -->
-        <div class="absolute inset-0 flex flex-col justify-between px-4 lg:px-16 xl:px-40 2xl:px-64 pt-12 lg:pt-16 pb-32 lg:pb-40">
-          <!-- Top Content -->
-          <div class="text-black">
-            <h2 class="text-4xl lg:text-6xl font-light mb-2">"OZON"</h2>
-            <p class="text-base lg:text-lg mb-6 lg:mb-8">av MAVI</p>
-            <a href="productDetail.html?id=3" class="border-2 border-black px-6 lg:px-8 py-2 lg:py-3 text-black hover:bg-black hover:text-white transition-colors duration-300 flex items-center text-sm lg:text-base w-fit">
-              <span>UPPTÄCK MER</span>
-              <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-              </svg>
-            </a>
-          </div>
-          
-          <!-- Navigation Dots with Arrows - Bottom right -->
-          <div class="hidden lg:flex items-center space-x-3 lg:space-x-3 self-end">
-            <button id="prev-slide" class="text-4xl lg:text-4xl navigation-arrow leading-none">‹</button>
-            <div class="flex items-center space-x-2 lg:space-x-2 mt-2 lg:mt-3">
-              <button class="slide-indicator active w-4 h-4 lg:w-3 lg:h-3 rounded-full border-2 border-black bg-black" data-slide="0"></button>
-              <button class="slide-indicator w-4 h-4 lg:w-3 lg:h-3 rounded-full border-2 border-black bg-transparent" data-slide="1"></button>
+        <div class="absolute inset-0 flex flex-col justify-end px-4 lg:px-16 xl:px-40 2xl:px-64 pt-12 lg:pt-16 pb-32 lg:pb-40 z-10">
+          <!-- Bottom Content - Text and Navigation aligned -->
+          <div class="flex justify-between items-end">
+            <!-- Left side - Text content -->
+            <div class="text-black z-20">
+              <h2 class="text-4xl lg:text-6xl font-light mb-2">"OZON"</h2>
+              <p class="text-base lg:text-lg mb-6 lg:mb-8">av MAVI</p>
+              <a href="productDetail.html?id=3" class="border-2 border-black px-6 lg:px-8 py-2 lg:py-3 text-black hover:bg-black hover:text-white transition-colors duration-300 flex items-center text-sm lg:text-base w-fit relative z-30">
+                <span>UPPTÄCK MER</span>
+                <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+              </a>
             </div>
-            <button id="next-slide" class="text-4xl lg:text-4xl navigation-arrow leading-none">›</button>
+            
+            <!-- Right side - Navigation -->
+            <div class="flex items-center space-x-3 lg:space-x-3 z-20">
+              <button id="prev-slide" class="text-4xl lg:text-4xl navigation-arrow leading-none relative z-30 cursor-pointer">‹</button>
+              <div class="flex items-center space-x-2 lg:space-x-2 mt-2 lg:mt-3">
+                <button class="slide-indicator active w-4 h-4 lg:w-3 lg:h-3 rounded-full border-2 border-black bg-black relative z-30 cursor-pointer" data-slide="0"></button>
+                <button class="slide-indicator w-4 h-4 lg:w-3 lg:h-3 rounded-full border-2 border-black bg-transparent relative z-30 cursor-pointer" data-slide="1"></button>
+              </div>
+              <button id="next-slide" class="text-4xl lg:text-4xl navigation-arrow leading-none relative z-30 cursor-pointer">›</button>
+            </div>
           </div>
         </div>
         
@@ -77,29 +80,32 @@
       </div>
       
       <!-- Slide 2: Ozon Layers -->
-      <div class="slide bg-black hidden lg:block" data-bg="black">
+      <div class="slide bg-black" data-bg="black">
         <!-- Content Overlay - Moved above images -->
-        <div class="absolute inset-0 flex flex-col justify-between px-4 lg:px-16 xl:px-40 2xl:px-64 pt-12 lg:pt-16 pb-32 lg:pb-40">
-          <!-- Top Content -->
-          <div class="text-white">
-            <h2 class="text-4xl lg:text-6xl font-light mb-2">"OZON"</h2>
-            <p class="text-base lg:text-lg mb-6 lg:mb-8">av MAVI</p>
-            <a href="productDetail.html?id=2" class="border-2 border-white px-6 lg:px-8 py-2 lg:py-3 text-white hover:bg-white hover:text-black transition-colors duration-300 flex items-center text-sm lg:text-base w-fit">
-              <span>UPPTÄCK MER</span>
-              <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-              </svg>
-            </a>
-          </div>
-          
-          <!-- Navigation Dots with Arrows - Bottom right, white for slide 2 -->
-          <div class="flex items-center space-x-3 lg:space-x-3 self-end">
-            <button class="prev-slide-btn text-4xl lg:text-4xl navigation-arrow leading-none text-white">‹</button>
-            <div class="flex items-center space-x-2 lg:space-x-2 mt-2 lg:mt-3">
-              <button class="slide-indicator w-4 h-4 lg:w-3 lg:h-3 rounded-full border-2 border-white bg-transparent" data-slide="0"></button>
-              <button class="slide-indicator active w-4 h-4 lg:w-3 lg:h-3 rounded-full border-2 border-white bg-white" data-slide="1"></button>
+        <div class="absolute inset-0 flex flex-col justify-end px-4 lg:px-16 xl:px-40 2xl:px-64 pt-12 lg:pt-16 pb-32 lg:pb-40 z-10">
+          <!-- Bottom Content - Text and Navigation aligned -->
+          <div class="flex justify-between items-end">
+            <!-- Left side - Text content -->
+            <div class="text-white z-20">
+              <h2 class="text-4xl lg:text-6xl font-light mb-2">"OZON"</h2>
+              <p class="text-base lg:text-lg mb-6 lg:mb-8">av MAVI</p>
+              <a href="productDetail.html?id=3" class="border-2 border-white px-6 lg:px-8 py-2 lg:py-3 text-white hover:bg-white hover:text-black transition-colors duration-300 flex items-center text-sm lg:text-base w-fit relative z-30">
+                <span>UPPTÄCK MER</span>
+                <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+              </a>
             </div>
-            <button class="next-slide-btn text-4xl lg:text-4xl navigation-arrow leading-none text-white">›</button>
+            
+            <!-- Right side - Navigation -->
+            <div class="flex items-center space-x-3 lg:space-x-3 z-20">
+              <button class="prev-slide-btn text-4xl lg:text-4xl navigation-arrow leading-none text-white relative z-30 cursor-pointer">‹</button>
+              <div class="flex items-center space-x-2 lg:space-x-2 mt-2 lg:mt-3">
+                <button class="slide-indicator w-4 h-4 lg:w-3 lg:h-3 rounded-full border-2 border-white bg-transparent relative z-30 cursor-pointer" data-slide="0"></button>
+                <button class="slide-indicator active w-4 h-4 lg:w-3 lg:h-3 rounded-full border-2 border-white bg-white relative z-30 cursor-pointer" data-slide="1"></button>
+              </div>
+              <button class="next-slide-btn text-4xl lg:text-4xl navigation-arrow leading-none text-white relative z-30 cursor-pointer">›</button>
+            </div>
           </div>
         </div>
         
@@ -559,19 +565,40 @@
       
       // Event listeners for arrows
       document.querySelectorAll('#prev-slide, .prev-slide-btn').forEach(button => {
-        button.addEventListener('click', prevSlide);
+        if (button) {
+          button.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Previous slide clicked');
+            prevSlide();
+          });
+        }
       });
       document.querySelectorAll('#next-slide, .next-slide-btn').forEach(button => {
-        button.addEventListener('click', nextSlide);
+        if (button) {
+          button.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Next slide clicked');
+            nextSlide();
+          });
+        }
       });
       
       // Indicator clicks - handle indicators from all slides
       document.querySelectorAll('.slide-indicator').forEach((indicator) => {
-        indicator.addEventListener('click', () => {
-          const slideIndex = parseInt(indicator.getAttribute('data-slide'));
-          currentSlide = slideIndex;
-          showSlide(currentSlide);
-        });
+        if (indicator) {
+          indicator.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const slideIndex = parseInt(indicator.getAttribute('data-slide'));
+            console.log('Slide indicator clicked:', slideIndex);
+            if (!isNaN(slideIndex)) {
+              currentSlide = slideIndex;
+              showSlide(currentSlide);
+            }
+          });
+        }
       });
       
       // Keyboard navigation

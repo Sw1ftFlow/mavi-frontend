@@ -186,43 +186,6 @@
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
   }
-  
-  /* Product detail pages need padding-top when header is fixed */
-  #product-overview.product-overview-container {
-    padding-top: 80px;
-  }
-  
-  /* General fix for other main content areas that aren't hero sections */
-  body:has(#product-overview) main,
-  body[data-page="product"] main,
-  body[data-page="productDetail"] main {
-    padding-top: 80px;
-  }
-}
-
-
-
-/* Slide navigation colors for desktop */
-#hero-section[data-bg="white"] .navigation-arrow,
-#hero-section[data-bg="white"] .slide-indicator {
-  color: #000;
-  border-color: #000;
-}
-
-#hero-section[data-bg="black"] .navigation-arrow,
-#hero-section[data-bg="black"] .slide-indicator {
-  color: white;
-  border-color: white;
-}
-
-#hero-section[data-bg="white"] .slide-indicator.active {
-  background-color: #000;
-  border-color: #000;
-}
-
-#hero-section[data-bg="black"] .slide-indicator.active {
-  background-color: white;
-  border-color: white;
 }
 
 /* Product Overview Carousel Improvements */
@@ -421,4 +384,37 @@
   body[data-page="productDetail"] main {
     padding-top: 80px;
   }
+}
+
+/* Mobile responsiveness for hero section */
+@media (max-width: 768px) {
+  #hero-section .flex.justify-between {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+  
+  #hero-section .flex.justify-between .flex.items-center {
+    align-self: flex-end;
+  }
+}
+
+/* Ensure hero section buttons are clickable */
+#hero-section .navigation-arrow,
+#hero-section .slide-indicator,
+#hero-section a {
+  pointer-events: auto;
+  position: relative;
+  z-index: 30;
+}
+
+#hero-section .navigation-arrow:hover,
+#hero-section .slide-indicator:hover {
+  opacity: 0.7;
+}
+
+/* Make sure images don't interfere with button clicks */
+#hero-section img {
+  pointer-events: none;
+  z-index: 1;
 }
