@@ -762,14 +762,30 @@
     }
     updateCartCount();
 
-    // Rabattkod (discount code) logic (demo only)
+    // Rabattkod (discount code) logic
     document.getElementById('discount-form').addEventListener('submit', function(e) {
       e.preventDefault();
       const code = document.getElementById('discount-code').value.trim();
       const msg = document.getElementById('discount-message');
+      
+      // Lista över giltiga rabattkoder (tom för närvarande)
+      const validDiscountCodes = [
+        // 'SOMMAR2025',
+        // 'STUDENT10',
+        // 'VIP15'
+      ];
+      
       if (code.length > 0) {
-        msg.textContent = 'Rabattkod "' + code + '" har lagts till (demo)';
-        msg.style.display = 'block';
+        if (validDiscountCodes.includes(code.toUpperCase())) {
+          msg.textContent = 'Rabattkod "' + code + '" har lagts till';
+          msg.className = 'text-green-600 text-sm mt-2';
+          msg.style.display = 'block';
+          // Här kan du lägga till logik för att faktiskt applicera rabatten
+        } else {
+          msg.textContent = 'Ogiltig kod';
+          msg.className = 'text-red-600 text-sm mt-2';
+          msg.style.display = 'block';
+        }
       } else {
         msg.textContent = '';
         msg.style.display = 'none';
