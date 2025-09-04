@@ -187,89 +187,18 @@
     backdrop-filter: blur(10px);
   }
   
-  #hero-section {
-    min-height: 100vh;
-    height: 100vh;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    margin-top: 0;
-    padding-top: 0;
-  }
-  
-  #hero-section .slide {
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    height: 100vh;
-    position: relative;
-    flex-direction: column;
-  }
-  
-  /* Target mobile images specifically - any image that is not hidden on mobile */
-  #hero-section .slide img:not(.hidden) {
-    position: absolute !important;
-    top: 25vh !important;
-    left: 50% !important;
-    transform: translateX(-50%) scale(1.2) !important;
-    object-fit: contain !important;
-    width: 100vw !important;
-    height: 35vh !important;
-    object-position: center !important;
-    z-index: 1 !important;
-  }
-  
-  /* Special positioning for black slide desktop image on mobile (should be hidden) */
-  #hero-section .slide.bg-black img.hidden {
-    display: none !important;
-  }
-  
-  /* Position content overlay - ensure text is above image */
+  /* Ensure text content is above images */
   #hero-section .slide .absolute.inset-0 {
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: flex-start !important;
-    align-items: flex-start !important;
-    padding: 80px 1rem 1rem 1rem !important;
     z-index: 10 !important;
   }
   
-  /* Ensure text is at the top and visible */
-  #hero-section .slide .absolute.inset-0 > div:first-child {
-    position: relative !important;
-    z-index: 15 !important;
-    margin-bottom: auto !important;
-  }
-  
-  /* Position navigation at bottom */
-  #hero-section .slide .absolute.inset-0 > div:last-child {
-    position: absolute !important;
-    bottom: 2rem !important;
-    right: 1rem !important;
-    left: auto !important;
-    z-index: 15 !important;
-    margin-top: auto !important;
+  /* Make sure images are below text content */
+  #hero-section .slide img {
+    z-index: 1 !important;
   }
 }
 
-@media (max-width: 480px) {
-  #hero-section .slide img:not(.hidden) {
-    transform: translateX(-50%) scale(1.3) !important;
-    top: 20vh !important;
-    height: 30vh !important;
-  }
-  
-  /* Ensure content overlay positioning for very small screens */
-  #hero-section .slide .absolute.inset-0 {
-    padding: 70px 0.75rem 1rem 0.75rem !important;
-  }
-  
-  /* Even smaller text on very small screens */
-  #hero-section h2 {
-    font-size: 2.5rem !important;
-    line-height: 1.1;
-  }
-}
+
 
 /* Slide navigation colors for desktop */
 #hero-section[data-bg="white"] .navigation-arrow,
