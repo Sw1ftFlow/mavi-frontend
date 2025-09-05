@@ -28,6 +28,9 @@
         
         try {
           // Create Payment Intent on the backend first
+          console.log('Calling backend at: https://mavi-backend.onrender.com/create-payment-intent');
+          console.log('Request data:', { amount: Math.round(totalAmount * 100), currency: 'sek' });
+          
           const response = await fetch('https://mavi-backend.onrender.com/create-payment-intent', {
             method: 'POST',
             headers: {
@@ -39,8 +42,13 @@
             })
           });
 
+          console.log('Response status:', response.status);
+          console.log('Response ok:', response.ok);
+
           if (!response.ok) {
-            throw new Error(`Backend error: ${response.status}`);
+            const errorText = await response.text();
+            console.error('Backend error response:', errorText);
+            throw new Error(`Backend error: ${response.status} - ${errorText}`);
           }
 
           const { clientSecret } = await response.json();
@@ -90,11 +98,20 @@
           console.log('Payment element type after creation:', paymentElement.type);
           
         } catch (clientModeError) {
-          console.warn('Payment Element with backend failed, using card element fallback:', clientModeError);
+          console.error('Payment Element with backend failed:', clientModeError);
           
-          // Show specific error if backend is not available
+          // Show specific error messages based on the type of error
           if (clientModeError.message && clientModeError.message.includes('fetch')) {
-            console.error('Backend server not available. Make sure the backend server is running on port 4242.');
+            console.error('Network error - backend may not be accessible');
+            showMessage('Anslutningsfel till betalningsservern. Försöker med kortbetalning istället.');
+          } else if (clientModeError.message && clientModeError.message.includes('CORS')) {
+            console.error('CORS error - backend CORS configuration needed');
+            showMessage('Serverfel - CORS-konfiguration krävs. Använder kortbetalning istället.');
+          } else if (clientModeError.message && clientModeError.message.includes('Backend error')) {
+            console.error('Backend returned an error:', clientModeError.message);
+            showMessage('Serverfel: ' + clientModeError.message + '. Använder kortbetalning istället.');
+          } else {
+            console.error('Unknown error calling backend');
             showMessage('Klarna-betalningar är för närvarande inte tillgängliga. Du kan använda kort istället.');
           }
           
