@@ -1,23 +1,25 @@
 <!DOCTYPE html>
 <html lang="sv">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Kassa | Mavi Webshop</title>
-  
+
   <!-- Favicons -->
   <link rel="icon" type="image/png" sizes="32x32" href="./img/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="./img/favicon-16x16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="./img/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="192x192" href="./img/android-chrome-192x192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="./img/android-chrome-512x512.png">
-  
+
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   <script src="https://js.stripe.com/v3/"></script>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script src="./js/utils.js"></script>
   <link rel="stylesheet" href="./css/styles.css">
 </head>
+
 <body class="bg-gray-50 min-h-screen">
   <!-- Header -->
   <header class="bg-white w-full">
@@ -28,7 +30,8 @@
       </a>
       <a href="./cart.html" class="relative group cursor-pointer" aria-label="Öppna varukorg">
         <!-- Cart icon from header.js -->
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28" fill="none" class="w-7 h-7 stroke-black" stroke="currentColor" stroke-width="1.3">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28" fill="none" class="w-7 h-7 stroke-black"
+          stroke="currentColor" stroke-width="1.3">
           <rect x="5" y="9" width="18" height="13" rx="3" />
           <path d="M9 9V7a5 5 0 0 1 10 0v2" />
         </svg>
@@ -47,782 +50,111 @@
       <!-- Left: Checkout form, full white including edge, with extra left padding -->
       <div class="w-full md:w-[58%] bg-white flex items-start">
         <div class="w-full max-w-xl mx-auto px-6 md:pl-20 md:pr-8 py-10 md:py-16">
-        <h1 class="text-2xl font-bold mb-8">Kassa</h1>
-        <form class="space-y-8">
-          <!-- Kontaktuppgifter -->
-          <div>
-            <h2 class="text-lg font-semibold mb-4">Kontaktuppgifter</h2>
-            <input type="email" id="email" placeholder="E-post" required class="w-full border border-gray-300 rounded-none px-4 py-3 mb-2 focus:outline-none focus:ring-2 focus:ring-black" onchange="validateEmail()" onblur="validateEmail()"/>
-            <div id="email-validation-message" class="validation-message text-red-500 text-sm mb-2" style="display: none;"></div>
-          </div>
-          <!-- Leveransadress -->
-          <div>
-            <h2 class="text-lg font-semibold mb-4">Leveransadress</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <input type="text" id="firstName" placeholder="Förnamn" required class="border border-gray-300 rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black" onchange="validateAddress()"/>
-              <input type="text" id="lastName" placeholder="Efternamn" required class="border border-gray-300 rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black" onchange="validateAddress()"/>
-              <input type="tel" id="phone" placeholder="Telefonnummer (för Klarna)" class="md:col-span-2 border border-gray-300 rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black"/>
-              <input type="text" id="address" placeholder="Adress" required class="md:col-span-2 border border-gray-300 rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black" onchange="validateAddress()" onblur="validateAddress()"/>
-              <input type="text" id="postalCode" placeholder="Postnummer" required class="border border-gray-300 rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black" onchange="validateAddress()" onblur="validateAddress()"/>
-              <input type="text" id="city" placeholder="Stad" required class="border border-gray-300 rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black" onchange="validateAddress()" onblur="validateAddress()"/>
+          <h1 class="text-2xl font-bold mb-8">Kassa</h1>
+          <form class="space-y-8">
+            <!-- Kontaktuppgifter -->
+            <div>
+              <h2 class="text-lg font-semibold mb-4">Kontaktuppgifter</h2>
+              <input type="email" id="email" placeholder="E-post" required
+                class="w-full border border-gray-300 rounded-none px-4 py-3 mb-2 focus:outline-none focus:ring-2 focus:ring-black"
+                onchange="validateEmail()" onblur="validateEmail()" />
+              <div id="email-validation-message" class="validation-message text-red-500 text-sm mb-2"
+                style="display: none;"></div>
             </div>
-            <div id="address-validation-message" class="validation-message text-red-500 text-sm mt-2" style="display: none;"></div>
-          </div>
-          <!-- Betalning -->
-          <div>
-            <h2 class="text-lg font-semibold mb-4">Betalning</h2>
-            
-            <!-- Live mode information -->
-            <div class="mb-4 p-3 bg-green-50 border border-green-200 rounded">
-              <p class="text-green-800 text-sm">
-                <strong>🔒 Säkra betalningar:</strong> Kort, Klarna och andra betalmetoder via Stripe.
-              </p>
-              <p class="text-green-700 text-xs mt-1">
-                Alla betalningar processseras säkert och ditt konto kommer att debiteras.
-              </p>
+            <!-- Leveransadress -->
+            <div>
+              <h2 class="text-lg font-semibold mb-4">Leveransadress</h2>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <input type="text" id="firstName" placeholder="Förnamn" required
+                  class="border border-gray-300 rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black"
+                  onchange="validateAddress()" />
+                <input type="text" id="lastName" placeholder="Efternamn" required
+                  class="border border-gray-300 rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black"
+                  onchange="validateAddress()" />
+                <input type="tel" id="phone" placeholder="Telefonnummer (för Klarna)"
+                  class="md:col-span-2 border border-gray-300 rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black" />
+                <input type="text" id="address" placeholder="Adress" required
+                  class="md:col-span-2 border border-gray-300 rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black"
+                  onchange="validateAddress()" onblur="validateAddress()" />
+                <input type="text" id="postalCode" placeholder="Postnummer" required
+                  class="border border-gray-300 rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black"
+                  onchange="validateAddress()" onblur="validateAddress()" />
+                <input type="text" id="city" placeholder="Stad" required
+                  class="border border-gray-300 rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black"
+                  onchange="validateAddress()" onblur="validateAddress()" />
+              </div>
+              <div id="address-validation-message" class="validation-message text-red-500 text-sm mt-2"
+                style="display: none;"></div>
             </div>
-            
-            <div id="payment-element" class="mb-4">
-              <!-- Stripe Payment Element will be mounted here -->
+            <!-- Betalning -->
+            <div>
+              <h2 class="text-lg font-semibold mb-4">Betalning</h2>
+
+              <!-- Live mode information -->
+              <div class="mb-4 p-3 bg-green-50 border border-green-200 rounded">
+                <p class="text-green-800 text-sm">
+                  <strong>🔒 Säkra betalningar:</strong> Kort, Klarna och andra betalmetoder via Stripe.
+                </p>
+                <p class="text-green-700 text-xs mt-1">
+                  Alla betalningar processseras säkert och ditt konto kommer att debiteras.
+                </p>
+              </div>
+
+              <div id="payment-element" class="mb-4">
+                <!-- Stripe Payment Element will be mounted here -->
+              </div>
+              <div id="payment-message" class="text-red-500 text-sm mb-4" style="display: none;"></div>
             </div>
-            <div id="payment-message" class="text-red-500 text-sm mb-4" style="display: none;"></div>
-          </div>
-          <button type="submit" id="submit-payment" class="w-full bg-black text-white py-3 font-semibold text-base hover:bg-gray-900 transition mt-8 disabled:opacity-50 disabled:cursor-not-allowed">
-            <span id="button-text">Slutför köp</span>
-            <div id="spinner" class="hidden">Bearbetar...</div>
-          </button>
-        </form>
-      </div>
-    </div>
-    <!-- Right: Order summary, grey -->
-    <div class="w-full md:w-[42%] bg-gray-50 border-t md:border-t-0 md:border-l border-gray-200 flex items-start">
-      <div class="w-full max-w-md mx-auto px-6 md:px-8 py-10 md:py-16">
-        <div class="w-full flex flex-col">
-          <h2 class="text-lg font-semibold mb-8">Din beställning</h2>
-          <!-- Cart Items List -->
-          <div id="checkout-cart-items" class="space-y-6 w-full">
-            <!-- Cart items will be injected here by JS -->
-          </div>
-          <!-- Rabattkod just above the separation line -->
-          <form id="discount-form" class="w-full flex mb-0 mt-6 gap-2">
-            <input type="text" id="discount-code" placeholder="Rabattkod" class="flex-1 border border-gray-300 rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black" autocomplete="off" />
-            <button type="submit" class="bg-gray-200 text-gray-900 px-5 py-3 font-semibold text-base hover:bg-gray-300 transition rounded-none">Lägg till</button>
+            <button type="submit" id="submit-payment"
+              class="w-full bg-black text-white py-3 font-semibold text-base hover:bg-gray-900 transition mt-8 disabled:opacity-50 disabled:cursor-not-allowed">
+              <span id="button-text">Slutför köp</span>
+              <div id="spinner" class="hidden">Bearbetar...</div>
+            </button>
           </form>
-          <div id="discount-message" class="w-full text-sm text-green-600 mb-2" style="display:none;"></div>
-          <!-- Cost summary -->
-          <div class="border-t border-gray-200 mt-6 pt-6 w-full space-y-2">
-            <div class="flex justify-between text-base">
-              <span>Delsumma</span>
-              <span id="checkout-cart-subtotal">0 kr</span>
+        </div>
+      </div>
+      <!-- Right: Order summary, grey -->
+      <div class="w-full md:w-[42%] bg-gray-50 border-t md:border-t-0 md:border-l border-gray-200 flex items-start">
+        <div class="w-full max-w-md mx-auto px-6 md:px-8 py-10 md:py-16">
+          <div class="w-full flex flex-col">
+            <h2 class="text-lg font-semibold mb-8">Din beställning</h2>
+            <!-- Cart Items List -->
+            <div id="checkout-cart-items" class="space-y-6 w-full">
+              <!-- Cart items will be injected here by JS -->
             </div>
-            <div class="flex justify-between text-base">
-              <span>Frakt</span>
-              <span id="shipping-cost" class="text-gray-500">Ange leveransadress</span>
+            <!-- Rabattkod just above the separation line -->
+            <form id="discount-form" class="w-full flex mb-0 mt-6 gap-2">
+              <input type="text" id="discount-code" placeholder="Rabattkod"
+                class="flex-1 border border-gray-300 rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black"
+                autocomplete="off" />
+              <button type="submit"
+                class="bg-gray-200 text-gray-900 px-5 py-3 font-semibold text-base hover:bg-gray-300 transition rounded-none">Lägg
+                till</button>
+            </form>
+            <div id="discount-message" class="w-full text-sm text-green-600 mb-2" style="display:none;"></div>
+            <!-- Cost summary -->
+            <div class="border-t border-gray-200 mt-6 pt-6 w-full space-y-2">
+              <div class="flex justify-between text-base">
+                <span>Delsumma</span>
+                <span id="checkout-cart-subtotal">0 kr</span>
+              </div>
+              <div class="flex justify-between text-base">
+                <span>Frakt</span>
+                <span id="shipping-cost" class="text-gray-500">Ange leveransadress</span>
+              </div>
+              <div class="flex justify-between text-base font-semibold mt-4">
+                <span>Totalt</span>
+                <span id="checkout-cart-total">0 kr</span>
+              </div>
+              <div class="text-xs text-gray-500 mt-1">Inkluderar <span id="checkout-cart-tax">0 kr</span> moms</div>
             </div>
-            <div class="flex justify-between text-base font-semibold mt-4">
-              <span>Totalt</span>
-              <span id="checkout-cart-total">0 kr</span>
-            </div>
-            <div class="text-xs text-gray-500 mt-1">Inkluderar <span id="checkout-cart-tax">0 kr</span> moms</div>
           </div>
         </div>
       </div>
-    </div>
     </div> <!-- End of max-width wrapper -->
   </div>
-  <script>    
-
-    // Stripe configuration - LIVE MODE (Real payments)
-    // Real payments that charge actual money
-    const STRIPE_PUBLISHABLE_KEY = 'pk_live_51RyvauD6syVba6lcZmEWTvwn8IUnT4bwlFH3IHmIpNpDMVLj7jizTsuu6KTKqoZ5BNIFYaWQGMRgB8h2KWBw0h5K00W4RM08w8';
-    const stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
-    let elements;
-    let paymentElement;
-
-    // Initialize Stripe Payment Element for Live Mode
-    async function initializeStripe() {
-      try {
-        const cart = JSON.parse(localStorage.getItem('cart')) || [];
-        const amount = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-        
-        // Check if cart is empty
-        if (cart.length === 0 || amount <= 0) {
-          document.getElementById('payment-element').innerHTML = '<p class="text-gray-500">Din varukorg är tom. Lägg till produkter för att fortsätta.</p>';
-          return;
-        }
-        
-        console.log('Initializing Stripe LIVE mode with cart:', cart);
-        console.log('Total amount:', amount, 'SEK');
-        
-        // Add shipping to amount if applicable
-        const shippingCost = document.getElementById('shipping-cost').textContent === '99 kr' ? 99 : 0;
-        const totalAmount = amount + shippingCost;
-        
-        try {
-          // Use Payment Element with all payment methods including Klarna (client-only mode)
-          elements = stripe.elements({
-            mode: 'payment',
-            amount: Math.round(totalAmount * 100), // Convert SEK to öre
-            currency: 'sek',
-            payment_method_types: ['card', 'klarna'], // Enable both cards and Klarna
-            appearance: {
-              theme: 'stripe',
-              variables: {
-                colorPrimary: '#000000',
-                colorBackground: '#ffffff',
-                colorText: '#30313d',
-                colorDanger: '#df1b41',
-                fontFamily: 'Inter, ui-sans-serif, system-ui, sans-serif',
-                spacingUnit: '4px',
-                borderRadius: '0px'
-              }
-            }
-          });
-
-          paymentElement = elements.create('payment', {
-            business: {
-              name: 'MAVI Design'
-            },
-            fields: {
-              billingDetails: {
-                name: 'auto',
-                email: 'auto',
-                phone: 'auto',
-                address: {
-                  country: 'auto',
-                  line1: 'auto',
-                  line2: 'auto',
-                  city: 'auto',
-                  state: 'auto',
-                  postalCode: 'auto'
-                }
-              }
-            }
-          });
-          
-          await paymentElement.mount('#payment-element');
-          console.log('Live Payment Element with Klarna mounted successfully');
-          
-        } catch (clientModeError) {
-          console.warn('Payment Element failed, using card element:', clientModeError);
-          
-          // Fallback to card element for live payments
-          elements = stripe.elements({
-            appearance: {
-              theme: 'stripe',
-              variables: {
-                colorPrimary: '#000000',
-                colorBackground: '#ffffff',
-                colorText: '#30313d',
-                colorDanger: '#df1b41',
-                fontFamily: 'Inter, ui-sans-serif, system-ui, sans-serif',
-                spacingUnit: '4px',
-                borderRadius: '0px'
-              }
-            }
-          });
-
-          paymentElement = elements.create('card', {
-            style: {
-              base: {
-                fontSize: '16px',
-                color: '#424770',
-                '::placeholder': {
-                  color: '#aab7c4',
-                },
-              },
-            },
-          });
-          
-          await paymentElement.mount('#payment-element');
-          console.log('Live card element mounted successfully');
-        }
-        
-        console.log('Stripe LIVE mode initialized successfully with amount:', totalAmount, 'SEK');
-      } catch (error) {
-        console.error('Stripe initialization error:', error);
-        document.getElementById('payment-element').innerHTML = '<p class="text-red-500">Fel vid laddning av betalningsformuläret. Försök ladda om sidan.</p>';
-        showMessage('Fel vid initiering av betalning: ' + error.message);
-      }
-    }
-
-    // Handle form submission
-    async function handleSubmit(e) {
-      e.preventDefault();
-      
-      // Validate email and address before processing payment
-      const emailValid = validateEmail();
-      const addressValid = validateAddress();
-      
-      if (!emailValid || !addressValid) {
-        showMessage("Vänligen korrigera e-post och adressuppgifterna innan du fortsätter.");
-        return;
-      }
-      
-      setLoading(true);
-
-      try {
-        // Store customer data for order confirmation
-        const customerData = {
-          email: document.querySelector('input[type="email"]').value,
-          firstName: document.querySelector('input[placeholder="Förnamn"]').value,
-          lastName: document.querySelector('input[placeholder="Efternamn"]').value,
-          phone: document.querySelector('input[placeholder="Telefonnummer (för Klarna)"]').value,
-          address: document.querySelector('input[placeholder="Adress"]').value,
-          postalCode: document.querySelector('input[placeholder="Postnummer"]').value,
-          city: document.querySelector('input[placeholder="Stad"]').value
-        };
-        
-        // Save customer data to localStorage for success page
-        localStorage.setItem('lastOrderCustomer', JSON.stringify(customerData));
-        
-        // Get cart for order notification
-        const cart = JSON.parse(localStorage.getItem('cart')) || [];
-        const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-        const shipping = document.getElementById('shipping-cost').textContent === '99 kr' ? 99 : 0;
-        const orderTotal = subtotal + shipping;
-        
-        // Send professional order emails (customer confirmation + admin notification)
-        const emailResult = await sendOrderEmails(customerData, cart, subtotal, shipping, orderTotal);
-        
-        if (emailResult.success) {
-          console.log(`Order emails sent successfully. Order number: ${emailResult.orderNumber}`);
-          // Store order number for success page
-          localStorage.setItem('lastOrderNumber', emailResult.orderNumber);
-        } else {
-          console.warn('Email sending failed:', emailResult.error);
-          // Continue with payment process even if emails fail
-        }
-        
-        // Process LIVE payment including Klarna (real money will be charged)
-        try {
-          if (paymentElement && paymentElement.type === 'payment') {
-            // Use Payment Element for live payments with enhanced error handling
-            const confirmParams = {
-              return_url: window.location.origin + window.location.pathname.replace('checkout.html', 'success.html'),
-              receipt_email: customerData.email,
-              payment_method_data: {
-                billing_details: {
-                  name: `${customerData.firstName} ${customerData.lastName}`,
-                  email: customerData.email,
-                  phone: customerData.phone || '',
-                  address: {
-                    line1: customerData.address,
-                    city: customerData.city,
-                    postal_code: customerData.postalCode,
-                    country: 'SE'
-                  }
-                }
-              }
-            };
-
-            console.log('Processing payment with confirmParams:', confirmParams);
-
-            const { error, paymentIntent } = await stripe.confirmPayment({
-              elements,
-              confirmParams,
-              redirect: 'if_required'
-            });
-
-            if (error) {
-              console.error('Payment error:', error);
-              if (error.type === "card_error" || error.type === "validation_error") {
-                showMessage("Betalningsfel: " + error.message);
-              } else if (error.code === 'payment_intent_authentication_failure') {
-                showMessage("Betalningen kunde inte verifieras. Försök igen eller använd en annan betalmetod.");
-              } else {
-                showMessage("Ett fel uppstod vid betalningen: " + error.message);
-              }
-            } else if (paymentIntent && paymentIntent.status === 'succeeded') {
-              // Payment succeeded without redirect
-              console.log('Payment succeeded:', paymentIntent);
-              localStorage.removeItem('cart');
-              window.location.href = './success.html?payment_intent=' + paymentIntent.id;
-            } else if (paymentIntent && paymentIntent.status === 'requires_action') {
-              // This shouldn't happen with redirect: 'if_required', but handle it
-              showMessage("Betalningen kräver ytterligare verifiering. Följ instruktionerna som visas.");
-            } else {
-              // Handle other statuses
-              console.log('Payment status:', paymentIntent?.status);
-              showMessage("Betalningen behandlas. Du kommer att omdirigeras när den är klar.");
-            }
-            
-          } else {
-            // Fallback: Use card element with token creation
-            const { token, error } = await stripe.createToken(paymentElement, {
-              name: `${customerData.firstName} ${customerData.lastName}`,
-              address_line1: customerData.address,
-              address_city: customerData.city,
-              address_zip: customerData.postalCode,
-              address_country: 'SE',
-            });
-
-            if (error) {
-              showMessage("Kortfel: " + error.message);
-            } else {
-              console.log('Live payment token created:', token);
-              localStorage.removeItem('cart');
-              window.location.href = './success.html?payment=live&token=' + token.id;
-            }
-          }
-        } catch (paymentError) {
-          console.error('Payment processing error:', paymentError);
-          showMessage("Ett fel uppstod vid betalningen: " + paymentError.message);
-        }
-      } catch (error) {
-        console.error('Payment error:', error);
-        showMessage("Ett fel uppstod vid betalningen. Försök igen.");
-      }
-
-      setLoading(false);
-    }
-
-    // Show a spinner on payment submission
-    function setLoading(isLoading) {
-      const submitButton = document.querySelector("#submit-payment");
-      const buttonText = document.querySelector("#button-text");
-      const spinner = document.querySelector("#spinner");
-
-      if (isLoading) {
-        submitButton.disabled = true;
-        buttonText.classList.add("hidden");
-        spinner.classList.remove("hidden");
-      } else {
-        submitButton.disabled = false;
-        buttonText.classList.remove("hidden");
-        spinner.classList.add("hidden");
-      }
-    }
-
-    function showMessage(messageText) {
-      const messageContainer = document.querySelector("#payment-message");
-      messageContainer.textContent = messageText;
-      messageContainer.style.display = "block";
-      setTimeout(() => {
-        messageContainer.style.display = "none";
-      }, 4000);
-    }
-
-    // Function to update shipping cost when address is entered
-    function updateShipping() {
-      const addressFields = [
-        document.querySelector('input[placeholder="Förnamn"]').value.trim(),
-        document.querySelector('input[placeholder="Efternamn"]').value.trim(),
-        document.querySelector('input[placeholder="Adress"]').value.trim(),
-        document.querySelector('input[placeholder="Postnummer"]').value.trim(),
-        document.querySelector('input[placeholder="Stad"]').value.trim()
-      ];
-      
-      // Check if at least address, postal code and city are filled
-      const hasBasicAddress = addressFields[2] && addressFields[3] && addressFields[4];
-      
-      const shippingElement = document.getElementById('shipping-cost');
-      
-      if (hasBasicAddress) {
-        shippingElement.textContent = '99 kr';
-        shippingElement.classList.remove('text-gray-500');
-        shippingElement.classList.add('text-gray-900');
-      } else {
-        shippingElement.textContent = 'Ange leveransadress';
-        shippingElement.classList.remove('text-gray-900');
-        shippingElement.classList.add('text-gray-500');
-      }
-      
-      // Update the total calculation
-      updateCheckoutTotals();
-    }
-
-    // Function to validate Swedish address format
-    function validateAddress() {
-      const address = document.getElementById('address').value.trim();
-      const postalCode = document.getElementById('postalCode').value.trim();
-      const city = document.getElementById('city').value.trim();
-      const messageElement = document.getElementById('address-validation-message');
-      
-      let errors = [];
-      let hasValidFields = true;
-      
-      // Validate postal code format (Swedish format: XXXXX or XXX XX)
-      if (postalCode) {
-        // Remove spaces and normalize
-        const normalizedPostalCode = postalCode.replace(/\s/g, '');
-        const postalCodeRegex = /^\d{5}$/;
-        if (!postalCodeRegex.test(normalizedPostalCode)) {
-          errors.push('Postnummer måste vara 5 siffror (t.ex. 11122 eller 111 22)');
-          hasValidFields = false;
-        }
-      }
-      
-      // Validate address format (should contain at least street name and number)
-      if (address) {
-        // More flexible address regex that accepts Swedish address formats
-        const addressRegex = /^[A-Za-zÅÄÖåäö\s]+\s+\d+[A-Za-z]?(\s*-\s*\d+[A-Za-z]?)?(\s+[A-Za-zÅÄÖåäö\s\d]*)?$/;
-        if (address.length < 5 || !addressRegex.test(address)) {
-          errors.push('Adress måste innehålla gatunamn och nummer (t.ex. "Storgatan 12" eller "Kungsgatan 15A")');
-          hasValidFields = false;
-        }
-      }
-      
-      // Validate city format (only letters, spaces, and Swedish characters)
-      if (city) {
-        const cityRegex = /^[A-Za-zÅÄÖåäö\s\-]+$/;
-        if (city.length < 2 || !cityRegex.test(city)) {
-          errors.push('Stad får endast innehålla bokstäver, mellanslag och bindestreck');
-          hasValidFields = false;
-        }
-      }
-      
-      // Update field styling
-      const addressField = document.getElementById('address');
-      const postalCodeField = document.getElementById('postalCode');
-      const cityField = document.getElementById('city');
-      
-      // Reset all field styling first
-      [addressField, postalCodeField, cityField].forEach(field => {
-        field.classList.remove('border-red-500');
-      });
-      
-      // Add red border to invalid fields
-      if (postalCode && postalCode.replace(/\s/g, '').length > 0) {
-        const normalizedPostalCode = postalCode.replace(/\s/g, '');
-        if (!/^\d{5}$/.test(normalizedPostalCode)) {
-          postalCodeField.classList.add('border-red-500');
-        }
-      }
-      
-      if (address && address.length > 0) {
-        const addressRegex = /^[A-Za-zÅÄÖåäö\s]+\s+\d+[A-Za-z]?(\s*-\s*\d+[A-Za-z]?)?(\s+[A-Za-zÅÄÖåäö\s\d]*)?$/;
-        if (address.length < 5 || !addressRegex.test(address)) {
-          addressField.classList.add('border-red-500');
-        }
-      }
-      
-      if (city && city.length > 0) {
-        const cityRegex = /^[A-Za-zÅÄÖåäö\s\-]+$/;
-        if (city.length < 2 || !cityRegex.test(city)) {
-          cityField.classList.add('border-red-500');
-        }
-      }
-      
-      // Show validation message
-      if (errors.length > 0 && (address || postalCode || city)) {
-        messageElement.innerHTML = errors.join('<br>');
-        messageElement.style.display = 'block';
-        messageElement.className = 'validation-message text-red-500 text-sm mt-2';
-        return false;
-      } else {
-        // Clear any previous error messages
-        messageElement.style.display = 'none';
-        
-        // Show success message if all required fields are filled and valid
-        if (address && postalCode && city && hasValidFields) {
-          messageElement.innerHTML = '✓ Adress verifierad';
-          messageElement.style.display = 'block';
-          messageElement.className = 'validation-message text-green-600 text-sm mt-2';
-          
-          // Update shipping after successful validation
-          updateShipping();
-        }
-        
-        return hasValidFields && address && postalCode && city;
-      }
-    }
-
-    // Function to validate email format
-    function validateEmail() {
-      const email = document.getElementById('email').value.trim();
-      const messageElement = document.getElementById('email-validation-message');
-      const emailField = document.getElementById('email');
-      
-      // Reset styling
-      emailField.classList.remove('border-red-500');
-      
-      if (email) {
-        // Comprehensive email validation regex
-        const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-        
-        if (!emailRegex.test(email)) {
-          messageElement.innerHTML = 'Ange en giltig e-postadress (t.ex. namn@exempel.se)';
-          messageElement.style.display = 'block';
-          messageElement.className = 'validation-message text-red-500 text-sm mb-2';
-          emailField.classList.add('border-red-500');
-          return false;
-        } else {
-          // Valid email
-          messageElement.innerHTML = '✓ E-post verifierad';
-          messageElement.style.display = 'block';
-          messageElement.className = 'validation-message text-green-600 text-sm mb-2';
-          return true;
-        }
-      } else {
-        // Empty email - hide message
-        messageElement.style.display = 'none';
-        return false;
-      }
-    }
-
-    // Function to update checkout totals including shipping
-    function updateCheckoutTotals() {
-      const cart = JSON.parse(localStorage.getItem('cart')) || [];
-      const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-      const tax = Math.round(subtotal * 0.2); // 20% moms
-      
-      // Check if shipping should be added
-      const shippingElement = document.getElementById('shipping-cost');
-      const shipping = shippingElement.textContent === '99 kr' ? 99 : 0;
-      const total = subtotal + shipping;
-      
-      document.getElementById('checkout-cart-subtotal').textContent = `${subtotal} kr`;
-      document.getElementById('checkout-cart-tax').textContent = `${tax} kr`;
-      document.getElementById('checkout-cart-total').textContent = `${total} kr`;
-      
-      // Re-initialize Stripe with new total if shipping changed
-      if (shipping > 0 && elements) {
-        console.log('Shipping added, re-initializing Stripe with new total:', total);
-        initializeStripe(); // Re-initialize with shipping included
-      }
-    }
-
-    // Function to send professional order emails (customer confirmation + admin notification)
-    async function sendOrderEmails(customerData, cart, subtotal, shipping, orderTotal) {
-      try {
-        // Generate order number
-        const orderNumber = Date.now().toString().slice(-6);
-        
-        // Format order items for plain text (admin email)
-        const orderItemsText = cart.map(item => 
-          `${item.name}${item.variant ? ` (${item.variant})` : ''} - Antal: ${item.quantity} - Pris: ${item.price * item.quantity} kr`
-        ).join('\n');
-        
-        // Format order items for HTML (customer email)
-        const orderItemsHtml = cart.map(item => `
-          <div style="display: flex; padding: 15px; border-bottom: 1px solid #eee; align-items: center;">
-            <img src="${item.thumbnail || 'https://via.placeholder.com/60x60?text=No+Image'}" 
-                 style="width: 60px; height: 60px; object-fit: contain; margin-right: 15px; border-radius: 4px; border: 1px solid #eee;" 
-                 alt="${item.name}">
-            <div style="flex: 1;">
-              <div style="font-weight: 600; margin-bottom: 4px; color: #333;">${item.name}</div>
-              ${item.description ? `<div style="color: #666; font-size: 14px; margin-bottom: 4px;">${item.description}</div>` : ''}
-              ${item.variant ? `<div style="color: #888; font-size: 13px; margin-bottom: 8px;">${item.variant}</div>` : ''}
-              <div style="color: #333; font-size: 14px;">
-                <span style="color: #666;">Antal: ${item.quantity} × ${item.price} kr = </span>
-                <strong style="color: #000;">${item.price * item.quantity} kr</strong>
-              </div>
-            </div>
-          </div>
-        `).join('');
-        
-        const now = new Date();
-        const orderDate = now.toLocaleDateString('sv-SE');
-        const orderTime = now.toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' });
-        
-        // Common email parameters
-        const baseEmailParams = {
-          order_number: orderNumber,
-          order_date: orderDate,
-          order_time: orderTime,
-          order_total: orderTotal,
-          customer_name: `${customerData.firstName} ${customerData.lastName}`,
-          customer_email: customerData.email,
-          customer_phone: customerData.phone || 'Ej angivet',
-          customer_address: customerData.address,
-          customer_postal_code: customerData.postalCode,
-          customer_city: customerData.city,
-          order_items: orderItemsText,
-          order_items_html: orderItemsHtml,
-          order_subtotal: `${subtotal} kr`,
-          order_shipping: `${shipping} kr`
-        };
-
-        console.log('Sending order emails...', baseEmailParams);
-        
-        // Send customer confirmation email from info@mavidesign.se
-        // Include BCC to Trustpilot for automatic review invitation
-        // NOTE: If BCC doesn't work with your EmailJS service, the fallback method below will send a separate copy
-        const customerEmailParams = {
-          ...baseEmailParams,
-          to_email: customerData.email,
-          to_name: `${customerData.firstName} ${customerData.lastName}`,
-          from_name: 'MAVI Design',
-          from_email: 'info@mavidesign.se',
-          // BCC Trustpilot for automatic review invitation
-          bcc_email: 'mavidesign.se+3b19644966@invite.trustpilot.com'
-        };
-        
-        await emailjs.send(
-          EMAILJS_CONFIG.stratoServiceId,
-          EMAILJS_CONFIG.customerTemplateId,
-          customerEmailParams
-        );
-        
-        console.log('Customer confirmation email sent successfully');
-        
-        // Fallback: Send separate email to Trustpilot for review invitation
-        // (Use this if BCC doesn't work with your EmailJS service)
-        try {
-          const trustpilotEmailParams = {
-            ...baseEmailParams,
-            to_email: 'mavidesign.se+3b19644966@invite.trustpilot.com',
-            to_name: 'Trustpilot Review System',
-            from_name: 'MAVI Design',
-            from_email: 'info@mavidesign.se'
-          };
-          
-          await emailjs.send(
-            EMAILJS_CONFIG.stratoServiceId,
-            EMAILJS_CONFIG.customerTemplateId,
-            trustpilotEmailParams
-          );
-          
-          console.log('Trustpilot invitation email sent successfully');
-        } catch (trustpilotError) {
-          console.warn('Failed to send Trustpilot invitation email:', trustpilotError);
-          // Don't fail the entire order process if Trustpilot email fails
-        }
-        
-        // Send admin notification email
-        const adminEmailParams = {
-          ...baseEmailParams,
-          to_email: 'viktor.lehtonen@gmail.com',
-          to_name: 'Viktor Lehtonen',
-          from_name: 'MAVI Webshop',
-          from_email: 'info@mavidesign.se'
-        };
-        
-        await emailjs.send(
-          EMAILJS_CONFIG.stratoServiceId,
-          EMAILJS_CONFIG.adminTemplateId,
-          adminEmailParams
-        );
-        
-        console.log('Admin notification email sent successfully');
-        
-        return { success: true, orderNumber };
-        
-      } catch (error) {
-        console.error('Failed to send order emails:', error);
-        return { success: false, error: error.message };
-      }
-    }
-
-    // Simple JS to render cart items from localStorage
-    function renderCheckoutCart() {
-      const cart = JSON.parse(localStorage.getItem('cart')) || [];
-      
-      // Migrate old cart items to use consistent URL structure (same as cart.js)
-      const migratedCart = cart.map(item => {
-        if (item.thumbnail && !item.thumbnail.startsWith('http') && !item.thumbnail.includes(getBaseUrl())) {
-          // Fix old thumbnail paths
-          if (item.thumbnail.startsWith('/img/')) {
-            item.thumbnail = getBaseUrl() + item.thumbnail.substring(1);
-          } else if (!item.thumbnail.includes('img/')) {
-            item.thumbnail = getBaseUrl() + 'img/' + item.thumbnail;
-          }
-        }
-        return item;
-      });
-      
-      // Save the migrated cart back to localStorage
-      if (JSON.stringify(cart) !== JSON.stringify(migratedCart)) {
-        localStorage.setItem('cart', JSON.stringify(migratedCart));
-      }
-      
-      const container = document.getElementById('checkout-cart-items');
-      const subtotalSpan = document.getElementById('checkout-cart-subtotal');
-      const totalSpan = document.getElementById('checkout-cart-total');
-      const taxSpan = document.getElementById('checkout-cart-tax');
-      let subtotal = 0;
-      let tax = 0;
-      if (migratedCart.length === 0) {
-        container.innerHTML = '<div class="text-gray-500 text-center">Din varukorg är tom.</div>';
-        subtotalSpan.textContent = '0 kr';
-        totalSpan.textContent = '0 kr';
-        taxSpan.textContent = '0 kr';
-        return;
-      }
-      container.innerHTML = migratedCart.map(item => {
-        // Now all items should have consistent URL structure
-        let imageUrl = item.thumbnail || 'https://via.placeholder.com/56x56?text=No+Image';
-        
-        return `
-        <div class="flex flex-col gap-2 border-b border-gray-200 pb-4 last:border-b-0">
-          <div class="flex justify-between items-center">
-            <div class="flex items-center gap-3 min-w-0 relative">
-              <div class="relative">
-                <img src="${imageUrl}" alt="${item.name}" class="w-14 h-14 object-contain bg-gray-100 border flex-shrink-0 rounded" />
-                <span class="absolute -top-2 -right-2 bg-gray-700 bg-opacity-95 text-white text-xs font-semibold rounded-full w-6 h-6 flex items-center justify-center border border-white shadow">
-                  ${item.quantity}
-                </span>
-              </div>
-              <div class="min-w-0">
-                <div class="font-medium text-base text-gray-900 truncate">${item.name}</div>
-                <div class="text-sm text-gray-500 truncate">${item.description || ''}</div>
-                <div class="text-xs text-gray-400 truncate">${item.variant || ''}</div>
-              </div>
-            </div>
-            <div class="font-semibold text-base text-right whitespace-nowrap">${item.price * item.quantity} kr</div>
-          </div>
-        </div>
-      `;}).join('');
-      subtotal = migratedCart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-      tax = Math.round(subtotal * 0.2); // 20% moms
-      subtotalSpan.textContent = `${subtotal} kr`;
-      totalSpan.textContent = `${subtotal} kr`; // Will be updated by updateCheckoutTotals if shipping is added
-      taxSpan.textContent = `${tax} kr`;
-      
-      // Update totals to include shipping if address is entered
-      updateCheckoutTotals();
-    }
-    renderCheckoutCart();
-    
-    // Initialize Stripe when page loads
-    initializeStripe();
-
-    // Add event listener to form
-    document.querySelector('form').addEventListener('submit', handleSubmit);
-
-    // Optional: Update cart count in header if you want live updates
-    function updateCartCount() {
-      const cart = JSON.parse(localStorage.getItem('cart')) || [];
-      const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-      const cartCount = document.getElementById('cart-count');
-      if (cartCount) {
-        cartCount.textContent = count;
-        cartCount.style.display = count > 0 ? 'flex' : 'none';
-      }
-    }
-    updateCartCount();
-
-    // Rabattkod (discount code) logic
-    document.getElementById('discount-form').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const code = document.getElementById('discount-code').value.trim();
-      const msg = document.getElementById('discount-message');
-      
-      // Lista över giltiga rabattkoder (tom för närvarande)
-      const validDiscountCodes = [
-        // 'SOMMAR2025',
-        // 'STUDENT10',
-        // 'VIP15'
-      ];
-      
-      if (code.length > 0) {
-        if (validDiscountCodes.includes(code.toUpperCase())) {
-          msg.textContent = 'Rabattkod "' + code + '" har lagts till';
-          msg.className = 'text-green-600 text-sm mt-2';
-          msg.style.display = 'block';
-          // Här kan du lägga till logik för att faktiskt applicera rabatten
-        } else {
-          msg.textContent = 'Ogiltig kod';
-          msg.className = 'text-red-600 text-sm mt-2';
-          msg.style.display = 'block';
-        }
-      } else {
-        msg.textContent = '';
-        msg.style.display = 'none';
-      }
-    });
-  </script>
+  <script src="js/checkout.js"></script>
   <script src="js/email.js"></script>
 </body>
+
 </html>
