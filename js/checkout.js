@@ -6,6 +6,8 @@
     let paymentElement;
 
     // Initialize Stripe Payment Element for Live Mode
+    let elementType = null; // Track what type of element we created
+    
     async function initializeStripe() {
       try {
         const cart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -25,12 +27,28 @@
         const totalAmount = amount + shippingCost;
         
         try {
-          // Use Payment Element with all payment methods including Klarna (client-only mode)
+          // Create Payment Intent on the backend first
+          const response = await fetch('https://checkout.mavidesign.se/create-payment-intent', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              amount: Math.round(totalAmount * 100), // Convert SEK to öre
+              currency: 'sek'
+            })
+          });
+
+          if (!response.ok) {
+            throw new Error(`Backend error: ${response.status}`);
+          }
+
+          const { clientSecret } = await response.json();
+          console.log('Created Payment Intent with client secret');
+
+          // Use Payment Element with client secret for Klarna support
           elements = stripe.elements({
-            mode: 'payment',
-            amount: Math.round(totalAmount * 100), // Convert SEK to öre
-            currency: 'sek',
-            payment_method_types: ['card', 'klarna'], // Enable both cards and Klarna
+            clientSecret: clientSecret,
             appearance: {
               theme: 'stripe',
               variables: {
@@ -67,12 +85,20 @@
           });
           
           await paymentElement.mount('#payment-element');
+          elementType = 'payment'; // Track that we created a Payment Element
           console.log('Live Payment Element with Klarna mounted successfully');
+          console.log('Payment element type after creation:', paymentElement.type);
           
         } catch (clientModeError) {
-          console.warn('Payment Element failed, using card element:', clientModeError);
+          console.warn('Payment Element with backend failed, using card element fallback:', clientModeError);
           
-          // Fallback to card element for live payments
+          // Show specific error if backend is not available
+          if (clientModeError.message && clientModeError.message.includes('fetch')) {
+            console.error('Backend server not available. Make sure the backend server is running on port 4242.');
+            showMessage('Klarna-betalningar är för närvarande inte tillgängliga. Du kan använda kort istället.');
+          }
+          
+          // Fallback to card element for live payments (client-only mode)
           elements = stripe.elements({
             appearance: {
               theme: 'stripe',
@@ -101,7 +127,9 @@
           });
           
           await paymentElement.mount('#payment-element');
-          console.log('Live card element mounted successfully');
+          elementType = 'card'; // Track that we created a Card Element
+          console.log('Live card element mounted successfully (fallback mode - no Klarna support)');
+          console.log('Card element type after creation:', paymentElement.type);
         }
         
         console.log('Stripe LIVE mode initialized successfully with amount:', totalAmount, 'SEK');
@@ -124,6 +152,14 @@
         showMessage("Vänligen korrigera e-post och adressuppgifterna innan du fortsätter.");
         return;
       }
+
+      // Check if payment element is properly initialized
+      if (!paymentElement || !elements || !elementType) {
+        showMessage("Betalningsformuläret är inte redo. Vänligen ladda om sidan och försök igen.");
+        return;
+      }
+
+      console.log('Processing payment with element type:', elementType);
       
       setLoading(true);
 
@@ -162,32 +198,41 @@
         
         // Process LIVE payment including Klarna (real money will be charged)
         try {
-          if (paymentElement && paymentElement.type === 'payment') {
+          console.log('Payment element details:', {
+            elementType: elementType,
+            element: paymentElement,
+            elementsObject: elements
+          });
+
+          if (elementType === 'payment') {
+            // Use Payment Element approach
             // Use Payment Element for live payments with enhanced error handling
             const confirmParams = {
               return_url: window.location.origin + window.location.pathname.replace('checkout.html', 'success.html'),
-              receipt_email: customerData.email,
-              payment_method_data: {
-                billing_details: {
-                  name: `${customerData.firstName} ${customerData.lastName}`,
-                  email: customerData.email,
-                  phone: customerData.phone || '',
-                  address: {
-                    line1: customerData.address,
-                    city: customerData.city,
-                    postal_code: customerData.postalCode,
-                    country: 'SE'
-                  }
-                }
-              }
+              receipt_email: customerData.email
             };
 
             console.log('Processing payment with confirmParams:', confirmParams);
+            console.log('About to call stripe.confirmPayment - this should redirect for Klarna payments');
+
+            // Validate that the payment element is ready
+            try {
+              await elements.submit();
+            } catch (submitError) {
+              console.error('Elements submit validation failed:', submitError);
+              if (submitError.type === 'validation_error') {
+                showMessage("Vänligen fyll i alla obligatoriska betalningsuppgifter.");
+              } else {
+                showMessage("Betalningsformuläret är inte komplett. Kontrollera alla fält.");
+              }
+              setLoading(false);
+              return;
+            }
 
             const { error, paymentIntent } = await stripe.confirmPayment({
               elements,
-              confirmParams,
-              redirect: 'if_required'
+              confirmParams
+              // Remove redirect: 'if_required' to allow redirects for Klarna
             });
 
             if (error) {
@@ -196,44 +241,73 @@
                 showMessage("Betalningsfel: " + error.message);
               } else if (error.code === 'payment_intent_authentication_failure') {
                 showMessage("Betalningen kunde inte verifieras. Försök igen eller använd en annan betalmetod.");
+              } else if (error.code === 'incomplete_payment_element') {
+                showMessage("Vänligen fyll i alla betalningsuppgifter innan du fortsätter.");
+              } else if (error.message && error.message.includes('brand')) {
+                showMessage("Ett fel uppstod med den valda betalmetoden. Försök med ett annat kort eller betalmetod.");
               } else {
                 showMessage("Ett fel uppstod vid betalningen: " + error.message);
               }
-            } else if (paymentIntent && paymentIntent.status === 'succeeded') {
-              // Payment succeeded without redirect
-              console.log('Payment succeeded:', paymentIntent);
-              localStorage.removeItem('cart');
-              window.location.href = './success.html?payment_intent=' + paymentIntent.id;
-            } else if (paymentIntent && paymentIntent.status === 'requires_action') {
-              // This shouldn't happen with redirect: 'if_required', but handle it
-              showMessage("Betalningen kräver ytterligare verifiering. Följ instruktionerna som visas.");
             } else {
-              // Handle other statuses
-              console.log('Payment status:', paymentIntent?.status);
-              showMessage("Betalningen behandlas. Du kommer att omdirigeras när den är klar.");
+              // For Klarna and other redirect-based payments, confirmPayment will redirect
+              // If we reach this point without an error and without a redirect, 
+              // it means the payment succeeded immediately (like with some cards)
+              if (paymentIntent && paymentIntent.status === 'succeeded') {
+                console.log('Payment succeeded:', paymentIntent);
+                localStorage.removeItem('cart');
+                window.location.href = './success.html?payment_intent=' + paymentIntent.id;
+              } else {
+                // This should rarely happen as most payments either error or redirect
+                console.log('Payment processing...', paymentIntent);
+                showMessage("Betalningen behandlas. Du kommer att omdirigeras automatiskt.");
+              }
             }
             
-          } else {
-            // Fallback: Use card element with token creation
-            const { token, error } = await stripe.createToken(paymentElement, {
-              name: `${customerData.firstName} ${customerData.lastName}`,
-              address_line1: customerData.address,
-              address_city: customerData.city,
-              address_zip: customerData.postalCode,
-              address_country: 'SE',
+          } else if (elementType === 'card') {
+            // Card element fallback - use createPaymentMethod instead
+            const { error, paymentMethod } = await stripe.createPaymentMethod({
+              type: 'card',
+              card: paymentElement,
+              billing_details: {
+                name: `${customerData.firstName} ${customerData.lastName}`,
+                email: customerData.email,
+                phone: customerData.phone || '',
+                address: {
+                  line1: customerData.address,
+                  city: customerData.city,
+                  postal_code: customerData.postalCode,
+                  country: 'SE'
+                }
+              }
             });
 
             if (error) {
+              console.error('Payment method creation error:', error);
               showMessage("Kortfel: " + error.message);
             } else {
-              console.log('Live payment token created:', token);
+              console.log('Payment method created:', paymentMethod);
               localStorage.removeItem('cart');
-              window.location.href = './success.html?payment=live&token=' + token.id;
+              window.location.href = './success.html?payment_method=' + paymentMethod.id;
             }
+          } else {
+            // This shouldn't happen with a properly configured element
+            console.error('Element type not recognized:', {
+              elementType,
+              paymentElement
+            });
+            showMessage("Betalningsformuläret är inte korrekt konfigurerat. Vänligen ladda om sidan och försök igen.");
           }
         } catch (paymentError) {
           console.error('Payment processing error:', paymentError);
-          showMessage("Ett fel uppstod vid betalningen: " + paymentError.message);
+          console.error('Payment element type:', paymentElement?.type);
+          console.error('Elements object:', elements);
+          
+          // Check if this is the brand property error
+          if (paymentError.message && paymentError.message.includes('brand')) {
+            showMessage("Ett fel uppstod med kortinformationen. Försök med ett annat kort eller välj en annan betalmetod som Klarna.");
+          } else {
+            showMessage("Ett fel uppstod vid betalningen: " + paymentError.message);
+          }
         }
       } catch (error) {
         console.error('Payment error:', error);
