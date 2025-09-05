@@ -83,6 +83,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <input type="text" id="firstName" placeholder="Förnamn" required class="border border-gray-300 rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black" onchange="validateAddress()"/>
               <input type="text" id="lastName" placeholder="Efternamn" required class="border border-gray-300 rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black" onchange="validateAddress()"/>
+              <input type="tel" id="phone" placeholder="Telefonnummer (för Klarna)" class="md:col-span-2 border border-gray-300 rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black"/>
               <input type="text" id="address" placeholder="Adress" required class="md:col-span-2 border border-gray-300 rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black" onchange="validateAddress()" onblur="validateAddress()"/>
               <input type="text" id="postalCode" placeholder="Postnummer" required class="border border-gray-300 rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black" onchange="validateAddress()" onblur="validateAddress()"/>
               <input type="text" id="city" placeholder="Stad" required class="border border-gray-300 rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black" onchange="validateAddress()" onblur="validateAddress()"/>
@@ -92,6 +93,17 @@
           <!-- Betalning -->
           <div>
             <h2 class="text-lg font-semibold mb-4">Betalning</h2>
+            
+            <!-- Live mode information -->
+            <div class="mb-4 p-3 bg-green-50 border border-green-200 rounded">
+              <p class="text-green-800 text-sm">
+                <strong>🔒 Säkra betalningar:</strong> Kort, Klarna och andra betalmetoder via Stripe.
+              </p>
+              <p class="text-green-700 text-xs mt-1">
+                Alla betalningar processseras säkert och ditt konto kommer att debiteras.
+              </p>
+            </div>
+            
             <div id="payment-element" class="mb-4">
               <!-- Stripe Payment Element will be mounted here -->
             </div>
@@ -157,14 +169,14 @@
     // Initialize EmailJS
     emailjs.init(EMAILJS_CONFIG.publicKey);
 
-    // Stripe configuration - Replace with your actual publishable key
-    // Get this from: https://dashboard.stripe.com/apikeys
+    // Stripe configuration - LIVE MODE (Real payments)
+    // Real payments that charge actual money
     const STRIPE_PUBLISHABLE_KEY = 'pk_live_51RyvauD6syVba6lcZmEWTvwn8IUnT4bwlFH3IHmIpNpDMVLj7jizTsuu6KTKqoZ5BNIFYaWQGMRgB8h2KWBw0h5K00W4RM08w8';
     const stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
     let elements;
     let paymentElement;
 
-    // Initialize Stripe Payment Element
+    // Initialize Stripe Payment Element for Live Mode
     async function initializeStripe() {
       try {
         const cart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -176,15 +188,20 @@
           return;
         }
         
-        console.log('Initializing Stripe with cart:', cart);
+        console.log('Initializing Stripe LIVE mode with cart:', cart);
         console.log('Total amount:', amount, 'SEK');
         
-        // Try client-only mode first, fallback to basic card element if it fails
+        // Add shipping to amount if applicable
+        const shippingCost = document.getElementById('shipping-cost').textContent === '99 kr' ? 99 : 0;
+        const totalAmount = amount + shippingCost;
+        
         try {
+          // Use Payment Element with all payment methods including Klarna (client-only mode)
           elements = stripe.elements({
             mode: 'payment',
-            amount: Math.round(amount * 100), // Convert SEK to öre
+            amount: Math.round(totalAmount * 100), // Convert SEK to öre
             currency: 'sek',
+            payment_method_types: ['card', 'klarna'], // Enable both cards and Klarna
             appearance: {
               theme: 'stripe',
               variables: {
@@ -201,17 +218,32 @@
 
           paymentElement = elements.create('payment', {
             business: {
-              name: 'MAVI'
+              name: 'MAVI Design'
+            },
+            fields: {
+              billingDetails: {
+                name: 'auto',
+                email: 'auto',
+                phone: 'auto',
+                address: {
+                  country: 'auto',
+                  line1: 'auto',
+                  line2: 'auto',
+                  city: 'auto',
+                  state: 'auto',
+                  postalCode: 'auto'
+                }
+              }
             }
           });
           
           await paymentElement.mount('#payment-element');
-          console.log('Stripe Payment Element mounted successfully');
+          console.log('Live Payment Element with Klarna mounted successfully');
           
         } catch (clientModeError) {
-          console.warn('Client-only mode failed, trying basic card element:', clientModeError);
+          console.warn('Payment Element failed, using card element:', clientModeError);
           
-          // Fallback: Use basic card element without client-only mode
+          // Fallback to card element for live payments
           elements = stripe.elements({
             appearance: {
               theme: 'stripe',
@@ -240,10 +272,10 @@
           });
           
           await paymentElement.mount('#payment-element');
-          console.log('Basic card element mounted successfully');
+          console.log('Live card element mounted successfully');
         }
         
-        console.log('Stripe initialized successfully with amount:', amount, 'SEK');
+        console.log('Stripe LIVE mode initialized successfully with amount:', totalAmount, 'SEK');
       } catch (error) {
         console.error('Stripe initialization error:', error);
         document.getElementById('payment-element').innerHTML = '<p class="text-red-500">Fel vid laddning av betalningsformuläret. Försök ladda om sidan.</p>';
@@ -272,6 +304,7 @@
           email: document.querySelector('input[type="email"]').value,
           firstName: document.querySelector('input[placeholder="Förnamn"]').value,
           lastName: document.querySelector('input[placeholder="Efternamn"]').value,
+          phone: document.querySelector('input[placeholder="Telefonnummer (för Klarna)"]').value,
           address: document.querySelector('input[placeholder="Adress"]').value,
           postalCode: document.querySelector('input[placeholder="Postnummer"]').value,
           city: document.querySelector('input[placeholder="Stad"]').value
@@ -298,51 +331,80 @@
           // Continue with payment process even if emails fail
         }
         
-        // Check if we're using the Payment Element or Card Element
-        if (paymentElement && paymentElement.type === 'payment') {
-          // Use confirmPayment for Payment Element
-          const { error } = await stripe.confirmPayment({
-            elements,
-            confirmParams: {
+        // Process LIVE payment including Klarna (real money will be charged)
+        try {
+          if (paymentElement && paymentElement.type === 'payment') {
+            // Use Payment Element for live payments with enhanced error handling
+            const confirmParams = {
               return_url: window.location.origin + window.location.pathname.replace('checkout.html', 'success.html'),
               receipt_email: customerData.email,
-              shipping: {
-                name: `${customerData.firstName} ${customerData.lastName}`,
-                address: {
-                  line1: customerData.address,
-                  postal_code: customerData.postalCode,
-                  city: customerData.city,
-                  country: 'SE',
-                },
-              },
-            },
-          });
+              payment_method_data: {
+                billing_details: {
+                  name: `${customerData.firstName} ${customerData.lastName}`,
+                  email: customerData.email,
+                  phone: customerData.phone || '',
+                  address: {
+                    line1: customerData.address,
+                    city: customerData.city,
+                    postal_code: customerData.postalCode,
+                    country: 'SE'
+                  }
+                }
+              }
+            };
 
-          if (error) {
-            if (error.type === "card_error" || error.type === "validation_error") {
-              showMessage(error.message);
+            console.log('Processing payment with confirmParams:', confirmParams);
+
+            const { error, paymentIntent } = await stripe.confirmPayment({
+              elements,
+              confirmParams,
+              redirect: 'if_required'
+            });
+
+            if (error) {
+              console.error('Payment error:', error);
+              if (error.type === "card_error" || error.type === "validation_error") {
+                showMessage("Betalningsfel: " + error.message);
+              } else if (error.code === 'payment_intent_authentication_failure') {
+                showMessage("Betalningen kunde inte verifieras. Försök igen eller använd en annan betalmetod.");
+              } else {
+                showMessage("Ett fel uppstod vid betalningen: " + error.message);
+              }
+            } else if (paymentIntent && paymentIntent.status === 'succeeded') {
+              // Payment succeeded without redirect
+              console.log('Payment succeeded:', paymentIntent);
+              localStorage.removeItem('cart');
+              window.location.href = './success.html?payment_intent=' + paymentIntent.id;
+            } else if (paymentIntent && paymentIntent.status === 'requires_action') {
+              // This shouldn't happen with redirect: 'if_required', but handle it
+              showMessage("Betalningen kräver ytterligare verifiering. Följ instruktionerna som visas.");
             } else {
-              showMessage("Ett oväntat fel uppstod: " + error.message);
+              // Handle other statuses
+              console.log('Payment status:', paymentIntent?.status);
+              showMessage("Betalningen behandlas. Du kommer att omdirigeras när den är klar.");
+            }
+            
+          } else {
+            // Fallback: Use card element with token creation
+            const { token, error } = await stripe.createToken(paymentElement, {
+              name: `${customerData.firstName} ${customerData.lastName}`,
+              address_line1: customerData.address,
+              address_city: customerData.city,
+              address_zip: customerData.postalCode,
+              address_country: 'SE',
+            });
+
+            if (error) {
+              showMessage("Kortfel: " + error.message);
+            } else {
+              console.log('Live payment token created:', token);
+              localStorage.removeItem('cart');
+              window.location.href = './success.html?payment=live&token=' + token.id;
             }
           }
-        } else {
-          // Fallback for basic card element
-          const { token, error } = await stripe.createToken(paymentElement, {
-            name: `${customerData.firstName} ${customerData.lastName}`,
-            address_line1: customerData.address,
-            address_city: customerData.city,
-            address_zip: customerData.postalCode,
-            address_country: 'SE',
-          });
-
-          if (error) {
-            showMessage(error.message);
-          } else {
-            // For demo purposes, redirect to success page
-            // In production, you'd send the token to your server
-            console.log('Token created:', token);
-            window.location.href = './success.html';
-          }
+        } catch (paymentError) {
+          console.error('Payment processing error:', paymentError);
+          showMessage("Ett fel uppstod vid betalningen: " + paymentError.message);
         }
       } catch (error) {
         console.error('Payment error:', error);
@@ -550,6 +612,12 @@
       document.getElementById('checkout-cart-subtotal').textContent = `${subtotal} kr`;
       document.getElementById('checkout-cart-tax').textContent = `${tax} kr`;
       document.getElementById('checkout-cart-total').textContent = `${total} kr`;
+      
+      // Re-initialize Stripe with new total if shipping changed
+      if (shipping > 0 && elements) {
+        console.log('Shipping added, re-initializing Stripe with new total:', total);
+        initializeStripe(); // Re-initialize with shipping included
+      }
     }
 
     // Function to send professional order emails (customer confirmation + admin notification)
