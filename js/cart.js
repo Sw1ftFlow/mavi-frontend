@@ -335,21 +335,27 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function updateCartCount() {
-    const cart = JSON.parse(localStorage.getItem('cart')) || [];
-    const cartCount = document.getElementById('cart-count');
-    const cartCountMobile = document.getElementById('cart-count-mobile');
-    const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-    
-    // Update desktop cart count
-    if (cartCount) {
-      cartCount.textContent = totalCount;
-      cartCount.style.display = totalCount > 0 ? 'flex' : 'none';
-    }
-    
-    // Update mobile cart count
-    if (cartCountMobile) {
-      cartCountMobile.textContent = totalCount;
-      cartCountMobile.style.display = totalCount > 0 ? 'flex' : 'none';
+    if (window.globalCart) {
+      // Use global cart functionality if available
+      window.globalCart.updateCartCount();
+    } else {
+      // Fallback to local implementation
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const cartCount = document.getElementById('cart-count');
+      const cartCountMobile = document.getElementById('cart-count-mobile');
+      const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+      
+      // Update desktop cart count
+      if (cartCount) {
+        cartCount.textContent = totalCount;
+        cartCount.style.display = totalCount > 0 ? 'flex' : 'none';
+      }
+      
+      // Update mobile cart count
+      if (cartCountMobile) {
+        cartCountMobile.textContent = totalCount;
+        cartCountMobile.style.display = totalCount > 0 ? 'flex' : 'none';
+      }
     }
   }
 
@@ -358,6 +364,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Listen for storage changes (if cart is updated from another tab)
   window.addEventListener('storage', () => {
+    updateCartCount();
+  });
+
+  // Listen for custom cart update events
+  window.addEventListener('cartUpdated', () => {
     updateCartCount();
   });
 
@@ -382,8 +393,12 @@ function addToCart(product) {
   // Save back to localStorage
   localStorage.setItem('cart', JSON.stringify(cart));
 
-  // Optionally update cart count in header
-  if (window.updateCartCount) window.updateCartCount();
+  // Trigger global cart update
+  if (window.globalCart) {
+    window.globalCart.triggerCartUpdate();
+  } else if (window.updateCartCount) {
+    window.updateCartCount();
+  }
 }
 
 window.addToCart = addToCart;

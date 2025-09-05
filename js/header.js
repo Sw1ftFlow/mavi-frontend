@@ -170,4 +170,11 @@ function initializeMobileMenu() {
   if (cartButtonMobile && window.openCart) {
     cartButtonMobile.addEventListener('click', window.openCart);
   }
+
+  // Initialize cart count using global system
+  if (window.globalCart) {
+    window.globalCart.updateCartCount();
+  } else if (window.updateCartCount) {
+    window.updateCartCount();
+  }
 }

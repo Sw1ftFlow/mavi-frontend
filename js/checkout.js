@@ -804,13 +804,19 @@
     });
 
     // Optional: Update cart count in header if you want live updates
+    // Note: This is now handled by global-cart.js, but we keep this for backward compatibility
     function updateCartCount() {
-      const cart = JSON.parse(localStorage.getItem('cart')) || [];
-      const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-      const cartCount = document.getElementById('cart-count');
-      if (cartCount) {
-        cartCount.textContent = count;
-        cartCount.style.display = count > 0 ? 'flex' : 'none';
+      if (window.globalCart) {
+        window.globalCart.updateCartCount();
+      } else {
+        // Fallback if global-cart.js is not loaded
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+        const cartCount = document.getElementById('cart-count');
+        if (cartCount) {
+          cartCount.textContent = count;
+          cartCount.style.display = count > 0 ? 'flex' : 'none';
+        }
       }
     }
     updateCartCount();
