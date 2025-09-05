@@ -7,8 +7,13 @@
 
     // Initialize Stripe Payment Element for Live Mode
     let elementType = null; // Track what type of element we created
+    let isInitialized = false; // Prevent multiple initializations
     
     async function initializeStripe() {
+      if (isInitialized) {
+        console.log('Stripe already initialized, skipping...');
+        return;
+      }
       try {
         const cart = JSON.parse(localStorage.getItem('cart')) || [];
         const amount = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -30,7 +35,7 @@
           // Create Payment Intent on the backend first
           console.log('Calling backend at: https://mavi-backend.onrender.com/create-payment-intent');
           console.log('Request data:', { amount: Math.round(totalAmount * 100), currency: 'sek' });
-          
+
           const response = await fetch('https://mavi-backend.onrender.com/create-payment-intent', {
             method: 'POST',
             headers: {
@@ -94,8 +99,24 @@
           
           await paymentElement.mount('#payment-element');
           elementType = 'payment'; // Track that we created a Payment Element
+          isInitialized = true; // Mark as initialized
           console.log('Live Payment Element with Klarna mounted successfully');
           console.log('Payment element type after creation:', paymentElement.type);
+          
+          // Debug: Check what payment methods are available
+          setTimeout(() => {
+            const paymentElement = document.querySelector('#payment-element');
+            const paymentMethodTabs = document.querySelectorAll('[role="tab"], .p-PaymentMethod, [data-testid*="payment"]');
+            const allElements = document.querySelectorAll('#payment-element *');
+            
+            console.log('Payment Element HTML:', paymentElement?.innerHTML || 'No payment element found');
+            console.log('Found payment method tabs:', paymentMethodTabs.length);
+            console.log('All elements inside payment element:', allElements.length);
+            
+            paymentMethodTabs.forEach((el, index) => {
+              console.log(`Payment method ${index}:`, el.textContent?.trim() || el.getAttribute('aria-label') || 'Unknown');
+            });
+          }, 3000);
           
         } catch (clientModeError) {
           console.error('Payment Element with backend failed:', clientModeError);
@@ -145,6 +166,7 @@
           
           await paymentElement.mount('#payment-element');
           elementType = 'card'; // Track that we created a Card Element
+          isInitialized = true; // Mark as initialized
           console.log('Live card element mounted successfully (fallback mode - no Klarna support)');
           console.log('Card element type after creation:', paymentElement.type);
         }
@@ -534,9 +556,9 @@
       document.getElementById('checkout-cart-total').textContent = `${total} kr`;
       
       // Re-initialize Stripe with new total if shipping changed
-      if (shipping > 0 && elements) {
-        console.log('Shipping added, re-initializing Stripe with new total:', total);
-        initializeStripe(); // Re-initialize with shipping included
+      if (shipping > 0 && elements && !isInitialized) {
+        console.log('Shipping added, initializing Stripe with total:', total);
+        initializeStripe(); // Initialize with shipping included
       }
     }
 
