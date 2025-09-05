@@ -591,6 +591,19 @@
     // Function to send professional order emails (customer confirmation + admin notification)
     async function sendOrderEmails(customerData, cart, subtotal, shipping, orderTotal) {
       try {
+        // Check if EmailJS is available
+        if (typeof emailjs === 'undefined') {
+          throw new Error('EmailJS library not loaded. Make sure the EmailJS script is included.');
+        }
+
+        // Check if EmailJS is properly configured
+        if (!window.EMAILJS_CONFIG) {
+          throw new Error('EmailJS configuration not loaded. Make sure email.js is included before checkout.js');
+        }
+
+        const EMAILJS_CONFIG = window.EMAILJS_CONFIG;
+        console.log('Using EmailJS config:', EMAILJS_CONFIG);
+
         // Generate order number
         const orderNumber = Date.now().toString().slice(-6);
         
@@ -654,13 +667,17 @@
           bcc_email: 'mavidesign.se+3b19644966@invite.trustpilot.com'
         };
         
-        await emailjs.send(
+        console.log('Sending customer email with params:', customerEmailParams);
+        console.log('Using service ID:', EMAILJS_CONFIG.stratoServiceId);
+        console.log('Using customer template ID:', EMAILJS_CONFIG.customerTemplateId);
+        
+        const customerEmailResult = await emailjs.send(
           EMAILJS_CONFIG.stratoServiceId,
           EMAILJS_CONFIG.customerTemplateId,
           customerEmailParams
         );
         
-        console.log('Customer confirmation email sent successfully');
+        console.log('Customer confirmation email sent successfully:', customerEmailResult);
         
         // Fallback: Send separate email to Trustpilot for review invitation
         // (Use this if BCC doesn't work with your EmailJS service)
@@ -694,13 +711,16 @@
           from_email: 'info@mavidesign.se'
         };
         
-        await emailjs.send(
+        console.log('Sending admin email with params:', adminEmailParams);
+        console.log('Using admin template ID:', EMAILJS_CONFIG.adminTemplateId);
+        
+        const adminEmailResult = await emailjs.send(
           EMAILJS_CONFIG.stratoServiceId,
           EMAILJS_CONFIG.adminTemplateId,
           adminEmailParams
         );
         
-        console.log('Admin notification email sent successfully');
+        console.log('Admin notification email sent successfully:', adminEmailResult);
         
         return { success: true, orderNumber };
         
