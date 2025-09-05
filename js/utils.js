@@ -2,9 +2,11 @@
 
 // Function to get dynamic base URL
 function getBaseUrl() {
-    return window.location.pathname.includes('/Webshop/') 
-        ? window.location.origin + '/Webshop/' 
-        : window.location.origin + '/';
+    if (window.location.pathname.includes('/mavi-frontend/')) { // GitHub Pages + local dev
+        return window.location.origin + '/mavi-frontend/';
+    } else {
+        return window.location.origin + '/';
+    }
 }
 
 // Make it globally available
