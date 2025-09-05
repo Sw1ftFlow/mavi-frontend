@@ -28,7 +28,7 @@
         
         try {
           // Create Payment Intent on the backend first
-          const response = await fetch('https://checkout.mavidesign.se/create-payment-intent', {
+          const response = await fetch('https://mavi-backend.onrender.com/create-payment-intent', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
