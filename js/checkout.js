@@ -27,9 +27,17 @@
         console.log('Initializing Stripe LIVE mode with cart:', cart);
         console.log('Total amount:', amount, 'SEK');
         
-        // Add shipping to amount if applicable
-        const shippingCost = document.getElementById('shipping-cost').textContent === '99 kr' ? 99 : 0;
+        // Add shipping to amount if applicable - check if address is filled
+        const addressField = document.querySelector('input[placeholder="Adress"]');
+        const postalCodeField = document.querySelector('input[placeholder="Postnummer"]');
+        const cityField = document.querySelector('input[placeholder="Stad"]');
+        
+        const hasAddress = addressField?.value?.trim() && postalCodeField?.value?.trim() && cityField?.value?.trim();
+        const shippingCost = hasAddress ? 99 : 0;
         const totalAmount = amount + shippingCost;
+        
+        console.log('Shipping cost:', shippingCost, 'SEK');
+        console.log('Total amount with shipping:', totalAmount, 'SEK');
         
         try {
           // Create Payment Intent on the backend first
@@ -555,10 +563,28 @@
       document.getElementById('checkout-cart-tax').textContent = `${tax} kr`;
       document.getElementById('checkout-cart-total').textContent = `${total} kr`;
       
-      // Re-initialize Stripe with new total if shipping changed
-      if (shipping > 0 && elements && !isInitialized) {
-        console.log('Shipping added, initializing Stripe with total:', total);
-        initializeStripe(); // Initialize with shipping included
+      // Re-initialize Stripe with new total if shipping changed and we have a different total
+      const currentTotal = subtotal + shipping;
+      const lastTotal = window.lastStripeTotal || 0;
+      
+      if (currentTotal !== lastTotal && currentTotal > 0) {
+        console.log('Total changed from', lastTotal, 'to', currentTotal, '- re-initializing Stripe');
+        
+        // Reset initialization flag to allow re-initialization
+        isInitialized = false;
+        window.lastStripeTotal = currentTotal;
+        
+        // Unmount existing payment element if it exists
+        if (paymentElement) {
+          try {
+            paymentElement.unmount();
+          } catch (e) {
+            console.log('Could not unmount payment element:', e);
+          }
+        }
+        
+        // Re-initialize with new total
+        initializeStripe();
       }
     }
 
@@ -759,6 +785,23 @@
 
     // Add event listener to form
     document.querySelector('form').addEventListener('submit', handleSubmit);
+
+    // Add event listeners to address fields to update shipping and re-initialize Stripe
+    const addressFields = [
+      'input[placeholder="Förnamn"]',
+      'input[placeholder="Efternamn"]', 
+      'input[placeholder="Adress"]',
+      'input[placeholder="Postnummer"]',
+      'input[placeholder="Stad"]'
+    ];
+
+    addressFields.forEach(selector => {
+      const field = document.querySelector(selector);
+      if (field) {
+        field.addEventListener('input', updateShipping);
+        field.addEventListener('blur', updateShipping);
+      }
+    });
 
     // Optional: Update cart count in header if you want live updates
     function updateCartCount() {
