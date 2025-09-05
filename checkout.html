@@ -16,29 +16,7 @@
   <script src="https://js.stripe.com/v3/"></script>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script src="./js/utils.js"></script>
-  <style>
-    /* Address validation styles */
-    .border-red-500 {
-      border-color: #ef4444 !important;
-      box-shadow: 0 0 0 1px #ef4444 !important;
-    }
-    
-    .border-red-500:focus {
-      outline: none !important;
-      border-color: #ef4444 !important;
-      box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2) !important;
-    }
-    
-    /* Animation for validation messages */
-    .validation-message {
-      transition: all 0.3s ease-in-out;
-    }
-    
-    /* Success checkmark styling */
-    .text-green-600 {
-      color: #059669;
-    }
-  </style>
+  <link rel="stylesheet" href="./css/styles.css">
 </head>
 <body class="bg-gray-50 min-h-screen">
   <!-- Header -->
@@ -152,22 +130,7 @@
     </div>
     </div> <!-- End of max-width wrapper -->
   </div>
-  <script>    // EmailJS configuration for professional domain emails
-    // Get these from: https://www.emailjs.com/
-    const EMAILJS_CONFIG = {
-      publicKey: 'EXLO5_EZugAYOuHiB', // Your EmailJS public key
-      
-      // Service IDs - you'll need to create these in EmailJS dashboard
-      stratoServiceId: 'service_y1lcs9t', // Strato SMTP service for sending from info@mavidesign.se
-      gmailServiceId: 'service_y1lcs9t', // Gmail service for admin notifications (can be same initially)
-      
-      // Template IDs - you'll need to create these templates
-      customerTemplateId: 'template_cxfpi08', // Customer order confirmation template (UPDATED!)
-      adminTemplateId: 'template_247sx9d' // Admin notification template (can be same initially)
-    };
-
-    // Initialize EmailJS
-    emailjs.init(EMAILJS_CONFIG.publicKey);
+  <script>    
 
     // Stripe configuration - LIVE MODE (Real payments)
     // Real payments that charge actual money
@@ -860,80 +823,6 @@
       }
     });
   </script>
-</body>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Checkout</title>
-  <link rel="stylesheet" href="css/styles.css">
-  <!-- Stripe.js -->
-  <script src="https://js.stripe.com/v3/"></script>
-</head>
-<body>
-  <h1>Checkout</h1>
-  <form id="payment-form">
-    <label for="amount">Amount (SEK):</label>
-    <input type="number" id="amount" name="amount" value="100" min="1" required>
-    <button type="submit">Pay</button>
-  </form>
-  <div id="payment-message"></div>
-
-  <script src="js/utils.js"></script>
-  <script src="js/header.js"></script>
-  <script src="js/cart.js"></script>
-  <script src="js/productOverview.js"></script>
-  <script src="js/getProducts.js"></script>
-  <script>
-  const stripe = Stripe('pk_live_51RyvauD6syVba6lcZmEWTvwn8IUnT4bwlFH3IHmIpNpDMVLj7jizTsuu6KTKqoZ5BNIFYaWQGMRgB8h2KWBw0h5K00W4RM08w8'); // Byt till din riktiga publishable key
-
-  document.getElementById('payment-form').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const amount = document.getElementById('amount').value;
-    const paymentMessage = document.getElementById('payment-message');
-    paymentMessage.textContent = 'Skapar betalning...';
-
-    // Skapa payment intent via backend
-    const response = await fetch('https://checkout.mavidesign.se/create-payment-intent', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ amount: Math.round(amount * 100), currency: 'sek' })
-    });
-    const data = await response.json();
-
-    if (!data.clientSecret) {
-      paymentMessage.textContent = 'Fel: ' + (data.error || 'Ingen clientSecret');
-      return;
-    }
-
-    // Visa Stripe Elements (kortfält)
-    let cardElement = window.cardElement;
-    if (!cardElement) {
-      const elements = stripe.elements();
-      cardElement = elements.create('card');
-      const cardDiv = document.createElement('div');
-      cardDiv.id = 'card-element';
-      document.getElementById('payment-form').appendChild(cardDiv);
-      cardElement.mount('#card-element');
-      window.cardElement = cardElement;
-    }
-
-    // Bekräfta betalning
-    const { error, paymentIntent } = await stripe.confirmCardPayment(data.clientSecret, {
-      payment_method: {
-        card: cardElement,
-      }
-    });
-
-    if (error) {
-      paymentMessage.textContent = 'Betalning misslyckades: ' + error.message;
-    } else if (paymentIntent && paymentIntent.status === 'succeeded') {
-      paymentMessage.textContent = 'Betalning lyckades!';
-    }
-  });
-  </script>
+  <script src="js/email.js"></script>
 </body>
 </html>

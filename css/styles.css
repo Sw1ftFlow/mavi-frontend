@@ -126,31 +126,33 @@
 }
 
 /* Smooth icon transitions */
-#menu-icon, #close-icon {
+#menu-icon,
+#close-icon {
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 /* Mobile responsive improvements */
 @media (max-width: 1024px) {
+
   /* Ensure mobile menu is properly positioned */
   #mobile-menu {
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   }
-  
+
   /* Improve touch targets for mobile */
   #mobile-menu a {
     min-height: 48px;
     display: flex;
     align-items: center;
   }
-  
+
   /* Better spacing on very small screens */
   @media (max-width: 480px) {
     header .container {
       padding-left: 1rem;
       padding-right: 1rem;
     }
-    
+
     /* Make mobile menu toggle more prominent on small screens */
     #mobile-menu-toggle {
       padding: 0.75rem;
@@ -176,6 +178,7 @@
 
 /* Mobile Hero Section Improvements */
 @media (max-width: 1024px) {
+
   /* Make header overlay on top of hero section */
   #header-placeholder {
     position: fixed;
@@ -189,18 +192,21 @@
 }
 
 /* Product Overview Carousel Improvements */
-.main-carousel-prev, .main-carousel-next {
+.main-carousel-prev,
+.main-carousel-next {
   transition: all 0.2s ease-in-out;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
 
-.main-carousel-prev:hover, .main-carousel-next:hover {
+.main-carousel-prev:hover,
+.main-carousel-next:hover {
   background: rgba(0, 0, 0, 0.8) !important;
   transform: translateY(-50%) scale(1.1);
 }
 
-.main-carousel-prev:active, .main-carousel-next:active {
+.main-carousel-prev:active,
+.main-carousel-next:active {
   transform: translateY(-50%) scale(0.95);
 }
 
@@ -220,7 +226,8 @@
   transform: translateY(-50%) !important;
   animation: none !important;
   scale: 1 !important;
-  background: rgba(0,0,0,0.7) !important; /* Same as default */
+  background: rgba(0, 0, 0, 0.7) !important;
+  /* Same as default */
   opacity: 1 !important;
 }
 
@@ -231,7 +238,8 @@
   transform: translateY(-50%) !important;
   animation: none !important;
   scale: 1 !important;
-  background: rgba(0,0,0,0.85) !important; /* Slightly darker when clicked */
+  background: rgba(0, 0, 0, 0.85) !important;
+  /* Slightly darker when clicked */
   opacity: 1 !important;
 }
 
@@ -275,7 +283,9 @@
 
 /* Mobile responsiveness for product overview */
 @media (max-width: 768px) {
-  .main-carousel-prev, .main-carousel-next {
+
+  .main-carousel-prev,
+  .main-carousel-next {
     width: 32px !important;
     height: 32px !important;
     font-size: 16px !important;
@@ -284,11 +294,11 @@
     pointer-events: auto !important;
     touch-action: manipulation !important;
   }
-  
+
   .main-carousel-prev {
     left: 8px;
   }
-  
+
   .main-carousel-next {
     right: 8px;
   }
@@ -310,14 +320,16 @@
 
 @media (min-width: 1024px) {
   .product-overview-container {
-    max-width: 1800px; /* Ökad från 1600px */
+    max-width: 1800px;
+    /* Ökad från 1600px */
     padding: 0 2rem;
   }
 }
 
 @media (min-width: 1920px) {
   .product-overview-container {
-    max-width: 1900px; /* Ökad från 1700px */
+    max-width: 1900px;
+    /* Ökad från 1700px */
   }
 }
 
@@ -336,11 +348,15 @@
 
 /* Mobile thumbnail carousel improvements */
 .scrollbar-hide {
-  -ms-overflow-style: none;  /* Internet Explorer 10+ */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;
+  /* Internet Explorer 10+ */
+  scrollbar-width: none;
+  /* Firefox */
 }
+
 .scrollbar-hide::-webkit-scrollbar {
-  display: none;  /* Safari and Chrome */
+  display: none;
+  /* Safari and Chrome */
 }
 
 /* Prevent body horizontal scroll on mobile */
@@ -348,12 +364,13 @@
   body {
     overflow-x: hidden;
   }
-  
+
   .carousel-thumb {
-    min-width: 96px; /* Ensure consistent thumbnail size */
+    min-width: 96px;
+    /* Ensure consistent thumbnail size */
     height: 96px;
   }
-  
+
   /* Fix main product image on mobile */
   #main-product-image {
     object-fit: contain !important;
@@ -361,7 +378,7 @@
     height: auto !important;
     max-height: 70vh !important;
   }
-  
+
   /* Ensure image container doesn't crop */
   #image-container {
     min-height: 300px !important;
@@ -373,11 +390,12 @@
 
 /* Mobile Header Fix for Non-Hero Pages */
 @media (max-width: 1024px) {
+
   /* Product detail pages need padding-top when header is fixed */
   #product-overview.product-overview-container {
     padding-top: 80px;
   }
-  
+
   /* General fix for other main content areas that aren't hero sections */
   body:has(#product-overview) main,
   body[data-page="product"] main,
@@ -393,7 +411,7 @@
     align-items: flex-start;
     gap: 1.5rem;
   }
-  
+
   #hero-section .flex.justify-between .flex.items-center {
     align-self: flex-end;
   }
@@ -417,4 +435,26 @@
 #hero-section img {
   pointer-events: none;
   z-index: 1;
+}
+
+/* Address validation styles */
+.border-red-500 {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 1px #ef4444 !important;
+}
+
+.border-red-500:focus {
+  outline: none !important;
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2) !important;
+}
+
+/* Animation for validation messages */
+.validation-message {
+  transition: all 0.3s ease-in-out;
+}
+
+/* Success checkmark styling */
+.text-green-600 {
+  color: #059669;
 }
