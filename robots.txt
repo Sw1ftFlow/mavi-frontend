@@ -1,0 +1,27 @@
+User-agent: *
+Allow: /
+
+# Important pages for SEO
+Allow: /index.html
+Allow: /product.html
+Allow: /productDetail.html
+Allow: /about.html
+Allow: /contact.html
+
+# Allow product images
+Allow: /img/
+
+# Allow CSS and JS
+Allow: /css/
+Allow: /js/
+
+# Block admin/test pages
+Disallow: /test-email.html
+Disallow: /admin/
+Disallow: /*.json$
+
+# Sitemap location
+Sitemap: https://mavidesign.se/sitemap.xml
+
+# Crawl delay to be respectful
+Crawl-delay: 1

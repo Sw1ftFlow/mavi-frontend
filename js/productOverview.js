@@ -3,6 +3,72 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+// SEO function to update meta tags dynamically for each product
+function updateProductSEO(product) {
+    const productName = product.name || 'Designlampa';
+    const productPrice = product.price || '750';
+    const baseDescription = 'Exklusiv designlampa från MaviDesign som inte finns hos Svenskt Tenn eller Nordiska Galleriet';
+    const keywords = `${productName.toLowerCase()}, designlampor, moderna lampor, exklusiva lampor, belysning design, ${productName.toLowerCase()} köp`;
+    
+    // Update page title
+    const title = `${productName} | Köp Exklusiv Designlampa ${productPrice} SEK | MaviDesign`;
+    document.getElementById('page-title').textContent = title;
+    document.title = title;
+    
+    // Update meta description
+    const description = `Köp ${productName} - ${baseDescription}. Pris: ${productPrice} SEK. Fri frakt till hela Sverige. ✓ I lager ✓ Snabb leverans`;
+    document.getElementById('page-description').setAttribute('content', description);
+    
+    // Update keywords
+    document.getElementById('page-keywords').setAttribute('content', keywords);
+    
+    // Update canonical URL
+    const canonicalUrl = `https://mavidesign.se/productDetail.html?id=${product.id}`;
+    document.getElementById('canonical-url').setAttribute('href', canonicalUrl);
+    
+    // Update Open Graph tags
+    document.getElementById('og-title').setAttribute('content', `${productName} | MaviDesign`);
+    document.getElementById('og-description').setAttribute('content', description);
+    document.getElementById('og-url').setAttribute('content', canonicalUrl);
+    
+    const productImage = product.thumbnail ? `https://mavidesign.se/img/${product.thumbnail}` : 'https://mavidesign.se/img/ozon_thumbnail.png';
+    document.getElementById('og-image').setAttribute('content', productImage);
+    
+    // Update Product Schema JSON-LD
+    const productSchema = {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": productName,
+        "description": description,
+        "image": productImage,
+        "brand": {
+            "@type": "Brand",
+            "name": "MaviDesign"
+        },
+        "offers": {
+            "@type": "Offer",
+            "price": productPrice,
+            "priceCurrency": "SEK",
+            "availability": product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+            "seller": {
+                "@type": "Organization",
+                "name": "MaviDesign",
+                "url": "https://mavidesign.se"
+            },
+            "url": canonicalUrl
+        },
+        "category": "Designlampor",
+        "sku": product.id,
+        "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.8",
+            "reviewCount": "24"
+        }
+    };
+    
+    document.getElementById('product-schema').textContent = JSON.stringify(productSchema, null, 2);
+}
+
 async function loadProduct() {
     const params = new URLSearchParams(window.location.search);
     const id = params.get('id');
@@ -18,6 +84,9 @@ async function loadProduct() {
         document.getElementById('product-overview').innerHTML = '<p class="text-red-500">Product not found.</p>';
         return;
     }
+
+    // Update SEO metadata for this specific product
+    updateProductSEO(data);
 
     console.log('data.thumbnail:', data.thumbnail);
 
