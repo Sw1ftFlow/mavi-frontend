@@ -38,7 +38,6 @@ document.addEventListener('DOMContentLoaded', async () => {
           <ul class="flex space-x-6">
             <li><a href="index.html" class="text-gray-700 hover:text-blue-700">Hem</a></li>
             <li><a href="product.html" class="text-gray-700 hover:text-blue-700">Kollektion</a></li>
-            <li><a href="about.html" class="text-gray-700 hover:text-blue-700">Om Oss</a></li>
             <li><a href="contact.html" class="text-gray-700 hover:text-blue-700">Kontakt</a></li>
           </ul>
         </nav>
@@ -102,7 +101,6 @@ document.addEventListener('DOMContentLoaded', async () => {
           <ul class="space-y-4">
             <li><a href="index.html" class="block text-gray-700 hover:text-blue-700 py-2 text-lg">Hem</a></li>
             <li><a href="product.html" class="block text-gray-700 hover:text-blue-700 py-2 text-lg">Kollektion</a></li>
-            <li><a href="about.html" class="block text-gray-700 hover:text-blue-700 py-2 text-lg">Om Oss</a></li>
             <li><a href="contact.html" class="block text-gray-700 hover:text-blue-700 py-2 text-lg">Kontakt</a></li>
           </ul>
         </nav>
