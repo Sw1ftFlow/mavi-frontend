@@ -14,6 +14,28 @@
   
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  
+  <!-- Backend Pre-warming Script -->
+  <script>
+    (function() {
+      // Only warm up if not already done in this session
+      if (!sessionStorage.getItem('backendWarmedFromHomepage')) {
+        console.log('🔥 Pre-warming backend server from product page...');
+        fetch('https://mavi-backend.onrender.com/ping')
+          .catch(() => fetch('https://mavi-backend.onrender.com/create-payment-intent', {
+            method: 'OPTIONS',
+            headers: { 'Content-Type': 'application/json' }
+          }))
+          .then(() => {
+            sessionStorage.setItem('backendWarmedFromHomepage', Date.now().toString());
+            console.log('✅ Backend server warmed up from product page');
+          })
+          .catch(() => {
+            sessionStorage.setItem('backendWarmedFromHomepage', Date.now().toString());
+          });
+      }
+    })();
+  </script>
 </head>
 <body class="bg-white min-h-screen" data-page="product">
   <div id="header-placeholder"></div>

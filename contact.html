@@ -18,6 +18,27 @@
   <script src="./js/utils.js"></script>
   <script src="./js/header.js"></script>
   <script src="./js/global-cart.js"></script>
+  
+  <!-- Backend Pre-warming Script -->
+  <script>
+    (function() {
+      if (!sessionStorage.getItem('backendWarmedFromHomepage')) {
+        console.log('🔥 Pre-warming backend server from contact page...');
+        fetch('https://mavi-backend.onrender.com/ping')
+          .catch(() => fetch('https://mavi-backend.onrender.com/create-payment-intent', {
+            method: 'OPTIONS',
+            headers: { 'Content-Type': 'application/json' }
+          }))
+          .then(() => {
+            sessionStorage.setItem('backendWarmedFromHomepage', Date.now().toString());
+            console.log('✅ Backend server warmed up from contact page');
+          })
+          .catch(() => {
+            sessionStorage.setItem('backendWarmedFromHomepage', Date.now().toString());
+          });
+      }
+    })();
+  </script>
   <script src="./js/cart.js"></script>
   <style>
     .form-input {

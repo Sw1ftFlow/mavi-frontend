@@ -8,6 +8,47 @@
   <script src="./js/header.js"></script>
   <script src="./js/global-cart.js"></script>
   <script src="./js/cart.js"></script>
+  
+  <!-- Backend Pre-warming Script - Starts backend server immediately when user visits site -->
+  <script>
+    (function() {
+      console.log('🔥 Pre-warming backend server from homepage...');
+      
+      // Start warming up the backend server immediately
+      const startTime = Date.now();
+      
+      // Try the dedicated ping endpoint first, fallback to OPTIONS if not available
+      fetch('https://mavi-backend.onrender.com/ping')
+        .catch(() => {
+          // Fallback to OPTIONS request if ping endpoint doesn't exist yet
+          return fetch('https://mavi-backend.onrender.com/create-payment-intent', {
+            method: 'OPTIONS',
+            headers: { 'Content-Type': 'application/json' }
+          });
+        })
+        .then(response => {
+          const responseTime = Date.now() - startTime;
+          console.log(`✅ Backend server contacted from homepage. Response time: ${responseTime}ms`);
+          
+          if (responseTime > 10000) {
+            console.log('🛌 Backend was sleeping but is now warming up (this will make checkout much faster)...');
+          } else if (responseTime > 3000) {
+            console.log('⚡ Backend was starting up but is now ready...');
+          } else {
+            console.log('🚀 Backend was already running - checkout will be super fast!');
+          }
+          
+          // Mark that we've warmed up the backend with timestamp
+          sessionStorage.setItem('backendWarmedFromHomepage', Date.now().toString());
+        })
+        .catch(error => {
+          console.log('⚠️ Backend warming from homepage - server likely starting up:', error.message);
+          // Still mark as attempted to avoid duplicate attempts
+          sessionStorage.setItem('backendWarmedFromHomepage', Date.now().toString());
+        });
+    })();
+  </script>
+  
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
