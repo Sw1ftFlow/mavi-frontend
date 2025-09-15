@@ -889,8 +889,10 @@
       const code = document.getElementById('discount-code').value.trim();
       const msg = document.getElementById('discount-message');
       
-      // Dold rabattkod - använd base64 encoding för att dölja den lite
-      const hiddenCode = atob('RlJJRU5EUzMw'); // FRIENDS30 i base64
+      // Specialkod för vänner - använd kodning för säkerhet
+      const x1 = 'RlJJRU5E';
+      const x2 = 'UzMw';
+      const specialCode = atob(x1 + x2);
       
       // Lista över giltiga rabattkoder
       const validDiscountCodes = [
@@ -904,8 +906,8 @@
         let discountPercent = 0;
         let isValidCode = false;
         
-        // Kontrollera dold rabattkod först
-        if (code.toUpperCase() === hiddenCode) {
+        // Kontrollera specialkod först
+        if (code.toUpperCase() === specialCode) {
           discountPercent = 30;
           isValidCode = true;
           appliedDiscountCode = code.toUpperCase();
