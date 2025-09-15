@@ -5,6 +5,10 @@
     let elements;
     let paymentElement;
 
+    // Global discount variables
+    let appliedDiscount = 0;
+    let appliedDiscountCode = '';
+
     // Initialize Stripe Payment Element for Live Mode
     let elementType = null; // Track what type of element we created
     let isInitialized = false; // Prevent multiple initializations
@@ -880,9 +884,6 @@
     updateCartCount();
 
     // Rabattkod (discount code) logic
-    let appliedDiscount = 0;
-    let appliedDiscountCode = '';
-    
     document.getElementById('discount-form').addEventListener('submit', function(e) {
       e.preventDefault();
       const code = document.getElementById('discount-code').value.trim();
