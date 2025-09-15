@@ -16,12 +16,19 @@
       }
       try {
         const cart = JSON.parse(localStorage.getItem('cart')) || [];
-        const amount = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+        let amount = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
         
         // Check if cart is empty
         if (cart.length === 0 || amount <= 0) {
           document.getElementById('payment-element').innerHTML = '<p class="text-gray-500">Din varukorg är tom. Lägg till produkter för att fortsätta.</p>';
           return;
+        }
+        
+        // Apply discount if any
+        if (appliedDiscount > 0) {
+          const discountAmount = Math.round(amount * (appliedDiscount / 100));
+          amount = amount - discountAmount;
+          console.log('Discount applied:', appliedDiscount + '%', 'Amount after discount:', amount, 'SEK');
         }
         
         console.log('Initializing Stripe LIVE mode with cart:', cart);
@@ -548,23 +555,54 @@
       }
     }
 
-    // Function to update checkout totals including shipping
+    // Function to update checkout totals including shipping and discount
     function updateCheckoutTotals() {
       const cart = JSON.parse(localStorage.getItem('cart')) || [];
       const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-      const tax = Math.round(subtotal * 0.2); // 20% moms
       
       // Check if shipping should be added
       const shippingElement = document.getElementById('shipping-cost');
       const shipping = shippingElement.textContent === '99 kr' ? 99 : 0;
-      const total = subtotal + shipping;
       
+      // Apply discount if any
+      let discountAmount = 0;
+      let discountedSubtotal = subtotal;
+      
+      if (appliedDiscount > 0) {
+        discountAmount = Math.round(subtotal * (appliedDiscount / 100));
+        discountedSubtotal = subtotal - discountAmount;
+      }
+      
+      const tax = Math.round(discountedSubtotal * 0.2); // 20% moms on discounted amount
+      const total = discountedSubtotal + shipping;
+      
+      // Update the display
       document.getElementById('checkout-cart-subtotal').textContent = `${subtotal} kr`;
+      
+      // Add discount line if there's a discount
+      const existingDiscountLine = document.querySelector('.discount-line');
+      if (existingDiscountLine) {
+        existingDiscountLine.remove();
+      }
+      
+      if (appliedDiscount > 0) {
+        const discountLine = document.createElement('div');
+        discountLine.className = 'flex justify-between text-base text-green-600 discount-line';
+        discountLine.innerHTML = `
+          <span>Rabatt (${appliedDiscountCode} -${appliedDiscount}%)</span>
+          <span>-${discountAmount} kr</span>
+        `;
+        
+        // Insert discount line after subtotal
+        const subtotalElement = document.getElementById('checkout-cart-subtotal').parentElement;
+        subtotalElement.parentElement.insertBefore(discountLine, subtotalElement.nextSibling);
+      }
+      
       document.getElementById('checkout-cart-tax').textContent = `${tax} kr`;
       document.getElementById('checkout-cart-total').textContent = `${total} kr`;
       
       // Re-initialize Stripe with new total if shipping changed and we have a different total
-      const currentTotal = subtotal + shipping;
+      const currentTotal = total;
       const lastTotal = window.lastStripeTotal || 0;
       
       if (currentTotal !== lastTotal && currentTotal > 0) {
@@ -842,24 +880,55 @@
     updateCartCount();
 
     // Rabattkod (discount code) logic
+    let appliedDiscount = 0;
+    let appliedDiscountCode = '';
+    
     document.getElementById('discount-form').addEventListener('submit', function(e) {
       e.preventDefault();
       const code = document.getElementById('discount-code').value.trim();
       const msg = document.getElementById('discount-message');
       
-      // Lista över giltiga rabattkoder (tom för närvarande)
+      // Dold rabattkod - använd base64 encoding för att dölja den lite
+      const hiddenCode = atob('RlJJRU5EUzMw'); // FRIENDS30 i base64
+      
+      // Lista över giltiga rabattkoder
       const validDiscountCodes = [
+        // Vanliga rabattkoder
         // 'SOMMAR2025',
         // 'STUDENT10',
         // 'VIP15'
       ];
       
       if (code.length > 0) {
-        if (validDiscountCodes.includes(code.toUpperCase())) {
-          msg.textContent = 'Rabattkod "' + code + '" har lagts till';
+        let discountPercent = 0;
+        let isValidCode = false;
+        
+        // Kontrollera dold rabattkod först
+        if (code.toUpperCase() === hiddenCode) {
+          discountPercent = 30;
+          isValidCode = true;
+          appliedDiscountCode = code.toUpperCase();
+        } else if (validDiscountCodes.includes(code.toUpperCase())) {
+          // Andra rabattkoder kan läggas till här
+          discountPercent = 10; // Default 10% för andra koder
+          isValidCode = true;
+          appliedDiscountCode = code.toUpperCase();
+        }
+        
+        if (isValidCode) {
+          appliedDiscount = discountPercent;
+          msg.textContent = `Rabattkod "${code}" har lagts till! ${discountPercent}% rabatt`;
           msg.className = 'text-green-600 text-sm mt-2';
           msg.style.display = 'block';
-          // Här kan du lägga till logik för att faktiskt applicera rabatten
+          
+          // Uppdatera totalen
+          updateCheckoutTotals();
+          
+          // Inaktivera rabattkod-fältet
+          document.getElementById('discount-code').disabled = true;
+          document.querySelector('#discount-form button').textContent = 'Tillagd';
+          document.querySelector('#discount-form button').disabled = true;
+          
         } else {
           msg.textContent = 'Ogiltig kod';
           msg.className = 'text-red-600 text-sm mt-2';
