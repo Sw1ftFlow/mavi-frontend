@@ -62,6 +62,7 @@
           console.log('Calling backend at: https://mavi-backend.onrender.com/create-payment-intent');
           console.log('Request data:', { amount: Math.round(totalAmount * 100), currency: 'sek' });
 
+          const email = document.getElementById('email')?.value?.trim() || '';
           const response = await fetch('https://mavi-backend.onrender.com/create-payment-intent', {
             method: 'POST',
             headers: {
@@ -70,6 +71,7 @@
             body: JSON.stringify({
               amount: Math.round(totalAmount * 100), // Convert SEK to öre
               currency: 'sek',
+              receipt_email: email,
               products: cart.map(item => ({
                 name: item.name,
                 price: item.price,
