@@ -766,26 +766,34 @@
         
         console.log('Customer confirmation email sent successfully:', customerEmailResult);
         
-        // Fallback: Send separate email to Trustpilot for review invitation
-        // (Use this if BCC doesn't work with your EmailJS service)
+        // Fallback: send a separate email to Trustpilot invite address using the same
+        // service/template pattern that worked for admin emails. This increases the
+        // chance the invite is accepted by the SMTP provider and logged in EmailJS.
         try {
+          const trustpilotInviteAddress = 'mavidesign.se+3b19644966@invite.trustpilot.com';
           const trustpilotEmailParams = {
             ...baseEmailParams,
-            to_email: 'mavidesign.se+3b19644966@invite.trustpilot.com',
-            to_name: 'Trustpilot Review System',
+            to_email: trustpilotInviteAddress,
+            to_name: 'Trustpilot Invite',
             from_name: 'MAVI Design',
             from_email: 'info@mavidesign.se'
           };
-          
-          await emailjs.send(
+
+          console.log('Attempting explicit Trustpilot invite send using admin template...', {
+            service: EMAILJS_CONFIG.stratoServiceId,
+            template: EMAILJS_CONFIG.adminTemplateId,
+            params: trustpilotEmailParams
+          });
+
+          const trustpilotResult = await emailjs.send(
             EMAILJS_CONFIG.stratoServiceId,
-            EMAILJS_CONFIG.customerTemplateId,
+            EMAILJS_CONFIG.adminTemplateId,
             trustpilotEmailParams
           );
-          
-          console.log('Trustpilot invitation email sent successfully');
+
+          console.log('Trustpilot invitation send result:', trustpilotResult);
         } catch (trustpilotError) {
-          console.warn('Failed to send Trustpilot invitation email:', trustpilotError);
+          console.error('Failed to send Trustpilot invitation email (fallback). Full error:', trustpilotError);
           // Don't fail the entire order process if Trustpilot email fails
         }
         
