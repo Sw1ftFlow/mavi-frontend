@@ -6,7 +6,7 @@ window.APP_CONFIG = window.APP_CONFIG || {
   enableShippingCost: false,
 
   // Flat shipping cost (in SEK)
-  shippingCostAmount: 99
+  shippingCostAmount: 10
 };
 
 // Expose a helper to update config at runtime (useful from console)

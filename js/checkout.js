@@ -894,7 +894,15 @@
       }
     }
     updateCartCount();
-
+    
+    // Ensure shipping display reflects current config on load
+    try {
+      console.log('APP_CONFIG on load:', window.APP_CONFIG);
+      updateShipping();
+      console.log('Initial shipping displayed as:', document.getElementById('shipping-cost').textContent);
+    } catch (e) {
+      console.warn('Could not update shipping on load:', e);
+    }
     // Rabattkod (discount code) logic
     document.getElementById('discount-form').addEventListener('submit', function(e) {
       e.preventDefault();
