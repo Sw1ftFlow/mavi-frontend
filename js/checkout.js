@@ -69,7 +69,16 @@
             },
             body: JSON.stringify({
               amount: Math.round(totalAmount * 100), // Convert SEK to öre
-              currency: 'sek'
+              currency: 'sek',
+              products: cart.map(item => ({
+                name: item.name,
+                price: item.price,
+                quantity: item.quantity
+              })),
+              shipping: {
+                name: 'Standard Shipping',
+                amount: shippingCost
+              }
             })
           });
 
