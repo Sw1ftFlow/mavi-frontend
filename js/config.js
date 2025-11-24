@@ -3,10 +3,10 @@
 
 window.APP_CONFIG = window.APP_CONFIG || {
   // Enable or disable adding a flat shipping cost to orders
-  enableShippingCost: false,
+  enableShippingCost: true,
 
   // Flat shipping cost (in SEK)
-  shippingCostAmount: 10
+  shippingCostAmount: 99
 };
 
 // Expose a helper to update config at runtime (useful from console)
