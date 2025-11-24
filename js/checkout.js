@@ -653,6 +653,28 @@
       }
     }
 
+    // Ensure there's a helper that updates shipping display and triggers totals update
+    function updateShipping() {
+      try {
+        const hasAddress = document.getElementById('address')?.value?.trim() && document.getElementById('postalCode')?.value?.trim() && document.getElementById('city')?.value?.trim();
+        const shipping = getShippingAmount(hasAddress);
+        const shippingEl = document.getElementById('shipping-cost');
+        if (shippingEl) {
+          // If address not provided, show prompt; otherwise show amount (or 0 kr)
+          if (!hasAddress) {
+            shippingEl.textContent = 'Ange leveransadress';
+          } else {
+            shippingEl.textContent = shipping ? `${shipping} kr` : '0 kr';
+          }
+        }
+
+        // Recalculate totals (this also re-initializes Stripe if total changed)
+        updateCheckoutTotals();
+      } catch (err) {
+        console.error('updateShipping error:', err);
+      }
+    }
+
     // Function to send professional order emails (customer confirmation + admin notification)
     async function sendOrderEmails(customerData, cart, subtotal, shipping, orderTotal) {
       try {
