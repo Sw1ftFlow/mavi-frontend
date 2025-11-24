@@ -13,6 +13,9 @@
   <link rel="icon" type="image/png" sizes="512x512" href="./img/android-chrome-512x512.png">
   
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <!-- EmailJS for sending order confirmation emails (matches contact.html) -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script src="./js/config.js"></script>
   <script src="./js/utils.js"></script>
   <script src="./js/header.js"></script>
   <script src="./js/global-cart.js"></script>
@@ -101,54 +104,92 @@
           `;
         }).join('');
         
-        totalAmountSpan.textContent = `${total} kr`;
+        // Apply shipping cost from global config if enabled
+        const appConfig = window.APP_CONFIG || { enableShippingCost: false, shippingCostAmount: 0 };
+        const shipping = appConfig.enableShippingCost ? Number(appConfig.shippingCostAmount || 0) : 0;
+
+        // Ensure a shipping line exists in the DOM and update it
+        let shippingLine = document.getElementById('shipping-line');
+        if (!shippingLine) {
+          const totalBlock = totalAmountSpan.parentElement.parentElement; // container with border top
+          const el = document.createElement('div');
+          el.id = 'shipping-line';
+          el.className = 'flex justify-between text-base text-gray-600 mb-2';
+          el.innerHTML = `<span>Frakt:</span><span id="shipping-amount"></span>`;
+          totalBlock.insertBefore(el, totalBlock.firstChild);
+        }
+        document.getElementById('shipping-amount').textContent = shipping ? `${shipping} kr` : '0 kr';
+
+        totalAmountSpan.textContent = `${total + shipping} kr`;
       } else {
         orderItemsContainer.innerHTML = '<p class="text-gray-500">Ingen orderinformation tillgänglig.</p>';
       }
     }
     
-    // Send order confirmation email
+    // Send order confirmation email using EmailJS
     async function sendOrderConfirmationEmail() {
-      if (!customerData.email || orderData.length === 0) return;
-      
+      console.log('sendOrderConfirmationEmail called', { customerData, orderData });
+      if (!customerData.email || orderData.length === 0) {
+        console.warn('sendOrderConfirmationEmail aborted - missing customer email or order data', { customerData, orderData });
+        return;
+      }
+
+      const PUBLIC_KEY = 'EXLO5_EZugAYOuHiB';
+      const SERVICE_ID = 'service_a599pmp';
+      const TEMPLATE_ID = 'template_247sx9d';
+
+      // Wait for EmailJS library to be available
+      await new Promise((resolve) => {
+        function check() {
+          if (typeof emailjs !== 'undefined' && emailjs.init) return resolve();
+          setTimeout(check, 50);
+        }
+        check();
+      });
+
       try {
-        // Create order confirmation email
+        // Initialize EmailJS (safe to call multiple times)
+        try { emailjs.init(PUBLIC_KEY); } catch (e) { /* ignore init errors */ }
+
         const orderNumber = 'MAVI-' + Date.now().toString().slice(-6);
         const orderDate = new Date().toLocaleDateString('sv-SE');
         const total = orderData.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-        
-        // This would typically be sent to your backend API
-        // For demo purposes, we'll log the email content
-        const emailContent = createOrderConfirmationEmail({
-          orderNumber,
-          orderDate,
-          customerData,
-          orderData,
-          total
-        });
-        
-        console.log('Order confirmation email would be sent:', emailContent);
-        
-        // In production, you would call your backend API:
-        /*
-        await fetch('/api/send-order-confirmation', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            to: customerData.email,
-            orderNumber,
-            orderDate,
-            items: orderData,
-            total,
-            customer: customerData
-          })
-        });
-        */
-        
+
+        // Plain text summary of items
+        const itemsText = orderData.map((item, idx) => `${idx + 1}. ${item.name} x${item.quantity} - ${item.price} kr`).join('\n');
+
+        // Full HTML content (re-using existing builder)
+        const emailHtml = createOrderConfirmationEmail({ orderNumber, orderDate, customerData, orderData, total });
+
+        const templateParams = {
+          order_number: orderNumber,
+          order_date: orderDate,
+          order_items: itemsText,
+          order_items_html: emailHtml,
+          customer_name: `${customerData.firstName || ''} ${customerData.lastName || ''}`.trim(),
+          customer_email: customerData.email,
+          customer_address: customerData.address || '',
+          customer_postal_code: customerData.postalCode || '',
+          customer_city: customerData.city || '',
+          order_total: total
+        };
+
+        console.groupCollapsed('EmailJS send');
+        console.log('Prepared templateParams:', templateParams);
+        // Pause here if DevTools open so you can inspect `templateParams` and runtime state
+        debugger;
+        try {
+          const result = await emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY);
+          console.log('EmailJS send result:', result);
+          console.log('Order confirmation email sent successfully');
+        } catch (sendError) {
+          console.error('EmailJS send error:', sendError);
+          throw sendError;
+        } finally {
+          console.groupEnd();
+        }
       } catch (error) {
-        console.error('Error sending confirmation email:', error);
+        console.error('Error sending confirmation email via EmailJS:', error);
       }
     }
     
@@ -283,13 +324,6 @@
     // Initialize page
     displayOrderSummary();
     sendOrderConfirmationEmail();
-    initializeLanguage();
-    
-    // Language switcher click handler
-    document.getElementById('language-switcher').addEventListener('click', function() {
-      const newLang = currentLanguage === 'sv' ? 'en' : 'sv';
-      updateLanguage(newLang);
-    });
     
     // Clear cart after successful payment
     localStorage.removeItem('cart');
@@ -302,65 +336,6 @@
     if (paymentIntent) {
       console.log('Payment successful:', paymentIntent);
       // You can send this to your backend to complete the order
-    }
-
-    // Language switcher functionality
-    let currentLanguage = localStorage.getItem('language') || 'sv';
-    
-    // Flag SVGs
-    const flags = {
-      sv: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAyNCAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjE4IiBmaWxsPSIjMDA1MkIyIi8+CjxyZWN0IHk9IjYiIHdpZHRoPSIyNCIgaGVpZ2h0PSI2IiBmaWxsPSIjRkZEOTAwIi8+CjxyZWN0IHk9IjEyIiB3aWR0aD0iMjQiIGhlaWdodD0iNiIgZmlsbD0iIzAwNTJCMiIvPgo8L3N2Zz4K',
-      en: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAyNCAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjE4IiBmaWxsPSIjMDEyMTY5Ii8+CjxyZWN0IHk9IjciIHdpZHRoPSIyNCIgaGVpZ2h0PSI0IiBmaWxsPSIjRkZGRkZGIi8+CjxyZWN0IHg9IjEwIiB3aWR0aD0iNCIgaGVpZ2h0PSIxOCIgZmlsbD0iI0ZGRkZGRiIvPgo8cmVjdCB5PSI4IiB3aWR0aD0iMjQiIGhlaWdodD0iMiIgZmlsbD0iI0QzMDBDNCIvPgo8cmVjdCB4PSIxMSIgd2lkdGg9IjIiIGhlaWdodD0iMTgiIGZpbGw9IiNEMzAwQzQiLz4KPC9zdmc+Cg=='
-    };
-    
-    function updateLanguage(lang) {
-      currentLanguage = lang;
-      localStorage.setItem('language', lang);
-      
-      // Update flag
-      const flagIcon = document.getElementById('flag-icon');
-      const switcher = document.getElementById('language-switcher');
-      
-      if (lang === 'sv') {
-        flagIcon.src = flags.en;
-        flagIcon.alt = 'Switch to English';
-        switcher.title = 'Switch to English';
-      } else {
-        flagIcon.src = flags.sv;
-        flagIcon.alt = 'Byt till svenska';
-        switcher.title = 'Byt till svenska';
-      }
-      
-      // Update all translatable elements
-      const elements = document.querySelectorAll('[data-en][data-sv]');
-      elements.forEach(element => {
-        const text = element.getAttribute(`data-${lang}`);
-        if (text) {
-          if (element.innerHTML.includes('&copy;') || element.innerHTML.includes('<br>')) {
-            element.innerHTML = text;
-          } else {
-            element.textContent = text;
-          }
-        }
-      });
-      
-      // Update HTML lang attribute
-      document.documentElement.lang = lang === 'sv' ? 'sv' : 'en';
-    }
-    
-    function initializeLanguage() {
-      // Set initial flag (opposite of current language)
-      const flagIcon = document.getElementById('flag-icon');
-      if (currentLanguage === 'sv') {
-        flagIcon.src = flags.en;
-        flagIcon.alt = 'Switch to English';
-      } else {
-        flagIcon.src = flags.sv;
-        flagIcon.alt = 'Byt till svenska';
-      }
-      
-      // Apply current language
-      updateLanguage(currentLanguage);
     }
   </script>
 </body>

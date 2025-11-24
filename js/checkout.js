@@ -5,6 +5,13 @@
     let elements;
     let paymentElement;
 
+    // Helper to get shipping amount based on global config and whether address is provided
+    function getShippingAmount(hasAddress) {
+      const cfg = window.APP_CONFIG || { enableShippingCost: false, shippingCostAmount: 0 };
+      const shipping = Number(cfg.shippingCostAmount || 0);
+      return (hasAddress && cfg.enableShippingCost) ? shipping : 0;
+    }
+
     // Global discount variables
     let appliedDiscount = 0;
     let appliedDiscountCode = '';
@@ -42,9 +49,9 @@
         const addressField = document.querySelector('input[placeholder="Adress"]');
         const postalCodeField = document.querySelector('input[placeholder="Postnummer"]');
         const cityField = document.querySelector('input[placeholder="Stad"]');
-        
+
         const hasAddress = addressField?.value?.trim() && postalCodeField?.value?.trim() && cityField?.value?.trim();
-        const shippingCost = hasAddress ? 99 : 0;
+        const shippingCost = getShippingAmount(hasAddress);
         const totalAmount = amount + shippingCost;
         
         console.log('Shipping cost:', shippingCost, 'SEK');
@@ -239,7 +246,8 @@
         // Get cart for order notification
         const cart = JSON.parse(localStorage.getItem('cart')) || [];
         const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-        const shipping = document.getElementById('shipping-cost').textContent === '99 kr' ? 99 : 0;
+        const hasAddressForOrder = document.getElementById('address')?.value?.trim() && document.getElementById('postalCode')?.value?.trim() && document.getElementById('city')?.value?.trim();
+        const shipping = getShippingAmount(hasAddressForOrder);
         const orderTotal = subtotal + shipping;
         
         // Send professional order emails (customer confirmation + admin notification)
@@ -416,8 +424,11 @@
       
       const shippingElement = document.getElementById('shipping-cost');
       
+      const appConfig = window.APP_CONFIG || { enableShippingCost: false, shippingCostAmount: 0 };
+      const shippingAmount = appConfig.enableShippingCost && hasBasicAddress ? Number(appConfig.shippingCostAmount || 0) : 0;
+
       if (hasBasicAddress) {
-        shippingElement.textContent = '99 kr';
+        shippingElement.textContent = shippingAmount ? `${shippingAmount} kr` : '0 kr';
         shippingElement.classList.remove('text-gray-500');
         shippingElement.classList.add('text-gray-900');
       } else {
@@ -564,9 +575,10 @@
       const cart = JSON.parse(localStorage.getItem('cart')) || [];
       const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
       
-      // Check if shipping should be added
+      // Check if shipping should be added (use config-driven helper)
       const shippingElement = document.getElementById('shipping-cost');
-      const shipping = shippingElement.textContent === '99 kr' ? 99 : 0;
+      const hasAddress = document.getElementById('address')?.value?.trim() && document.getElementById('postalCode')?.value?.trim() && document.getElementById('city')?.value?.trim();
+      const shipping = getShippingAmount(hasAddress);
       
       // Apply discount if any
       let discountAmount = 0;
