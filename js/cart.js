@@ -1,7 +1,6 @@
 // Simple cart drawer logic
 document.addEventListener('DOMContentLoaded', () => {
   // Supabase client is initialized in config.js
-  const supabase = window.supabaseClient;
 
   // Define closeCart function early to ensure it's available
   window.closeCart = function() {
@@ -32,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     try {
       const productIds = cartItems.map(item => item.id);
-      const { data, error } = await supabase
+      const { data, error } = await window.supabaseClient
         .from('products')
         .select('id, stock')
         .in('id', productIds);

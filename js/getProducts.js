@@ -1,8 +1,7 @@
 // Supabase client is initialized in config.js
-const supabase = window.supabaseClient;
 
 async function getProducts() {
-    const { data, error } = await supabase
+    const { data, error } = await window.supabaseClient
         .from('products')
         .select('*');
 

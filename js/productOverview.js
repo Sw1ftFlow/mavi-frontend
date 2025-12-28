@@ -1,5 +1,4 @@
 // Supabase client is initialized in config.js
-const supabase = window.supabaseClient;
 
 // SEO function to update meta tags dynamically for each product
 function updateProductSEO(product) {
@@ -72,7 +71,7 @@ async function loadProduct() {
     const id = params.get('id');
     if (!id) return;
 
-    const { data, error } = await supabase
+    const { data, error } = await window.supabaseClient
         .from('products')
         .select('*')
         .eq('id', id)
